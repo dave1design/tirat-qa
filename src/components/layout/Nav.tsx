@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
-import { LearnMenu } from "./LearnMenu";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -39,30 +38,13 @@ function Collapse({ hidden, className, children }: { hidden: boolean; className?
 export function Nav({ user }: { user: NavUser | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [learnOpen, setLearnOpen] = useState(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const openLearn = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setLearnOpen(true);
-  };
-  const closeLearn = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setLearnOpen(false), 140);
-  };
   const [compact, setCompact] = useState(false); // desktop: collapses to logo + button while scrolling down
   const [pending, setPending] = useState<string | null>(null); // highlights the clicked link immediately
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setLearnOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
   useEffect(() => {
     let last = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
-      if (y > 80) setLearnOpen(false);
       if (y < 80) setCompact(false);
       else if (y > last + 4) setCompact(true);
       else if (y < last - 4) setCompact(false);
@@ -75,7 +57,6 @@ export function Nav({ user }: { user: NavUser | null }) {
   useEffect(() => {
     setOpen(false);
     setPending(null);
-    setLearnOpen(false);
   }, [pathname]);
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -103,10 +84,7 @@ export function Nav({ user }: { user: NavUser | null }) {
         <Collapse hidden={compact} className="hidden lg:grid">
         <ul className="flex items-center gap-0.5">
           {links.map((l) => (
-            <li
-              key={l.href}
-              {...(l.href === "/learn" ? { onMouseEnter: openLearn, onMouseLeave: closeLearn, onFocus: openLearn, onBlur: closeLearn } : {})}
-            >
+            <li key={l.href}>
               <Link
                 href={l.href}
                 onClick={() => setPending(l.href)}
@@ -117,26 +95,11 @@ export function Nav({ user }: { user: NavUser | null }) {
                 )}
               >
                 {l.label}
-                {l.href === "/learn" && <ChevronDown className={cn("ml-1 inline size-4 transition-transform duration-300", learnOpen && "rotate-180")} aria-hidden />}
               </Link>
             </li>
           ))}
         </ul>
         </Collapse>
-
-        {/* Learn mega menu: drops below the pill, same width */}
-        <div
-          className={cn(
-            "absolute inset-x-0 top-full hidden pt-2 transition-[opacity,transform] duration-300 ease-[cubic-bezier(.2,.8,.2,1)] lg:block",
-            learnOpen && !compact ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0",
-          )}
-          onMouseEnter={openLearn}
-          onMouseLeave={closeLearn}
-          aria-hidden={!learnOpen}
-          {...(!learnOpen ? { inert: true } : {})}
-        >
-          <LearnMenu onNavigate={() => setLearnOpen(false)} />
-        </div>
 
         <div className="flex items-center gap-1.5">
           {user ? (
