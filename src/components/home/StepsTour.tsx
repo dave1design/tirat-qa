@@ -101,7 +101,7 @@ export function StepsTour() {
         const n = next.getBoundingClientRect();
         const p = Math.min(1, Math.max(0, 1 - (n.top - a.top) / Math.max(1, a.height)));
         el.style.transform = `translateY(${-p * 14}px) scale(${1 - p * 0.06})`;
-        el.style.opacity = String(1 - p * 0.25);
+        el.style.filter = `brightness(${1 - p * 0.05})`; // dim slightly instead of fading, so the text behind never shows through
       });
     };
     onScroll();
@@ -152,7 +152,7 @@ export function StepsTour() {
             <p className="mt-6 max-w-[520px] text-base text-muted">{p.text}</p>
           </section>
         ))}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-20 flex justify-center">
           <Button href="/practice-lab" arrow>
             Start Your First Challenge
           </Button>
