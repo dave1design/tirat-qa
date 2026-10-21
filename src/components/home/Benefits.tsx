@@ -93,7 +93,7 @@ function ResultSheet() {
             <td className={cell}>Points</td>
           </tr>
           {sheet.map((r, i) => (
-            <tr key={r.id} className="transition-colors duration-300 hover:bg-[#eef4ff]">
+            <tr key={r.id} className="transition-colors duration-300 group-hover/card:bg-[#eef4ff]" style={{ transitionDelay: `${i * 90}ms` }}>
               <td className={cn(cell, "bg-[#f3f3f3] text-center text-[10px] text-faint")}>{i + 2}</td>
               <td className={cn(cell, "font-mono text-[10px]")}>{r.id}</td>
               <td className={cell}>
@@ -122,7 +122,7 @@ function ResultSheet() {
 function ProgressChart() {
   const bars = [32, 40, 36, 52, 46, 62, 70, 78, 92];
   return (
-    <div className="mt-auto mb-12 -mr-10 rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)]">
+    <div className="mt-auto mb-12 -mr-10 rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)] transition-transform duration-500 group-hover/card:-translate-x-8">
       <p className="text-[12px] text-muted">
         Practice progress <span aria-hidden>·</span> Level 01
       </p>
@@ -150,7 +150,7 @@ const items: { kicker: string; title: string; text: string; art: ReactNode; offs
 function BenefitCard({ kicker, title, text, art }: { kicker: string; title: string; text: string; art: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
-    <article className="group/card relative flex h-[360px] flex-col overflow-hidden rounded-[32px] bg-card px-6 pt-6 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
+    <article className="group/card relative flex h-[360px] flex-col overflow-hidden rounded-[32px] bg-card px-6 pt-6">
       <p className="text-[13px] text-muted">{kicker}</p>
       <h3 className="mt-1 text-[1.9rem] font-medium leading-tight tracking-[-0.035em]">{title}</h3>
       {art}
