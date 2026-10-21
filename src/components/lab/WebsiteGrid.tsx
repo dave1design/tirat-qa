@@ -59,9 +59,9 @@ function Card({ c, i }: { c: LabCard; i: number }) {
             <ArrowUpRight className="size-5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
           )}
         </span>
-        <h3 className="absolute bottom-5 left-6 right-6 text-[clamp(1.7rem,3vw,2.5rem)] font-semibold leading-[1.02] tracking-[-0.045em]">{c.name}</h3>
+        <h3 className="absolute bottom-5 left-6 right-6 text-[clamp(1.35rem,2.2vw,1.9rem)] font-semibold leading-[1.02] tracking-[-0.045em]">{c.name}</h3>
       </div>
-      <h4 className="mt-5 text-[1.15rem] font-medium leading-snug tracking-[-0.02em]">{c.desc}</h4>
+      <h4 className="mt-5 min-h-[3.4rem] text-[1.15rem] font-medium leading-snug tracking-[-0.02em]">{c.desc}</h4>
       <p className="mt-1.5 text-[15px] leading-snug text-muted">{c.skills.join(" · ")}</p>
       <div className="mt-4 flex items-baseline gap-3 border-t border-line pt-3.5">
         <span className="text-[1.35rem] font-medium tracking-[-0.03em]">{c.minutes ? `${c.minutes} min` : "—"}</span>

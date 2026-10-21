@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const USERS: Record<string, string> = { "demo@northwind.test": "Passw0rd!" };
+const USERS: Record<string, string> = { "demo@tirat.test": "Passw0rd!" };
 const KEY = "nw_session";
 
 export default function NorthwindLogin() {
@@ -32,7 +32,7 @@ export default function NorthwindLogin() {
     return (
       <Shell>
         <h1 className="text-xl font-semibold">Welcome back</h1>
-        <p className="mt-1 text-sm text-slate-500">{sessionStorage.getItem(KEY) ?? "demo@northwind.test"}</p>
+        <p className="mt-1 text-sm text-slate-500">{sessionStorage.getItem(KEY) ?? "demo@tirat.test"}</p>
         <div className="mt-6 grid gap-3">
           <div className="rounded-lg bg-slate-50 p-4">
             <p className="text-xs uppercase tracking-wide text-slate-500">Checking •••• 4821</p>
@@ -64,8 +64,8 @@ export default function NorthwindLogin() {
 
   return (
     <Shell>
-      <h1 className="text-xl font-semibold">Sign in to Northwind</h1>
-      <p className="mt-1 text-sm text-slate-500">Access your accounts securely.</p>
+      <h1 className="text-xl font-semibold">Sign in to your account</h1>
+      <p className="mt-1 text-sm text-slate-500">Track orders and manage your details.</p>
       <form onSubmit={submit} noValidate className="mt-6 grid gap-4">
         <label className="grid gap-1.5 text-sm font-medium">
           Email
@@ -92,9 +92,9 @@ export default function NorthwindLogin() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-50 to-white p-4">
+    <div className="flex min-h-[calc(100vh-57px)] items-center justify-center bg-gradient-to-b from-sky-50 to-white p-4">
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-        <p className="mb-5 text-sm font-bold tracking-wide text-sky-800">NORTHWIND BANK</p>
+        <p className="mb-5 text-sm font-bold tracking-wide text-sky-800">TIRAT E-COMMERCE</p>
         {children}
       </div>
     </div>

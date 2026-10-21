@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sites } from "../../../prisma/seed-data";
+import { sites, tiratEcommerce } from "../../../prisma/seed-data";
 import { matchReport, type RegistryBug } from "./match";
 import { maxScoreFor, scoreAttempt, scoreQuality, scoreSeverity, countSteps, type ScorableReport } from "./score";
 import { parseKeywordText, formatKeywordGroups, isValidBug } from "../keywords";
@@ -73,6 +73,22 @@ describe("matching against the seeded registries", () => {
 
   it("every seeded bug is publishable", () => {
     for (const s of sites) for (const b of s.bugs) expect(isValidBug(b)).toBe(true);
+  });
+});
+
+describe("Tirat E-commerce (combined registry)", () => {
+  const reg: RegistryBug[] = tiratEcommerce.bugs.map((b) => ({ id: b.code, code: b.code, points: b.points, severity: b.severity, keywordGroups: b.keywordGroups }));
+  it("has 18 uniquely numbered bugs", () => {
+    expect(reg).toHaveLength(18);
+    expect(new Set(reg.map((r) => r.code)).size).toBe(18);
+  });
+  it("still routes reports from each area to the right bug", () => {
+    const dup = matchReport(report("Duplicate email address is accepted", "1. Use taken@example.com\n2. Submit", "Error: this email is already registered", "Account is created and a success message appears"), reg);
+    expect(dup.verdict).toBe("MATCHED");
+    expect(dup.bug?.code).toBe("BUG-11");
+    const sort = matchReport(report("Price sorting is wrong", "1. Open Shop\n2. Sort by price low to high", "Cheapest first, numeric order", "$1,299 appears before $15, sorted alphabetically"), reg);
+    expect(sort.verdict).toBe("MATCHED");
+    expect(sort.bug?.code).toBe("BUG-13");
   });
 });
 

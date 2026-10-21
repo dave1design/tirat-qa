@@ -672,3 +672,35 @@ export const sites: {
     ],
   },
 ];
+
+/**
+ * "Tirat E-commerce": one complete practice website (storefront with sign-in, registration and product
+ * browsing). Its registry is the union of the three earlier single-page challenges, renumbered.
+ */
+export const tiratEcommerce = {
+  slug: "tirat-ecommerce",
+  name: "Tirat E-commerce",
+  description: "A complete online store. Test sign-in, account creation, product search, filters, sorting and product details.",
+  skills: ["Authentication", "Forms and validation", "Search and filters", "Sorting", "Product details"],
+  objective: "Find as many defects as you can across the Tirat E-commerce store: its account pages and its product catalogue.",
+  instructions: `You are testing **Tirat E-commerce**, a fictional online store. Use the tabs at the top to move between the **Shop**, **Sign in** and **Create account** pages.
+
+**Test account:** \`demo@tirat.test\` with password \`Passw0rd!\`  
+**Hint for testing duplicates:** the address \`taken@example.com\` is already registered.
+
+**In scope:** every page and control in the store: forms, links, search, filters, sorting, product details, the cart button and signing out.
+
+**Permitted:** any normal browser testing: valid and invalid input, refreshing, the back button, and browser dev tools for observation.
+
+**Not permitted:** attacking the platform itself, other users' data, or automated high-volume requests.`,
+  minutes: 60,
+  accessRule: "FREE" as const,
+  priceEtb: 0,
+  appUrl: "/sandbox/tirat-ecommerce",
+  bugs: sites.flatMap((s, si) =>
+    s.bugs.map((b, bi) => ({ ...b, code: `BUG-${String(si * 6 + bi + 1).padStart(2, "0")}` })),
+  ),
+};
+
+/** The earlier single-page challenges are retired in favour of the full site above. */
+export const retiredSlugs = sites.map((s) => s.slug);

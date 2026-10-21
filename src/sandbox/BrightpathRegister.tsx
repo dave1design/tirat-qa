@@ -28,7 +28,7 @@ export default function BrightpathRegister() {
         <div className="py-8 text-center">
           <p className="text-4xl">🎉</p>
           <h1 className="mt-3 text-2xl font-bold">Welcome, {done}!</h1>
-          <p className="mt-2 text-slate-600">Your BrightPath account has been created. Check your inbox to get started.</p>
+          <p className="mt-2 text-slate-600">Your Tirat E-commerce account has been created. Check your inbox to get started.</p>
         </div>
       </Frame>
     );
@@ -37,7 +37,7 @@ export default function BrightpathRegister() {
   return (
     <Frame>
       <h1 className="text-2xl font-bold">Create your account</h1>
-      <p className="mt-1 text-slate-600">Start learning with BrightPath today.</p>
+      <p className="mt-1 text-slate-600">Join Tirat E-commerce today.</p>
       <form onSubmit={submit} noValidate className="mt-6 grid gap-4">
         <Field label="Full name" name="name" error={errors.name} />
         <Field label="Email" name="email" type="email" error={errors.email} />
@@ -78,9 +78,9 @@ function Field({ label, name, type = "text", error }: { label: string; name: str
 
 function Frame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-emerald-50/60 p-4">
+    <div className="min-h-[calc(100vh-57px)] bg-emerald-50/60 p-4">
       <div className="mx-auto mt-6 max-w-md rounded-2xl border border-emerald-100 bg-white p-7 shadow-sm">
-        <p className="mb-4 text-sm font-bold tracking-wide text-emerald-700">BRIGHTPATH ACADEMY</p>
+        <p className="mb-4 text-sm font-bold tracking-wide text-emerald-700">TIRAT E-COMMERCE</p>
         {children}
       </div>
     </div>

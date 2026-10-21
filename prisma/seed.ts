@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { randomBytes, scryptSync } from "node:crypto";
-import { articles, sites } from "./seed-data";
+import { articles, retiredSlugs, tiratEcommerce } from "./seed-data";
 
 const db = new PrismaClient();
 
@@ -58,7 +58,7 @@ async function main() {
     update: {},
   });
 
-  for (const [i, s] of sites.entries()) {
+  for (const [i, s] of [tiratEcommerce].entries()) {
     const site = await db.practiceWebsite.upsert({
       where: { levelId_slug: { levelId: level.id, slug: s.slug } },
       create: {
@@ -96,6 +96,8 @@ async function main() {
       });
     }
   }
+
+  await db.practiceWebsite.updateMany({ where: { slug: { in: retiredSlugs } }, data: { status: "RETIRED" } });
 
   // The demo learner has paid access to Level 01 so every challenge can be tried locally.
   const learner = await db.user.findUniqueOrThrow({ where: { email: "learner@tirat.test" } });

@@ -16,20 +16,18 @@ export const metadata: Metadata = {
 };
 export const dynamic = "force-dynamic";
 
-/** How each live practice website is presented (category, colour, screen drawing). */
+/** How each live practice website is presented (category, colour, site drawing). */
 const presentation: Record<string, Pick<LabCard, "category" | "visual" | "look">> = {
-  "login-and-account-access": { category: "Authentication", visual: "login", look: "black" },
-  "registration-form": { category: "Forms", visual: "register", look: "blue" },
-  "product-listing": { category: "E-commerce", visual: "products", look: "lime" },
+  "tirat-ecommerce": { category: "E-commerce", visual: "ecommerce", look: "lime" },
 };
 
-/** Planned practice websites from the product catalogue. They are shown as "Coming soon" and are not clickable. */
+/** Full practice websites that are planned. They are shown as "Coming soon" and are not clickable. */
 const planned: LabCard[] = [
-  { key: "soon-cart", name: "Shopping Cart", category: "E-commerce", level: "Level 01", desc: "Test quantities, totals and add or remove behavior.", skills: ["Quantity", "Totals", "Add/remove"], visual: "cart", look: "teal", minutes: null, access: "Paid", status: "SOON", href: null },
-  { key: "soon-booking", name: "Appointment Booking", category: "Booking", level: "Level 01", desc: "Test date selection, validation and confirmation.", skills: ["Date selection", "Validation", "Confirmation"], visual: "booking", look: "orange", minutes: null, access: "Paid", status: "SOON", href: null },
-  { key: "soon-checkout", name: "Checkout Workflow", category: "E-commerce", level: "Level 02", desc: "Follow a multi-step flow with totals and address validation.", skills: ["Multi-step flow", "Totals", "Addresses"], visual: "checkout", look: "violet", minutes: null, access: "Paid", status: "SOON", href: null },
-  { key: "soon-board", name: "Project Board", category: "Projects", level: "Level 02", desc: "Test task status, assignment and validation on a project board.", skills: ["Task status", "Assignment", "Validation"], visual: "board", look: "blue", minutes: null, access: "Paid", status: "SOON", href: null },
-  { key: "soon-upload", name: "File Upload Form", category: "Forms", level: "Level 02", desc: "Test file type and size validation and error recovery.", skills: ["File types", "Size limits", "Recovery"], visual: "upload", look: "lime", minutes: null, access: "Paid", status: "SOON", href: null },
+  { key: "soon-lms", name: "Tirat Learning Management System", category: "Education", level: "Level 02", desc: "A learning platform: courses, enrollment, lessons and progress tracking.", skills: ["Enrollment", "Progress", "Quizzes"], visual: "lms", look: "teal", minutes: null, access: "Paid", status: "SOON", href: null },
+  { key: "soon-projects", name: "Tirat Project Management", category: "Projects", level: "Level 02", desc: "A team workspace: boards, tasks, assignments and status changes.", skills: ["Task status", "Assignment", "Permissions"], visual: "projects", look: "blue", minutes: null, access: "Paid", status: "SOON", href: null },
+  { key: "soon-booking", name: "Tirat Booking Platform", category: "Booking", level: "Level 02", desc: "An appointment system: services, availability, dates and confirmations.", skills: ["Date selection", "Validation", "Confirmation"], visual: "booking", look: "orange", minutes: null, access: "Paid", status: "SOON", href: null },
+  { key: "soon-bank", name: "Tirat Banking App", category: "Finance", level: "Level 03", desc: "An account dashboard: balances, transfers, cards and transaction history.", skills: ["Calculations", "Edge cases", "State changes"], visual: "banking", look: "violet", minutes: null, access: "Paid", status: "SOON", href: null },
+  { key: "soon-help", name: "Tirat Helpdesk", category: "Support", level: "Level 03", desc: "A customer support desk: tickets, priorities, assignment and replies.", skills: ["Ticket status", "Priority", "Search"], visual: "projects", look: "black", minutes: null, access: "Paid", status: "SOON", href: null },
 ];
 
 export default async function PracticeLabPage() {
@@ -38,7 +36,7 @@ export default async function PracticeLabPage() {
 
   const live: LabCard[] = levels.flatMap((l) =>
     l.sites.map((s) => {
-      const p = presentation[s.slug] ?? { category: "Practice", visual: "login" as const, look: "blue" as const };
+      const p = presentation[s.slug] ?? { category: "Practice", visual: "ecommerce" as const, look: "blue" as const };
       return {
         key: s.id,
         name: s.name,
@@ -68,7 +66,7 @@ export default async function PracticeLabPage() {
   return (
     <>
       <section className="hero-bg pb-16 pt-36 sm:pb-24 sm:pt-44">
-        <div className="container-x grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:items-end">
+        <div className="container-x grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:items-center">
           <div>
             <Reveal>
               <div className="inline-flex items-center gap-1.5 text-sm font-medium">

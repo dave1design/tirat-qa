@@ -45,10 +45,10 @@ export default function ShopstackProducts() {
   }, [q, cat, sort]);
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="sticky top-0 z-10 border-b border-stone-200 bg-white">
+    <div className="min-h-[calc(100vh-57px)] bg-stone-50">
+      <header className="sticky top-[57px] z-10 border-b border-stone-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <p className="font-bold tracking-wide text-violet-700">SHOPSTACK</p>
+          <p className="font-bold tracking-wide text-violet-700">TIRAT SHOP</p>
           <p className="rounded-full bg-violet-100 px-3 py-1 text-sm font-medium text-violet-800">Cart ({cart})</p>
         </div>
       </header>
