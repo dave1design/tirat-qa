@@ -22,10 +22,37 @@ export interface NavUser {
   isStaff: boolean;
 }
 
+/** Width/opacity collapse (animates a grid column between 1fr and 0fr) so items slide away smoothly. */
+function Collapse({ hidden, className, children }: { hidden: boolean; className?: string; children: React.ReactNode }) {
+  return (
+    <div
+      className={cn("transition-[grid-template-columns,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)]", hidden ? "pointer-events-none grid-cols-[0fr] opacity-0" : "grid-cols-[1fr] opacity-100", className)}
+      aria-hidden={hidden}
+      {...(hidden ? { inert: true } : {})}
+    >
+      <div className="min-w-0 overflow-hidden whitespace-nowrap">{children}</div>
+    </div>
+  );
+}
+
 export function Nav({ user }: { user: NavUser | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false); // desktop: collapses to logo + button while scrolling down
   const [pending, setPending] = useState<string | null>(null); // highlights the clicked link immediately
+
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 80) setCompact(false);
+      else if (y > last + 4) setCompact(true);
+      else if (y < last - 4) setCompact(false);
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     setOpen(false);
@@ -47,11 +74,15 @@ export function Nav({ user }: { user: NavUser | null }) {
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-4">
       <nav
         aria-label="Main"
-        className="pointer-events-auto relative flex w-full max-w-[860px] items-center justify-between gap-2 rounded-full border border-black/5 bg-white/85 py-2 pl-3 pr-2 shadow-float backdrop-blur-xl"
+        className={cn(
+          "pointer-events-auto relative flex w-full items-center justify-between gap-2 rounded-full border border-black/5 bg-white/85 py-2 pl-3 pr-2 shadow-float backdrop-blur-xl transition-[max-width] duration-500 ease-[cubic-bezier(.2,.8,.2,1)]",
+          compact ? "lg:max-w-[330px]" : "max-w-[860px]",
+        )}
       >
         <Logo className="[&>span:last-child]:text-xl [&>span:first-child]:!size-10" />
 
-        <ul className="hidden items-center gap-0.5 lg:flex">
+        <Collapse hidden={compact} className="hidden lg:grid">
+        <ul className="flex items-center gap-0.5">
           {links.map((l) => (
             <li key={l.href}>
               <Link
@@ -68,24 +99,29 @@ export function Nav({ user }: { user: NavUser | null }) {
             </li>
           ))}
         </ul>
+        </Collapse>
 
         <div className="flex items-center gap-1.5">
           {user ? (
             <>
-              <Button href={user.isStaff ? "/admin" : "/dashboard"} variant="ghost" size="sm" className="hidden sm:inline-flex">
+              <Button href={user.isStaff ? "/admin" : "/dashboard"} variant={compact ? "dark" : "ghost"} size="sm" className="hidden sm:inline-flex">
                 {user.isStaff ? "Admin" : "Dashboard"}
               </Button>
-              <form action={logoutAction} className="hidden sm:block">
-                <Button type="submit" size="sm" variant="dark">
-                  Log Out
-                </Button>
-              </form>
+              <Collapse hidden={compact} className="hidden sm:grid">
+                <form action={logoutAction}>
+                  <Button type="submit" size="sm" variant="dark">
+                    Log Out
+                  </Button>
+                </form>
+              </Collapse>
             </>
           ) : (
             <>
-              <Button href="/login" variant="ghost" size="sm" className="hidden sm:inline-flex">
-                Log In
-              </Button>
+              <Collapse hidden={compact} className="hidden sm:grid">
+                <Button href="/login" variant="ghost" size="sm">
+                  Log In
+                </Button>
+              </Collapse>
               <Button href="/sign-up" size="sm" arrow>
                 Sign Up
               </Button>
