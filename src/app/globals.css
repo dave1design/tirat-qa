@@ -65,6 +65,7 @@
   --animate-scroll-up: scroll-up 16s linear infinite;
   --animate-bar: bar 2.6s ease-in-out infinite alternate;
   --animate-pop: pop 3.2s ease-in-out infinite;
+  --animate-rock: rock 8s ease-in-out infinite alternate;
 }
 
 @keyframes sway {
@@ -94,6 +95,14 @@
 @keyframes pop {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.06); }
+}
+@keyframes rock {
+  from { transform: rotate(var(--a)) translate3d(0, 0, 0); }
+  to { transform: rotate(calc(var(--a) + 16deg)) translate3d(10px, -10px, 0); }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes orbit {
   to { transform: rotate(360deg); }
