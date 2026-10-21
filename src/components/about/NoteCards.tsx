@@ -3,6 +3,7 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import { BookOpen, FileText, ListChecks, MessageSquareText, Search, Target, type LucideIcon } from "lucide-react";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
+import { COMPARE_EVENT } from "./compare-events";
 
 /** Resting layout: angle `a` (deg), position in % of the area, card width in px. */
 const cards: { t: string; d: string; icon: LucideIcon; tone: Tone; a: number; x: number; y: number; w: number; delay: number }[] = [
@@ -24,6 +25,8 @@ interface Drag {
   sy: number;
   ox: number;
   oy: number;
+  gx: number | null; // where the card is easing to (after the arrow is pressed)
+  gy: number | null;
 }
 
 /**
@@ -34,7 +37,7 @@ export function NoteCards() {
   const inner = useRef<(HTMLDivElement | null)[]>([]);
   const outer = useRef<(HTMLDivElement | null)[]>([]);
   const area = useRef<HTMLDivElement>(null);
-  const st = useRef<Drag[]>(cards.map(() => ({ x: 0, y: 0, rot: 0, target: 0, active: false, sx: 0, sy: 0, ox: 0, oy: 0 })));
+  const st = useRef<Drag[]>(cards.map(() => ({ x: 0, y: 0, rot: 0, target: 0, active: false, sx: 0, sy: 0, ox: 0, oy: 0, gx: null, gy: null })));
   const raf = useRef(0);
   const z = useRef(10);
 
@@ -47,6 +50,16 @@ export function NoteCards() {
   const loop = () => {
     let busy = false;
     st.current.forEach((s, i) => {
+      if (!s.active && s.gx !== null && s.gy !== null) {
+        s.x += (s.gx - s.x) * 0.12;
+        s.y += (s.gy - s.y) * 0.12;
+        s.target += (s.gx - s.x) * 0.02; // lean into the move
+        if (Math.abs(s.gx - s.x) < 0.5 && Math.abs(s.gy - s.y) < 0.5) {
+          s.x = s.gx;
+          s.y = s.gy;
+          s.gx = s.gy = null;
+        } else busy = true;
+      }
       s.target *= 0.86; // the push from your last movement fades out
       s.rot += (s.target - s.rot) * 0.22;
       if (Math.abs(s.rot) < 0.05 && Math.abs(s.target) < 0.05 && !s.active) {
@@ -62,11 +75,34 @@ export function NoteCards() {
   };
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
+  // The arrow between the panels: tidy displaced cards back into the pile, or toss them about if it is already tidy.
+  useEffect(() => {
+    const shuffle = () => {
+      const moved = st.current.some((s) => Math.hypot(s.x, s.y) > 8);
+      st.current.forEach((s, i) => {
+        if (moved) {
+          s.gx = 0;
+          s.gy = 0;
+        } else {
+          const side = i % 2 ? 1 : -1;
+          s.gx = side * (20 + Math.random() * 30);
+          s.gy = 10 + Math.random() * 40;
+          s.target = side * 14;
+        }
+      });
+      wake();
+    };
+    window.addEventListener(COMPARE_EVENT, shuffle);
+    return () => window.removeEventListener(COMPARE_EVENT, shuffle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- wake only touches refs
+  }, []);
+
   const down = (i: number) => (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     const s = st.current[i];
     s.active = true;
+    s.gx = s.gy = null;
     s.sx = e.clientX;
     s.sy = e.clientY;
     s.ox = s.x;
