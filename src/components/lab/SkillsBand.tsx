@@ -74,16 +74,16 @@ export function SkillsBand() {
           </p>
         </Reveal>
         <SplitText id="skills-title" className="h-section mt-4 max-w-[760px] text-balance" parts={[{ text: "Skills you'll practice." }]} />
-        <ul className="mt-12 flex flex-wrap gap-3">
+        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {skills.map((s, i) => (
-            <li key={s.title} className="min-w-[190px] flex-1 basis-[190px]">
+            <li key={s.title}>
               <Reveal delay={i * 70} className="h-full">
-                <article className="flex h-full flex-col rounded-[28px] border border-white/10 bg-white/[0.06] p-6">
-                  <span role="img" aria-label={`${s.tool} logo`} className="block size-[56px] overflow-hidden rounded-[14px] shadow-[0_8px_20px_rgba(0,0,0,0.25)]">{s.logo}</span>
-                  <h3 className="mt-6 min-h-[3.4rem] text-[1.3rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
-                  <ul className="mt-3 grid gap-2.5">
+                <article className="flex h-full flex-col rounded-[32px] border border-white/[0.07] bg-[#262626] p-6">
+                  <span role="img" aria-label={`${s.tool} logo`} className="block size-[56px] overflow-hidden rounded-full">{s.logo}</span>
+                  <h3 className="mt-6 min-h-[3.2rem] text-[1.25rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
+                  <ul className="mt-4 grid gap-3">
                     {s.items.map((it) => (
-                      <li key={it} className="flex min-h-[2.8rem] items-start gap-2.5 text-[15px] leading-snug text-white/80">
+                      <li key={it} className="flex items-start gap-2.5 text-[15px] leading-snug text-white/70">
                         <Check className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={2.6} aria-hidden />
                         {it}
                       </li>
