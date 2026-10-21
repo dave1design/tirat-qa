@@ -90,7 +90,7 @@ export function Nav({ user }: { user: NavUser | null }) {
                 onClick={() => setPending(l.href)}
                 aria-current={isActive(l.href) ? "page" : undefined}
                 className={cn(
-                  "rounded-full px-3.5 py-2 text-[15px] font-medium tracking-[-0.01em] transition-colors",
+                  "block rounded-full px-4 py-2 text-[15px] leading-6 font-medium tracking-[-0.01em] transition-colors",
                   isActive(l.href) ? "bg-chip text-ink" : "text-muted hover:text-ink",
                 )}
               >
