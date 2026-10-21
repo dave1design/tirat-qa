@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// NOTE: enum-like columns are plain strings; the allowed values live in src/lib/constants.ts.
+// JSON-ish columns (skills, keywordGroups, meta) are stored as JSON strings.
+
+model User {
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  passwordHash     String
+  role             String    @default("LEARNER") // LEARNER | CONTENT_CREATOR | REVIEWER | ADMIN | OWNER
+  status           String    @default("ACTIVE") // ACTIVE | SUSPENDED
+  experienceLevel  String? // NEW | BASICS | TESTER
+  learningGoal     String? // FIND_BUGS | WRITE_REPORTS | JOB_PREP | TECHNIQUES
+  onboardedAt      DateTime?
+  termsAcceptedAt  DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  resetTokens   PasswordResetToken[]
+  attempts      Attempt[]
+  entitlements  Entitlement[]
+  payments      Payment[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Article {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  category    String // category slug, see constants LEARN_CATEGORIES
+  summary     String
+  body        String // markdown
+  status      String    @default("DRAFT") // DRAFT | PUBLISHED
+  order       Int       @default(0)
+  related     String    @default("[]") // JSON array of slugs
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Level {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  number      Int               @unique
+  name        String
+  difficulty  String
+  description String
+  skills      String            @default("[]") // JSON array
+  accessRule  String            @default("FREE") // FREE | PAID
+  priceEtb    Int               @default(0)
+  status      String            @default("DRAFT") // DRAFT | PUBLISHED | PAUSED | RETIRED
+  order       Int               @default(0)
+  websites    PracticeWebsite[]
+  entitlements Entitlement[]
+}
+
+model PracticeWebsite {
+  id               String            @id @default(cuid())
+  levelId          String
+  slug             String
+  name             String
+  description      String
+  skills           String            @default("[]")
+  objective        String
+  instructions     String // markdown, permitted tools and scope
+  estimatedMinutes Int               @default(20)
+  accessRule       String            @default("FREE") // FREE | PAID
+  priceEtb         Int               @default(0)
+  appUrl           String // path or absolute URL of the practice application
+  version          Int               @default(1)
+  status           String            @default("DRAFT") // DRAFT | REVIEW | PUBLISHED | PAUSED | RETIRED
+  requireSeverity  Boolean           @default(true)
+  maxAttempts      Int               @default(3)
+  order            Int               @default(0)
+  level            Level             @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  bugs             BugRegistryItem[]
+  attempts         Attempt[]
+  entitlements     Entitlement[]
+
+  @@unique([levelId, slug])
+  @@index([levelId])
+}
+
+// Private answer key. Never select these rows in learner-facing queries without an explicit field list.
+model BugRegistryItem {
+  id               String          @id @default(cuid())
+  websiteId        String
+  version          Int             @default(1)
+  code             String // BUG-01
+  title            String // internal
+  description      String // internal
+  category         String
+  learningTopic    String // shown to the learner after the attempt when missed
+  severity         String // LOW | MEDIUM | HIGH | CRITICAL
+  points           Int             @default(10)
+  expectedBehavior String
+  keywordGroups    String          @default("[]") // JSON: string[][] — every group must match (any term inside a group)
+  active           Boolean         @default(true)
+  website          PracticeWebsite @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  reports          BugReport[]
+
+  @@unique([websiteId, version, code])
+  @@index([websiteId])
+}
+
+model Attempt {
+  id             String          @id @default(cuid())
+  userId         String
+  websiteId      String
+  websiteVersion Int
+  attemptNumber  Int             @default(1)
+  status         String          @default("IN_PROGRESS") // IN_PROGRESS | PROCESSING | UNDER_REVIEW | SCORED | CORRECTED
+  startedAt      DateTime        @default(now())
+  finishedAt     DateTime?
+  score          Int?
+  maxScore       Int?
+  passed         Boolean?
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  website        PracticeWebsite @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  reports        BugReport[]
+
+  @@index([userId, websiteId])
+}
+
+model BugReport {
+  id             String           @id @default(cuid())
+  attemptId      String
+  title          String
+  description    String           @default("")
+  steps          String
+  expected       String
+  actual         String
+  severity       String? // LOW | MEDIUM | HIGH | CRITICAL
+  evidencePath   String?
+  environment    String           @default("")
+  status         String           @default("SUBMITTED") // SUBMITTED | MATCHED | DUPLICATE | UNSUPPORTED | NEEDS_REVIEW
+  matchedBugId   String?
+  confidence     Float            @default(0)
+  bugPoints      Int              @default(0)
+  qualityPoints  Int              @default(0)
+  severityPoints Int              @default(0)
+  pointsOverride Int?
+  feedback       String           @default("")
+  reviewNote     String?
+  reviewedById   String?
+  reviewedAt     DateTime?
+  createdAt      DateTime         @default(now())
+  attempt        Attempt          @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  matchedBug     BugRegistryItem? @relation(fields: [matchedBugId], references: [id], onDelete: SetNull)
+
+  @@index([attemptId])
+  @@index([status])
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  userId        String
+  levelId       String?
+  websiteId     String?
+  amountEtb     Int
+  currency      String    @default("ETB")
+  method        String    @default("MANUAL")
+  reference     String
+  status        String    @default("PENDING") // PENDING | CONFIRMED | FAILED | REFUNDED
+  note          String?
+  confirmedById String?
+  confirmedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entitlements  Entitlement[]
+
+  @@index([status])
+  @@index([userId])
+}
+
+model Entitlement {
+  id        String           @id @default(cuid())
+  userId    String
+  levelId   String?
+  websiteId String?
+  source    String           @default("GRANT") // PAYMENT | GRANT
+  paymentId String?
+  status    String           @default("ACTIVE") // ACTIVE | REVOKED
+  createdAt DateTime         @default(now())
+  expiresAt DateTime?
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level     Level?           @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  website   PracticeWebsite? @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  payment   Payment?         @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  userId    String?
+  status    String   @default("NEW") // NEW | RESOLVED
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String?
+  meta      String   @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String?
+  meta      String   @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([name, createdAt])
+}
+
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+}
