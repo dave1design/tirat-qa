@@ -4,7 +4,7 @@
   "private": true,
   "description": "Tirat QA — hands-on software QA practice platform",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",

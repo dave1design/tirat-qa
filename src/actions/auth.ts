@@ -1,6 +1,6 @@
 "use server";
 
-import bcrypt from "bcryptjs";
+import { DUMMY_HASH, hashPassword, verifyPassword } from "@/lib/password";
 import { createHash, randomBytes } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -14,9 +14,6 @@ import { fieldErrors, forgotSchema, loginSchema, onboardingSchema, resetSchema, 
 import { safeNext } from "@/lib/utils";
 import type { FormState } from "@/components/ui/form";
 
-const BCRYPT_COST = 11;
-// Used to keep login timing similar whether or not the account exists.
-const DUMMY_HASH = bcrypt.hashSync("not-a-real-password", BCRYPT_COST);
 
 const str = (fd: FormData, k: string) => (typeof fd.get(k) === "string" ? (fd.get(k) as string) : "");
 const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
@@ -41,7 +38,7 @@ export async function signUpAction(_: FormState, fd: FormData): Promise<FormStat
   if (exists) return { errors: { email: "An account with this email may already exist. Try logging in." }, values };
 
   const user = await db.user.create({
-    data: { name, email, passwordHash: await bcrypt.hash(password, BCRYPT_COST), termsAcceptedAt: new Date() },
+    data: { name, email, passwordHash: await hashPassword(password), termsAcceptedAt: new Date() },
     select: { id: true },
   });
   await createSession(user.id, false);
@@ -62,10 +59,11 @@ export async function loginAction(_: FormState, fd: FormData): Promise<FormState
   }
 
   const user = await db.user.findUnique({ where: { email } });
-  const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
-  if (!user || !ok || user.status !== "ACTIVE") {
+  const check = await verifyPassword(password, user?.passwordHash ?? DUMMY_HASH);
+  if (!user || !check.ok || user.status !== "ACTIVE") {
     return { message: "The email or password you entered is incorrect.", values };
   }
+  if (check.needsRehash) await db.user.update({ where: { id: user.id }, data: { passwordHash: await hashPassword(password) } });
 
   await createSession(user.id, !!remember);
   await track("login", user.id);
@@ -108,7 +106,7 @@ export async function resetPasswordAction(_: FormState, fd: FormData): Promise<F
     return { message: "This reset link is invalid or has expired. Request a new one." };
   }
   await db.$transaction([
-    db.user.update({ where: { id: row.userId }, data: { passwordHash: await bcrypt.hash(parsed.data.password, BCRYPT_COST) } }),
+    db.user.update({ where: { id: row.userId }, data: { passwordHash: await hashPassword(parsed.data.password) } }),
     db.passwordResetToken.update({ where: { id: row.id }, data: { usedAt: new Date() } }),
   ]);
   await audit(row.userId, "password_reset_completed", "User", row.userId);

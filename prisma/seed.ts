@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { randomBytes, scryptSync } from "node:crypto";
 import { articles, sites } from "./seed-data";
 
 const db = new PrismaClient();
 
 async function main() {
   const password = process.env.SEED_PASSWORD ?? "TiratQA#2026";
-  const hash = await bcrypt.hash(password, 11);
+  const salt = randomBytes(16);
+  const hash = `scrypt$16384$${salt.toString("base64")}$${scryptSync(password, salt, 32, { N: 16384, r: 8, p: 1 }).toString("base64")}`;
 
   // Staff and demo accounts (development / pilot only)
   const people = [
