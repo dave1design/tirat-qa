@@ -74,17 +74,17 @@ export function SkillsBand() {
           </p>
         </Reveal>
         <SplitText id="skills-title" className="h-section mt-4 max-w-[760px] text-balance" parts={[{ text: "Skills you'll practice." }]} />
-        <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-12 flex flex-wrap gap-3">
           {skills.map((s, i) => (
-            <li key={s.title}>
+            <li key={s.title} className="min-w-[190px] flex-1 basis-[190px]">
               <Reveal delay={i * 70} className="h-full">
-                <article className="group h-full rounded-[28px] border border-white/10 bg-white/[0.06] p-6 transition-colors hover:bg-white/[0.1]">
+                <article className="group flex h-full flex-col rounded-[28px] border border-white/10 bg-white/[0.06] p-6 transition-colors hover:bg-white/[0.1]">
                   <span role="img" aria-label={`${s.tool} logo`} className="block size-[56px] overflow-hidden rounded-[14px] shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-transform duration-500 group-hover:-rotate-12 group-hover:scale-110">{s.logo}</span>
-                  <h3 className="mt-6 text-[1.3rem] font-medium tracking-[-0.03em]">{s.title}</h3>
-                  <ul className="mt-4 grid gap-2.5">
+                  <h3 className="mt-6 min-h-[3.4rem] text-[1.3rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
+                  <ul className="mt-3 grid gap-2.5">
                     {s.items.map((it) => (
-                      <li key={it} className="flex items-center gap-2.5 text-[15px] text-white/65">
-                        <Check className="size-4 shrink-0 text-lime" strokeWidth={2.6} aria-hidden />
+                      <li key={it} className="flex min-h-[2.8rem] items-start gap-2.5 text-[15px] leading-snug text-white/65">
+                        <Check className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={2.6} aria-hidden />
                         {it}
                       </li>
                     ))}
