@@ -133,6 +133,8 @@ export function StepsTour() {
       </nav>
 
       <div>
+        {/* Panels live in their own wrapper so they stop sticking where it ends, before the button */}
+        <div>
         {panels.map((p, i) => (
           <section
             key={p.n}
@@ -152,7 +154,8 @@ export function StepsTour() {
             <p className="mt-6 max-w-[520px] text-base text-muted">{p.text}</p>
           </section>
         ))}
-        <div className="mt-20 flex justify-center">
+        </div>
+        <div className="mt-14 flex justify-center">
           <Button href="/practice-lab" arrow>
             Start Your First Challenge
           </Button>
