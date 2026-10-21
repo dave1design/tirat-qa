@@ -1,42 +1,9 @@
-import { BadgeCheck, BookOpen, Compass, FileText, Rocket } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { HangingIcons } from "./HangingIcons";
 import { Button } from "@/components/ui/Button";
-import { AppTile, type Tone } from "@/components/ui/AppTile";
+import { FolderCards } from "./FolderCards";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitText } from "@/components/ui/SplitText";
-import type { LucideIcon } from "lucide-react";
-
-const steps: { title: string; pill: string; icon: LucideIcon; tone: Tone }[] = [
-  { title: "Learn", pill: "Free guides and resources", icon: BookOpen, tone: "blue" },
-  { title: "Test", pill: "Practice websites", icon: Compass, tone: "violet" },
-  { title: "Report", pill: "Structured bug reports", icon: FileText, tone: "orange" },
-  { title: "Improve", pill: "Results and feedback", icon: Rocket, tone: "green" },
-];
-
-function StepCards() {
-  return (
-    <div className="mx-auto mt-24 grid max-w-[1136px] grid-cols-2 gap-x-4 gap-y-10 px-5 sm:mt-40 lg:grid-cols-4 lg:gap-x-6">
-      {steps.map((s, i) => (
-        <Reveal key={s.title} delay={i * 90} className="group text-center">
-          <div className="relative h-[170px] overflow-hidden rounded-[28px] border border-line bg-gradient-to-b from-[#f3f3f3] to-white shadow-soft sm:h-[190px]">
-            <span className="absolute left-[14%] top-3 h-24 w-[44%] -rotate-3 rounded-2xl bg-white shadow-soft transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-6" />
-            <span className="absolute right-[12%] top-1 h-24 w-[46%] rotate-3 rounded-2xl bg-gradient-to-br from-[#e9e9e9] to-[#d6d6d6] shadow-soft transition-transform duration-500 group-hover:-translate-y-3 group-hover:translate-x-2 group-hover:rotate-6" />
-            <span className="absolute inset-x-[7%] bottom-0 h-[58%] rounded-t-3xl border border-line bg-white shadow-float transition-transform duration-500 group-hover:-translate-y-2">
-              <span className="absolute left-4 top-4 size-3 rounded-full" style={{ background: ["#0066ff", "#6c5cff", "#ff6b1a", "#12c957"][i] }} />
-              <span className="absolute right-3 top-[-14px]">
-                <span className="block animate-pop" style={{ animationDelay: `${i * 0.4}s` }}><AppTile icon={s.icon} tone={s.tone} size={42} /></span>
-              </span>
-              <span className="absolute inset-x-4 bottom-5 h-px bg-line" />
-              <span className="absolute inset-x-4 bottom-9 h-px bg-line" />
-            </span>
-          </div>
-          <p className="mt-5 text-xl tracking-[-0.03em]">{s.title}</p>
-          <p className="mx-auto mt-3 inline-block rounded-full bg-chip px-3 py-1.5 text-[13px] font-medium text-muted">{s.pill}</p>
-        </Reveal>
-      ))}
-    </div>
-  );
-}
 
 export function Hero() {
   return (
@@ -79,7 +46,7 @@ export function Hero() {
           </Reveal>
         </div>
       </div>
-      <StepCards />
+      <FolderCards />
     </section>
   );
 }
