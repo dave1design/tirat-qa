@@ -66,17 +66,7 @@ const skills = [
 /** Dark band of five skill cards, each with an initials badge and a short check list. */
 export function SkillsBand() {
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-b from-[#0a47f0] to-[#0057ff] py-20 text-white sm:py-28" aria-labelledby="skills-title">
-      {/* film-grain noise: an SVG turbulence filter tiled over the blue */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.7] mix-blend-soft-light"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -0.25'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-          backgroundSize: "220px 220px",
-        }}
-      />
+    <section className="bg-[#141414] py-20 text-white sm:py-28" aria-labelledby="skills-title">
       <div className="container-x">
         <Reveal>
           <p className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-wider text-white/60">
@@ -88,7 +78,7 @@ export function SkillsBand() {
           {skills.map((s, i) => (
             <li key={s.title} className="min-w-[190px] flex-1 basis-[190px]">
               <Reveal delay={i * 70} className="h-full">
-                <article className="flex h-full flex-col rounded-[28px] border border-white/20 bg-white/[0.12] p-6 backdrop-blur-[2px]">
+                <article className="flex h-full flex-col rounded-[28px] border border-white/10 bg-white/[0.06] p-6">
                   <span role="img" aria-label={`${s.tool} logo`} className="block size-[56px] overflow-hidden rounded-[14px] shadow-[0_8px_20px_rgba(0,0,0,0.25)]">{s.logo}</span>
                   <h3 className="mt-6 min-h-[3.4rem] text-[1.3rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
                   <ul className="mt-3 grid gap-2.5">
