@@ -56,34 +56,36 @@ const Excel = () => (
 );
 
 const skills = [
-  { logo: <Word />, tool: "Word", title: "Read BRD & Documents", items: ["Understand requirements", "Spot gaps and ambiguity", "Turn them into test ideas"] },
-  { logo: <Figma />, tool: "Figma", title: "Design Testing", items: ["Layout and consistency", "Visual and spacing checks", "Usability and accessibility"] },
-  { logo: <Chrome />, tool: "Chrome", title: "Frontend Testing", items: ["Forms and validation", "Navigation and links", "Search, filters and sorting"] },
-  { logo: <Postman />, tool: "Postman", title: "Backend Testing (API)", items: ["Requests and responses", "Status codes", "Data and error handling"] },
-  { logo: <Excel />, tool: "Excel", title: "Bug Reporting", items: ["Steps to reproduce", "Expected vs. actual", "Severity and evidence"] },
+  { logo: <Word />, tool: "Word", title: "Read BRD & Documents", items: ["Read requirements", "Spot gaps", "Write test ideas"] },
+  { logo: <Figma />, tool: "Figma", title: "Design Testing", items: ["Layout checks", "Spacing and visuals", "Usability checks"] },
+  { logo: <Chrome />, tool: "Chrome", title: "Frontend Testing", items: ["Forms and validation", "Navigation and links", "Search and filters"] },
+  { logo: <Postman />, tool: "Postman", title: "Backend Testing (API)", items: ["Request and response", "Status codes", "Error handling"] },
+  { logo: <Excel />, tool: "Excel", title: "Bug Reporting", items: ["Steps to reproduce", "Expected vs. actual", "Severity, evidence"] },
 ];
 
 /** Dark band of five skill cards, each with an initials badge and a short check list. */
 export function SkillsBand() {
   return (
     <section className="bg-[#141414] py-20 text-white sm:py-28" aria-labelledby="skills-title">
-      <div className="container-x">
+      <div className="mx-auto max-w-[1600px] px-5 sm:px-10">
         <Reveal>
           <p className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-wider text-white/60">
             <span className="size-2 rounded-full bg-lime" /> By skill
           </p>
         </Reveal>
         <SplitText id="skills-title" className="h-section mt-4 max-w-[760px] text-balance" parts={[{ text: "Skills you'll practice." }]} />
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      </div>
+      <div className="mx-auto mt-12 max-w-[1600px] px-5 sm:px-10">
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {skills.map((s, i) => (
             <li key={s.title}>
-              <Reveal delay={i * 70} className="h-full">
+              <Reveal delay={i * 70} className="h-full lg:aspect-[365/392]">
                 <article className="flex h-full flex-col rounded-[32px] border border-white/[0.07] bg-[#262626] p-6">
                   <span role="img" aria-label={`${s.tool} logo`} className="block size-[56px] overflow-hidden rounded-full">{s.logo}</span>
-                  <h3 className="mt-6 min-h-[3.2rem] text-[1.25rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
-                  <ul className="mt-4 grid gap-3">
+                  <h3 className="mt-6 text-[1.15rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
+                  <ul className="mt-4 grid gap-2.5">
                     {s.items.map((it) => (
-                      <li key={it} className="flex items-start gap-2.5 text-[15px] leading-snug text-white/70">
+                      <li key={it} className="flex items-start gap-2.5 text-[14px] leading-snug text-white/70">
                         <Check className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={2.6} aria-hidden />
                         {it}
                       </li>
