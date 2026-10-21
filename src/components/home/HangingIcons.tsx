@@ -41,7 +41,7 @@ interface Rope {
   seg: number;
   gx: number; // gravity direction, tilted so the rope rests at its own angle
   gy: number;
-  grab: { dx: number; dy: number } | null;
+  grab: { idx: number; dx: number; dy: number } | null; // which rope point is held, and the offset from the pointer
   asleep: number; // consecutive calm frames
 }
 
@@ -81,6 +81,7 @@ export function HangingIcons() {
   const sizeRef = useRef(size);
   sizeRef.current = size;
   const paths = useRef<(SVGPathElement | null)[]>([]);
+  const hits = useRef<(SVGPathElement | null)[]>([]);
   const tiles = useRef<(HTMLSpanElement | null)[]>([]);
   const ropes = useRef<Rope[]>([]);
   const raf = useRef(0);
@@ -90,7 +91,9 @@ export function HangingIcons() {
   const paint = () => {
     ropes.current.forEach((r, i) => {
       const n = r.x.length - 1;
-      paths.current[i]?.setAttribute("d", ropePath(r));
+      const d = ropePath(r);
+      paths.current[i]?.setAttribute("d", d);
+      hits.current[i]?.setAttribute("d", d);
       const dx = r.x[n] - r.x[n - 2];
       const dy = r.y[n] - r.y[n - 2];
       const deg = (Math.atan2(-dx, Math.max(1, dy)) * 180) / Math.PI;
@@ -103,7 +106,7 @@ export function HangingIcons() {
     const n = r.x.length;
     const g = GRAVITY * dt * dt;
     for (let i = 1; i < n; i++) {
-      if (i === n - 1 && r.grab) continue; // the held end is driven by the pointer
+      if (r.grab && i === r.grab.idx) continue; // the held point is driven by the pointer
       const vx = (r.x[i] - r.px[i]) * DAMPING;
       const vy = (r.y[i] - r.py[i]) * DAMPING;
       r.px[i] = r.x[i];
@@ -120,8 +123,8 @@ export function HangingIcons() {
         const dy = r.y[i + 1] - r.y[i];
         const dist = Math.hypot(dx, dy) || 0.0001;
         const diff = (dist - r.seg) / dist;
-        const pinA = i === 0;
-        const pinB = i + 1 === n - 1 && !!r.grab;
+        const pinA = i === 0 || (!!r.grab && r.grab.idx === i);
+        const pinB = !!r.grab && r.grab.idx === i + 1;
         if (pinA && pinB) continue;
         const wa = pinA ? 0 : pinB ? 1 : 0.5;
         const wb = pinB ? 0 : pinA ? 1 : 0.5;
@@ -188,37 +191,47 @@ export function HangingIcons() {
     return { x: e.clientX - b.left, y: e.clientY - b.top };
   };
 
-  const onDown = (i: number) => (e: React.PointerEvent<HTMLSpanElement>) => {
+  /** Start holding rope `i` at point `idx` (the tile end is the last point; any other point grabs the rope itself). */
+  const begin = (i: number, idx: number | null, e: React.PointerEvent<Element>) => {
     const r = ropes.current[i];
     if (!r) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     const p = toLocal(e);
-    const n = r.x.length - 1;
-    r.grab = { dx: r.x[n] - p.x, dy: r.y[n] - p.y }; // keep the spot you grabbed under the cursor
+    let g = idx ?? r.x.length - 1;
+    if (idx === null) g = r.x.length - 1;
+    else {
+      let best = Infinity;
+      for (let k = 1; k < r.x.length; k++) {
+        const d = Math.hypot(r.x[k] - p.x, r.y[k] - p.y);
+        if (d < best) {
+          best = d;
+          g = k;
+        }
+      }
+    }
+    r.grab = { idx: g, dx: r.x[g] - p.x, dy: r.y[g] - p.y }; // keep the grabbed spot under the cursor
     wake();
   };
 
-  const onMove = (i: number) => (e: React.PointerEvent<HTMLSpanElement>) => {
+  const onMove = (i: number) => (e: React.PointerEvent<Element>) => {
     const r = ropes.current[i];
     if (!r?.grab) return;
     const p = toLocal(e);
-    const n = r.x.length - 1;
+    const g = r.grab.idx;
     let tx = p.x + r.grab.dx - r.ax;
     let ty = p.y + r.grab.dy;
-    const max = r.seg * SEGMENTS; // can't pull the rope longer than it is
+    const max = r.seg * g; // a held point can't be pulled further than the rope above it is long
     const d = Math.hypot(tx, ty);
     if (d > max) {
       tx = (tx / d) * max;
       ty = (ty / d) * max;
     }
-    r.x[n] = r.ax + tx;
-    r.y[n] = ty;
-    r.px[n] = r.x[n];
-    r.py[n] = r.y[n];
+    r.x[g] = r.px[g] = r.ax + tx;
+    r.y[g] = r.py[g] = ty;
   };
 
-  const onUp = (i: number) => (e: React.PointerEvent<HTMLSpanElement>) => {
+  const onUp = (i: number) => (e: React.PointerEvent<Element>) => {
     const r = ropes.current[i];
     if (!r?.grab) return;
     r.grab = null;
@@ -230,14 +243,29 @@ export function HangingIcons() {
     <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[760px]">
       <svg className="absolute inset-0 h-full w-full overflow-visible" fill="none">
         {hangs.map((_, i) => (
-          <path key={i} ref={(el) => { paths.current[i] = el; }} stroke="#9b9b9b" strokeWidth="1.6" strokeLinecap="round" />
+          <g key={i}>
+            <path ref={(el) => { paths.current[i] = el; }} stroke="#9b9b9b" strokeWidth="1.6" strokeLinecap="round" />
+            {/* invisible wide copy of the rope so it is easy to grab anywhere along its length */}
+            <path
+              ref={(el) => { hits.current[i] = el; }}
+              stroke="transparent"
+              strokeWidth="28"
+              strokeLinecap="round"
+              className="pointer-events-auto cursor-grab touch-none active:cursor-grabbing"
+              style={{ pointerEvents: "stroke" }}
+              onPointerDown={(e) => begin(i, 0, e)}
+              onPointerMove={onMove(i)}
+              onPointerUp={onUp(i)}
+              onPointerCancel={onUp(i)}
+            />
+          </g>
         ))}
       </svg>
       {hangs.map((h, i) => (
         <span
           key={i}
           ref={(el) => { tiles.current[i] = el; }}
-          onPointerDown={onDown(i)}
+          onPointerDown={(e) => begin(i, null, e)}
           onPointerMove={onMove(i)}
           onPointerUp={onUp(i)}
           onPointerCancel={onUp(i)}
