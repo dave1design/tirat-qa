@@ -1,111 +1,160 @@
-import { Layers, Check, CircleAlert, Image as ImageIcon } from "lucide-react";
+"use client";
+
+import { useState, type ReactNode } from "react";
+import { Bug, Layers, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SplitText } from "@/components/ui/SplitText";
-import { SectionTag } from "@/components/ui/SectionTag";
 import { Reveal } from "@/components/ui/Reveal";
+import { SectionTag } from "@/components/ui/SectionTag";
+import { SplitText } from "@/components/ui/SplitText";
 
-const found = ["Unexpected behavior", "Functional issue", "Usability problem", "Validation gap", "Navigation issue", "Display problem", "Edge case"];
+/* ── Card mockups (styled after the reference's "Every Flow" cards) ── */
 
-/** Auto-scrolling findings list, faded top and bottom. */
-function FindBugsArt() {
-  const rows = [...found, ...found];
+const findings = [
+  { name: "Login form", value: "Critical", tone: "text-bad" },
+  { name: "Registration", value: "Medium", tone: "text-muted" },
+  { name: "Valid finding", value: "+10 pts", tone: "text-ok" },
+  { name: "Search results", value: "Low", tone: "text-muted" },
+  { name: "Checkout total", value: "High", tone: "text-muted" },
+  { name: "Navigation menu", value: "+10 pts", tone: "text-ok" },
+];
+
+/** Findings list whose rows fade out toward the bottom; rows nudge right on hover. */
+function FindingsList() {
   return (
-    <div className="relative h-[210px] overflow-hidden [mask-image:linear-gradient(180deg,transparent,#000_22%,#000_78%,transparent)]">
-      <ul className="animate-scroll-up">
-        {rows.map((l, i) => (
-          <li key={i} className="flex items-center justify-between gap-2 border-b border-line py-3 text-[15px]">
-            <span className="font-medium">{l}</span>
-            <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", i % 4 === 3 ? "bg-chip text-muted" : "bg-ok-soft text-ok")}>{i % 4 === 3 ? "Keep looking" : "Found"}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className="mt-auto">
+      {findings.map((f, i) => (
+        <li
+          key={f.name}
+          className="flex items-center justify-between border-b border-line py-[11px] text-[15px] transition-transform duration-300 last:border-0 group-hover/card:translate-x-1"
+          style={{ opacity: Math.max(0.18, 1 - Math.max(0, i - 2) * 0.24), transitionDelay: `${i * 40}ms` }}
+        >
+          <span className={i < 3 ? "font-medium" : ""}>{f.name}</span>
+          <span className={cn("text-[13px]", f.tone)}>{f.value}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
-/** A report card with a typing caret and a second card peeking behind it. */
-function ReportArt() {
+/** A single report card with two ghost cards stacked beneath it, like the reference's bank-account card. */
+function ReportStack() {
   return (
-    <div className="relative pt-4">
-      <span className="absolute inset-x-4 top-0 h-10 rounded-t-2xl bg-white/70 shadow-soft" />
-      <div className="relative animate-float rounded-2xl bg-white p-4 shadow-float">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-faint">Bug title</p>
-        <p className="mt-0.5 flex items-center text-sm font-medium">
-          Form accepts an invalid email
-          <span className="ml-0.5 inline-block h-4 w-px animate-pulse bg-ink" />
-        </p>
-        <div className="my-3 h-px bg-line" />
-        {["Steps to reproduce", "Expected result", "Actual result"].map((l, i) => (
-          <div key={l} className="mb-2.5 last:mb-0">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-faint">{l}</p>
-            <div className="mt-1.5 h-2 rounded-full bg-chip" style={{ width: `${[78, 64, 52][i]}%` }} />
+    <div className="relative mt-auto mb-8">
+      <span className="absolute inset-x-6 -bottom-6 h-10 rounded-2xl bg-[#ececec]" />
+      <span className="absolute inset-x-3 -bottom-3 h-10 rounded-2xl bg-[#f1f1f1] shadow-soft" />
+      <div className="relative rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)] transition-transform duration-500 group-hover/card:-translate-y-2">
+        <div className="flex items-center gap-3">
+          <span className="flex size-9 items-center justify-center rounded-full bg-ink text-white">
+            <Bug className="size-4" aria-hidden />
+          </span>
+          <div>
+            <p className="text-[15px] font-medium leading-tight">Bug report</p>
+            <p className="font-mono text-[11px] text-faint">•••• TQ-4F21</p>
           </div>
-        ))}
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-muted">
-          <ImageIcon className="size-3.5" aria-hidden /> Screenshot attached
         </div>
+        <p className="mt-5 text-[19px] font-medium leading-snug tracking-[-0.02em]">Form accepts an invalid email</p>
+        <p className="mt-4 flex items-center gap-1.5 text-[13px] text-muted">
+          <span className="size-1.5 rounded-full bg-ok" /> Submitted just now
+        </p>
       </div>
     </div>
   );
 }
 
-/** Three result cards fanned out; they spread wider on hover. */
-function FeedbackArt() {
-  const cards = [
-    { t: "Valid finding", d: "Clear steps and expected result", tone: "bg-ok-soft text-ok", icon: Check, cls: "-rotate-[7deg] group-hover/art:-translate-x-3 group-hover/art:-rotate-[11deg]" },
-    { t: "Duplicate", d: "Already reported earlier", tone: "bg-[#fff4e5] text-warn", icon: CircleAlert, cls: "translate-y-3 group-hover/art:translate-y-4" },
-    { t: "Missed finding", d: "Topic: form validation", tone: "bg-bad-soft text-bad", icon: CircleAlert, cls: "rotate-[7deg] translate-y-7 group-hover/art:translate-x-3 group-hover/art:rotate-[11deg] group-hover/art:translate-y-8" },
-  ];
+const fan = [
+  { label: "Missed", bg: "bg-lime", ink: "text-ink", rest: "translate-x-[34px] -translate-y-[54px] rotate-[14deg]", hover: "group-hover/card:translate-x-[48px] group-hover/card:-translate-y-[64px] group-hover/card:rotate-[20deg]" },
+  { label: "Duplicate", bg: "bg-brand", ink: "text-white", rest: "-translate-x-[24px] -translate-y-[18px] -rotate-[6deg]", hover: "group-hover/card:-translate-x-[38px] group-hover/card:-translate-y-[24px] group-hover/card:-rotate-[12deg]" },
+  { label: "Valid", bg: "bg-[#141414]", ink: "text-white", rest: "translate-x-[10px] translate-y-[14px] rotate-[3deg]", hover: "group-hover/card:translate-y-[4px] group-hover/card:rotate-0" },
+];
+
+/** Three result "cards" fanned like the reference's smart cards; they spread further on hover. */
+function ResultFan() {
   return (
-    <div className="group/art relative h-[210px]">
-      {cards.map((c, i) => (
+    <div className="relative mt-auto mb-10 h-[170px]">
+      {fan.map((c) => (
         <div
-          key={c.t}
-          className={cn("absolute inset-x-1 flex items-center gap-2.5 rounded-2xl bg-white p-3 shadow-float transition-transform duration-500 ease-out", c.cls)}
-          style={{ top: i * 12, zIndex: i }}
+          key={c.label}
+          className={cn(
+            "absolute left-1/2 top-1/2 -ml-[95px] -mt-[60px] h-[120px] w-[190px] rounded-2xl p-3.5 shadow-[0_14px_30px_-10px_rgba(0,0,0,0.35)] transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)]",
+            c.bg,
+            c.ink,
+            c.rest,
+            c.hover,
+          )}
         >
-          <span className={cn("flex size-7 items-center justify-center rounded-full", c.tone)}>
-            <c.icon className="size-4" aria-hidden />
-          </span>
-          <div className="text-sm">
-            <p className="font-medium">{c.t}</p>
-            <p className="text-xs text-muted">{c.d}</p>
+          <div className="flex items-start justify-between">
+            <span className="text-[17px] font-semibold tracking-[-0.04em]">tirat</span>
+            <span className={cn("flex size-5 items-center justify-center rounded-full border-[1.5px]", c.ink === "text-ink" ? "border-ink/60" : "border-white/70")}>
+              <span className={cn("size-1.5 rounded-full", c.ink === "text-ink" ? "bg-ink/70" : "bg-white/80")} />
+            </span>
           </div>
+          <span className={cn("absolute bottom-3.5 left-3.5 h-4 w-6 rounded-[5px]", c.ink === "text-ink" ? "bg-ink/15" : "bg-white/85")} />
+          <span className="absolute bottom-3 right-3.5 text-[12px] font-semibold tracking-wide">{c.label}</span>
         </div>
       ))}
     </div>
   );
 }
 
-/** Bar chart whose bars keep growing and shrinking out of phase. */
-function ProgressArt() {
-  const bars = [35, 55, 42, 70, 52, 85, 64, 95, 72, 100];
+/** Chart card that bleeds off the right edge, bars growing in turn. */
+function ProgressChart() {
+  const bars = [32, 40, 36, 52, 46, 62, 70, 78, 92];
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-soft">
-      <div className="flex h-[120px] items-end gap-1.5">
+    <div className="mt-auto mb-8 -mr-10 rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)]">
+      <p className="text-[12px] text-muted">
+        Practice progress <span aria-hidden>·</span> Level 01
+      </p>
+      <p className="mt-1 text-[20px] font-medium tracking-[-0.03em]">+3 completed</p>
+      <div className="mt-5 flex h-[110px] items-end gap-2">
         {bars.map((h, i) => (
           <span
             key={i}
-            className={cn("block flex-1 origin-bottom animate-bar rounded-md", i > 6 ? "bg-brand/30" : "bg-brand")}
-            style={{ height: `${h}%`, animationDelay: `${i * 0.18}s`, animationDuration: `${2.2 + (i % 3) * 0.5}s` }}
+            className={cn("block w-7 shrink-0 origin-bottom animate-bar rounded-[4px]", i > 5 ? "bg-brand/30" : "bg-brand")}
+            style={{ height: `${h}%`, animationDelay: `${i * 0.15}s`, animationDuration: `${2.4 + (i % 3) * 0.4}s` }}
           />
         ))}
-      </div>
-      <div className="mt-3 flex justify-between text-xs font-medium text-muted">
-        <span>Not Started</span>
-        <span>In Progress</span>
-        <span>Completed</span>
       </div>
     </div>
   );
 }
 
-const items = [
-  { title: "Find Bugs with Confidence", text: "Explore practice websites and learn to recognize unexpected behavior, functional issues, and usability problems.", art: <FindBugsArt /> },
-  { title: "Write Better Bug Reports", text: "Learn to describe issues clearly with reproduction steps, expected results, actual results, and supporting evidence.", art: <ReportArt /> },
-  { title: "Learn Through Feedback", text: "Review your submitted reports, understand what you missed, and discover how to improve your testing approach.", art: <FeedbackArt /> },
-  { title: "Track Your Progress", text: "Follow your completed challenges, review your results, and see how your practical testing skills develop over time.", art: <ProgressArt /> },
+const items: { kicker: string; title: string; text: string; art: ReactNode; offset: string }[] = [
+  { kicker: "Find bugs with", title: "Confidence", text: "Explore practice websites and learn to recognize unexpected behavior, functional issues, and usability problems.", art: <FindingsList />, offset: "" },
+  { kicker: "Write better", title: "Bug Reports", text: "Learn to describe issues clearly with reproduction steps, expected results, actual results, and supporting evidence.", art: <ReportStack />, offset: "lg:mt-1" },
+  { kicker: "Learn through", title: "Feedback", text: "Review your submitted reports, understand what you missed, and discover how to improve your testing approach.", art: <ResultFan />, offset: "lg:mt-2.5" },
+  { kicker: "Track your", title: "Progress", text: "Follow your completed challenges, review your results, and see how your practical testing skills develop over time.", art: <ProgressChart />, offset: "lg:mt-5" },
 ];
+
+function BenefitCard({ kicker, title, text, art }: { kicker: string; title: string; text: string; art: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <article className="group/card relative flex h-[460px] flex-col overflow-hidden rounded-[32px] bg-card px-6 pt-7 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
+      <p className="text-[13px] text-muted">{kicker}</p>
+      <h3 className="mt-1 text-[1.9rem] font-medium leading-tight tracking-[-0.035em]">{title}</h3>
+      {art}
+
+      {/* description panel, revealed by the + button */}
+      <div
+        className={cn(
+          "absolute inset-x-3 bottom-3 rounded-[24px] bg-white p-5 pr-14 shadow-float transition-[opacity,transform] duration-400",
+          open ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
+        )}
+        aria-hidden={!open}
+      >
+        <p className="text-[15px] leading-relaxed text-ink-2">{text}</p>
+      </div>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={open ? `Hide details about ${kicker} ${title}` : `Show details about ${kicker} ${title}`}
+        className="absolute bottom-5 right-5 flex size-10 items-center justify-center rounded-full bg-white shadow-soft transition-transform duration-300 hover:scale-110"
+      >
+        <Plus className={cn("size-4 transition-transform duration-300", open && "rotate-45")} aria-hidden />
+      </button>
+    </article>
+  );
+}
 
 export function Benefits() {
   return (
@@ -113,16 +162,12 @@ export function Benefits() {
       <div className="container-x">
         <Reveal className="flex flex-col items-center text-center">
           <SectionTag index="1" icon={Layers} label="Why Tirat QA" />
-          <SplitText id="benefits-title" className="h-section mt-6 max-w-[760px] text-balance" parts={[{ text: "Build Skills That Go Beyond Theory." }]} />
         </Reveal>
+        <SplitText id="benefits-title" className="h-section mx-auto mt-6 max-w-[760px] text-balance text-center" parts={[{ text: "Build Skills That Go Beyond Theory." }]} />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((it, i) => (
-            <Reveal key={it.title} delay={i * 80} className={i % 2 === 1 ? "lg:mt-3" : ""}>
-              <article className="flex h-full min-h-[440px] flex-col rounded-[32px] bg-card p-6 transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
-                <h3 className="h-card !text-[1.45rem]">{it.title}</h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-muted">{it.text}</p>
-                <div className="mt-auto pt-8">{it.art}</div>
-              </article>
+            <Reveal key={it.title} delay={i * 90} className={it.offset}>
+              <BenefitCard kicker={it.kicker} title={it.title} text={it.text} art={it.art} />
             </Reveal>
           ))}
         </div>
