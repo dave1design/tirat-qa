@@ -1,19 +1,9 @@
-import { BookOpen, Check, ChevronRight, ClipboardList, FileText, Flag, HelpCircle, Layers, ListChecks, MessageSquareText, Search, Target, Trophy, Type } from "lucide-react";
-import type { CSSProperties } from "react";
+import { Check, ChevronRight, ClipboardList, FileText, Flag, Layers, Search, Target, Trophy } from "lucide-react";
+import { NoteCards } from "./NoteCards";
 import { Reveal } from "@/components/ui/Reveal";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 
 type Icon = typeof Check;
-
-/** Left panel: long note cards at steep angles that keep rocking slowly (angle = --a, left/top in %). */
-const scattered: { t: string; d: string; icon: Icon; tone: Tone; a: number; x: number; y: number; w: number; delay: number }[] = [
-  { t: "Definitions", d: "Read once, easy to forget", icon: FileText, tone: "green", a: 84, x: 38, y: 12, w: 300, delay: 0 },
-  { t: "Concepts", d: "Hard to apply without practice", icon: Search, tone: "orange", a: -16, x: 50, y: 22, w: 300, delay: -1.2 },
-  { t: "Notes", d: "Where do I start testing?", icon: MessageSquareText, tone: "violet", a: 78, x: 20, y: 26, w: 300, delay: -3.1 },
-  { t: "Lessons", d: "Watched, never practiced", icon: BookOpen, tone: "lime", a: 38, x: 14, y: 60, w: 320, delay: -4.2 },
-  { t: "Theory", d: "No bugs found yet", icon: Target, tone: "gray", a: 30, x: 50, y: 66, w: 300, delay: -2 },
-  { t: "Checklist", d: "Never tried on a real website", icon: ListChecks, tone: "orange", a: -12, x: 34, y: 46, w: 320, delay: -5 },
-];
 
 const flow: { icon: Icon; tone: Tone; t: string; s: string }[] = [
   { icon: Search, tone: "green", t: "Explore functionality", s: "Investigate behavior" },
@@ -47,23 +37,7 @@ export function BeforeAfter() {
                     <span className="size-2 rounded-full bg-orange" /> Theory only
                   </span>
                 </div>
-                <div className="absolute inset-x-0 bottom-20 top-14">
-                  {scattered.map((c) => (
-                    <div
-                      key={c.t}
-                      className="absolute animate-rock"
-                      style={{ left: `${c.x}%`, top: `${c.y}%`, ["--a" as string]: `${c.a}deg`, animationDelay: `${c.delay}s`, animationDuration: `${7 + (Math.abs(c.a) % 4)}s` } as CSSProperties}
-                    >
-                      <div className="flex items-center gap-3 rounded-[20px] border border-black/[0.04] bg-white p-2.5 pr-5 shadow-[0_14px_34px_-12px_rgba(0,0,0,0.25)]" style={{ width: c.w * 0.6 }}>
-                        <AppTile icon={c.icon} tone={c.tone} size={34} />
-                        <span className="min-w-0">
-                          <span className="block text-[14px] font-medium leading-tight tracking-[-0.02em]">{c.t}</span>
-                          <span className="block truncate text-[11.5px] text-muted">{c.d}</span>
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <NoteCards />
                 <p className="absolute inset-x-6 bottom-6 text-center text-[14px] text-muted">Concepts, definitions and notes — without anywhere to apply them.</p>
               </div>
 
