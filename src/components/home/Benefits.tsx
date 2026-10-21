@@ -15,7 +15,6 @@ const findings = [
   { name: "Valid finding", value: "+10 pts", tone: "text-ok" },
   { name: "Search results", value: "Low", tone: "text-muted" },
   { name: "Checkout total", value: "High", tone: "text-muted" },
-  { name: "Navigation menu", value: "+10 pts", tone: "text-ok" },
 ];
 
 /** Findings list whose rows fade out toward the bottom; rows nudge right on hover. */
@@ -25,7 +24,7 @@ function FindingsList() {
       {findings.map((f, i) => (
         <li
           key={f.name}
-          className="flex items-center justify-between border-b border-line py-[11px] text-[15px] transition-transform duration-300 last:border-0 group-hover/card:translate-x-1"
+          className="flex items-center justify-between border-b border-line py-[9px] text-[15px] transition-transform duration-300 last:border-0 group-hover/card:translate-x-1"
           style={{ opacity: Math.max(0.18, 1 - Math.max(0, i - 2) * 0.24), transitionDelay: `${i * 40}ms` }}
         >
           <span className={i < 3 ? "font-medium" : ""}>{f.name}</span>
@@ -70,7 +69,7 @@ const fan = [
 /** Three result "cards" fanned like the reference's smart cards; they spread further on hover. */
 function ResultFan() {
   return (
-    <div className="relative mt-auto mb-10 h-[170px]">
+    <div className="relative mt-auto mb-8 h-[160px]">
       {fan.map((c) => (
         <div
           key={c.label}
@@ -105,7 +104,7 @@ function ProgressChart() {
         Practice progress <span aria-hidden>·</span> Level 01
       </p>
       <p className="mt-1 text-[20px] font-medium tracking-[-0.03em]">+3 completed</p>
-      <div className="mt-5 flex h-[110px] items-end gap-2">
+      <div className="mt-4 flex h-[95px] items-end gap-2">
         {bars.map((h, i) => (
           <span
             key={i}
@@ -128,7 +127,7 @@ const items: { kicker: string; title: string; text: string; art: ReactNode; offs
 function BenefitCard({ kicker, title, text, art }: { kicker: string; title: string; text: string; art: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
-    <article className="group/card relative flex h-[460px] flex-col overflow-hidden rounded-[32px] bg-card px-6 pt-7 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
+    <article className="group/card relative flex h-[410px] flex-col overflow-hidden rounded-[32px] bg-card px-6 pt-7 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
       <p className="text-[13px] text-muted">{kicker}</p>
       <h3 className="mt-1 text-[1.9rem] font-medium leading-tight tracking-[-0.035em]">{title}</h3>
       {art}
