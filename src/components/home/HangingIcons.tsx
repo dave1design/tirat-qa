@@ -7,20 +7,21 @@ import { AppTile, type Tone } from "@/components/ui/AppTile";
 interface Hang {
   x: number; // % from left
   len: number; // rope length in px (anchor → top of tile)
-  start: number; // initial swing angle in degrees
+  tilt: number; // resting angle in degrees (+ leans right going down), from the original layout
+  start: number; // extra initial swing angle in degrees
   icon: LucideIcon;
   tone: Tone;
 }
 
 const SIZE = 60;
 const hangs: Hang[] = [
-  { x: 21, len: 410, start: -14, icon: Bug, tone: "orange" },
-  { x: 29.2, len: 237, start: 16, icon: Search, tone: "black" },
-  { x: 48.6, len: 153, start: -18, icon: ChartPie, tone: "violet" },
-  { x: 70.5, len: 240, start: 12, icon: ArrowUpRight, tone: "green" },
-  { x: 81, len: 398, start: -10, icon: ToggleRight, tone: "blue" },
-  { x: 25, len: 588, start: 9, icon: ClipboardCheck, tone: "green" },
-  { x: 74.2, len: 586, start: -9, icon: Flag, tone: "lime" },
+  { x: 20, len: 410, tilt: 2.2, start: -14, icon: Bug, tone: "orange" },
+  { x: 29.2, len: 237, tilt: 0.3, start: 16, icon: Search, tone: "black" },
+  { x: 49.7, len: 153, tilt: -6, start: -18, icon: ChartPie, tone: "violet" },
+  { x: 70.8, len: 240, tilt: -1, start: 12, icon: ArrowUpRight, tone: "green" },
+  { x: 80.2, len: 398, tilt: 1.6, start: -10, icon: ToggleRight, tone: "blue" },
+  { x: 26.7, len: 588, tilt: -2.4, start: 9, icon: ClipboardCheck, tone: "green" },
+  { x: 73.3, len: 586, tilt: 1.6, start: -9, icon: Flag, tone: "lime" },
 ];
 
 const SEGMENTS = 16;
@@ -37,14 +38,17 @@ interface Rope {
   px: Float64Array;
   py: Float64Array;
   seg: number;
+  gx: number; // gravity direction, tilted so the rope rests at its own angle
+  gy: number;
   grab: { dx: number; dy: number } | null;
   asleep: number; // consecutive calm frames
 }
 
 function makeRope(h: Hang, ax: number, swing: boolean): Rope {
   const n = SEGMENTS + 1;
-  const r: Rope = { ax, x: new Float64Array(n), y: new Float64Array(n), px: new Float64Array(n), py: new Float64Array(n), seg: h.len / SEGMENTS, grab: null, asleep: 0 };
-  const a = swing ? (h.start * Math.PI) / 180 : 0;
+  const t = (h.tilt * Math.PI) / 180;
+  const r: Rope = { ax, x: new Float64Array(n), y: new Float64Array(n), px: new Float64Array(n), py: new Float64Array(n), seg: h.len / SEGMENTS, gx: Math.sin(t), gy: Math.cos(t), grab: null, asleep: 0 };
+  const a = t + (swing ? (h.start * Math.PI) / 180 : 0);
   for (let i = 0; i < n; i++) {
     r.x[i] = r.px[i] = ax + Math.sin(a) * r.seg * i;
     r.y[i] = r.py[i] = Math.cos(a) * r.seg * i;
@@ -99,8 +103,9 @@ export function HangingIcons() {
       const vy = (r.y[i] - r.py[i]) * DAMPING;
       r.px[i] = r.x[i];
       r.py[i] = r.y[i];
-      r.x[i] += vx;
-      r.y[i] += vy + g * (i === n - 1 ? TILE_WEIGHT : 1);
+      const w = g * (i === n - 1 ? TILE_WEIGHT : 1);
+      r.x[i] += vx + r.gx * w;
+      r.y[i] += vy + r.gy * w;
     }
     r.x[0] = r.px[0] = r.ax;
     r.y[0] = r.py[0] = 0;

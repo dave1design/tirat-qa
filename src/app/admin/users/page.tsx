@@ -12,7 +12,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
   const me = await requireCapability("users");
   const sp = await searchParams;
   const users = await db.user.findMany({
-    where: sp.q ? { OR: [{ email: { contains: sp.q } }, { name: { contains: sp.q } }] } : {},
+    where: sp.q ? { OR: [{ email: { contains: sp.q, mode: "insensitive" } }, { name: { contains: sp.q, mode: "insensitive" } }] } : {},
     orderBy: { createdAt: "desc" },
     take: 100,
     select: { id: true, name: true, email: true, role: true, status: true, createdAt: true, _count: { select: { attempts: true } } },

@@ -8,7 +8,7 @@ Visual design mirrors the supplied Framer template (Switzer font, pill nav, 32px
 
 ```bash
 npm install
-cp .env.example .env      # set SESSION_SECRET (32+ chars)
+cp .env.example .env      # set DATABASE_URL (Postgres) and SESSION_SECRET (32+ chars)
 npm run setup             # prisma generate + db push + seed
 npm run dev               # http://localhost:3000
 npm test                  # 20 scoring/validation tests
@@ -40,6 +40,12 @@ Seeded accounts (password `TiratQA#2026`, dev/pilot only — change or delete be
 - **Email:** no provider yet; reset links are printed to the server log (`src/lib/mailer.ts` is the single integration point). No email verification.
 - **Payments:** no local provider integration (docs: pending provider onboarding); manual fallback only.
 - **Practice-site isolation:** sandbox apps are same-origin, client-side. In production serve them from a separate origin/sandboxed host; client-side bug logic is inspectable by nature (the *answer key* lives only in the database).
-- **SQLite** is for the pilot; switch the Prisma provider to Postgres for production. Evidence files are stored in `./storage` (use object storage when deployed).
+- **Database:** Postgres. **Evidence screenshots** are stored in `./storage` locally and are disabled on Vercel until object storage (e.g. Vercel Blob) is added.
+
+## Deploy on Vercel
+1. Create a Postgres database (Neon / Supabase / Vercel Postgres) and copy its connection string.
+2. In Vercel → Settings → Environment Variables set `DATABASE_URL`, `SESSION_SECRET` (32+ random chars) and `SITE_URL` (your domain).
+3. Once, from your machine with the same `DATABASE_URL` in `.env`: `npm run setup` (creates tables and seeds content + demo accounts).
+4. Redeploy. Every push to `main` then deploys automatically.
 - Legal pages are drafts with "to be confirmed" sections. Quizzes, certificates, variant rotation and in-app notifications are out of this MVP.
 - Session JWTs are stateless (logout clears the cookie but can't revoke a stolen token).

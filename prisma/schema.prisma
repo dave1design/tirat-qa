@@ -3,12 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 // NOTE: enum-like columns are plain strings; the allowed values live in src/lib/constants.ts.
 // JSON-ish columns (skills, keywordGroups, meta) are stored as JSON strings.
+// Works with any Postgres (Neon, Supabase, Vercel Postgres).
 
 model User {
   id               String    @id @default(cuid())

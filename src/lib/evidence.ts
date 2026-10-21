@@ -16,6 +16,7 @@ export type EvidenceResult = { ok: true; path: string } | { ok: false; error: st
 
 /** Validates by size and magic bytes (never trusts the client MIME type) and stores outside /public. */
 export async function saveEvidence(reportId: string, file: File): Promise<EvidenceResult> {
+  if (process.env.VERCEL) return { ok: false, error: "Screenshot uploads are not enabled on this deployment yet." };
   if (file.size > EVIDENCE.maxBytes) return { ok: false, error: "Screenshot must be 2 MB or smaller." };
   const buf = Buffer.from(await file.arrayBuffer());
   const mime = sniff(buf);
