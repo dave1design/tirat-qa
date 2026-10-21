@@ -4,13 +4,13 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { COMPARE_EVENT } from "./compare-events";
 
-/** The blue arrow joining the panels: shuffles the notes on the left and replays the practice flow on the right. */
+/** The blue arrow joining the panels: shuffles the notes on the left. */
 export function FlowArrow() {
   const [turns, setTurns] = useState(0);
   return (
     <button
       type="button"
-      aria-label="Shuffle the notes and replay the practice flow"
+      aria-label="Shuffle the notes"
       onClick={() => {
         setTurns((t) => t + 1);
         window.dispatchEvent(new Event(COMPARE_EVENT));
