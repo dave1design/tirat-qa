@@ -3,6 +3,8 @@ import { ClipboardList, FileSearch, GraduationCap, LayoutGrid, Lock } from "luci
 import { Button } from "@/components/ui/Button";
 import { SectionTag } from "@/components/ui/SectionTag";
 import { Reveal } from "@/components/ui/Reveal";
+import { ScrollTilt } from "@/components/ui/ScrollTilt";
+import { SplitText } from "@/components/ui/SplitText";
 import { LogoMark } from "@/components/ui/Logo";
 import { plural } from "@/lib/utils";
 
@@ -24,7 +26,7 @@ export function PracticePreview({ levels }: { levels: PreviewLevel[] }) {
       <div className="container-x grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
         <Reveal>
           <SectionTag index="3" icon={LayoutGrid} iconClass="text-green" label="Put Your Skills to the Test" />
-          <h2 id="lab-title" className="h-section mt-6 text-balance">Real Practice. Better Testers.</h2>
+          <SplitText id="lab-title" className="h-section mt-6 text-balance" parts={[{ text: "Real Practice. Better Testers." }]} />
           <p className="lead mt-6 max-w-[460px]">
             Explore practice websites designed to help you develop your software testing skills through hands-on challenges.
           </p>
@@ -36,7 +38,7 @@ export function PracticePreview({ levels }: { levels: PreviewLevel[] }) {
           </div>
         </Reveal>
 
-        <Reveal delay={120} className="lg:-mr-24">
+        <ScrollTilt className="lg:-mr-24">
           <div className="grid overflow-hidden rounded-[36px] bg-[#141414] text-white shadow-[0_40px_80px_-20px_rgba(0,0,0,0.35)] sm:grid-cols-[210px_1fr]">
             <aside className="hidden flex-col border-r border-white/10 p-4 sm:flex">
               <div className="flex items-center gap-2.5 p-2">
@@ -64,9 +66,10 @@ export function PracticePreview({ levels }: { levels: PreviewLevel[] }) {
                     <Link
                       key={l.slug}
                       href={`/practice-lab/${l.slug}`}
-                      className="group block overflow-hidden rounded-3xl bg-white/[0.06] transition-colors hover:bg-white/10"
+                      className="group block overflow-hidden rounded-3xl bg-white/[0.06] transition-[background,transform] duration-300 hover:-translate-y-1 hover:bg-white/10"
                     >
-                      <div className={`relative h-36 bg-gradient-to-br ${gradients[i % gradients.length]}`}>
+                      <div className={`relative h-36 overflow-hidden bg-gradient-to-br ${gradients[i % gradients.length]}`}>
+                        <span className="absolute -right-10 -top-10 size-44 animate-float rounded-full bg-white/20 blur-2xl" />
                         <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-ink">
                           Level {String(l.number).padStart(2, "0")} <span className="text-muted">{l.difficulty}</span>
                         </span>
@@ -90,7 +93,7 @@ export function PracticePreview({ levels }: { levels: PreviewLevel[] }) {
               )}
             </div>
           </div>
-        </Reveal>
+        </ScrollTilt>
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import { SectionTag } from "@/components/ui/SectionTag";
 import { LogoMark } from "@/components/ui/Logo";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 import { Reveal } from "@/components/ui/Reveal";
+import { SplitText } from "@/components/ui/SplitText";
 import { Rocket } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -64,7 +65,7 @@ export function FinalCta({
       <div className="mx-auto grid max-w-[1136px] items-center gap-10 overflow-hidden rounded-[32px] bg-white px-7 py-12 shadow-soft sm:px-12 sm:py-16 md:grid-cols-[1.2fr_1fr]">
         <Reveal>
           <SectionTag index="6" icon={Rocket} label={label} />
-          <h2 id="cta-title" className="h-section mt-6 max-w-[520px] text-balance">{title}</h2>
+          <SplitText id="cta-title" className="h-section mt-6 max-w-[520px] text-balance" parts={[{ text: title }]} />
           <p className="lead mt-5 max-w-[500px]">{text}</p>
           <div className="mt-8 flex flex-wrap gap-2.5">
             <Button href={primary.href}>{primary.label}</Button>

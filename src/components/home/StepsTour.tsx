@@ -94,6 +94,15 @@ export function StepsTour() {
         if (el && el.getBoundingClientRect().top <= mid) idx = i;
       });
       setActive(idx);
+      refs.current.forEach((el, i) => {
+        const next = refs.current[i + 1];
+        if (!el || !next) return;
+        const a = el.getBoundingClientRect();
+        const n = next.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, 1 - (n.top - a.top) / Math.max(1, a.height)));
+        el.style.transform = `translateY(${-p * 14}px) scale(${1 - p * 0.06})`;
+        el.style.opacity = String(1 - p * 0.25);
+      });
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -130,7 +139,7 @@ export function StepsTour() {
             id={`step-${p.n}`}
             ref={(el) => { refs.current[i] = el; }}
             style={{ zIndex: i + 1 }}
-            className="sticky top-24 mb-6 scroll-mt-28 rounded-[36px] border border-line bg-card p-6 shadow-soft sm:p-8 lg:mb-10"
+            className="sticky top-24 mb-6 origin-top scroll-mt-28 rounded-[36px] border border-line bg-card p-6 shadow-soft sm:p-8 lg:mb-10"
           >
             <div className="flex items-center gap-4">
               <AppTile icon={p.icon} tone={p.tone} size={48} />

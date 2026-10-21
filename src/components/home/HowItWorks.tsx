@@ -1,6 +1,7 @@
 import { Compass } from "lucide-react";
 import { SectionTag } from "@/components/ui/SectionTag";
 import { Reveal } from "@/components/ui/Reveal";
+import { SplitText } from "@/components/ui/SplitText";
 import { StepsTour } from "./StepsTour";
 
 export function HowItWorks() {
@@ -9,7 +10,7 @@ export function HowItWorks() {
       <div className="container-x">
         <Reveal className="mx-auto flex max-w-[720px] flex-col items-center text-center">
           <SectionTag index="2" icon={Compass} label="Your Practice Journey" />
-          <h2 id="how-title" className="h-section mt-6 text-balance">Four Steps to Better Testing.</h2>
+          <SplitText id="how-title" className="h-section mt-6 text-balance" parts={[{ text: "Four Steps to Better Testing." }]} />
         </Reveal>
         <div className="mt-14">
           <StepsTour />

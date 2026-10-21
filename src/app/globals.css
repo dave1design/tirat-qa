@@ -61,6 +61,10 @@
   --animate-float: float 7s ease-in-out infinite;
   --animate-marquee: marquee 50s linear infinite;
   --animate-orbit: orbit 40s linear infinite;
+  --animate-marquee-rev: marquee-rev 55s linear infinite;
+  --animate-scroll-up: scroll-up 16s linear infinite;
+  --animate-bar: bar 2.6s ease-in-out infinite alternate;
+  --animate-pop: pop 3.2s ease-in-out infinite;
 }
 
 @keyframes sway {
@@ -73,7 +77,23 @@
 }
 @keyframes marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(calc(-50% - 8px)); }
+  to { transform: translateX(calc(-50% - 6px)); }
+}
+@keyframes marquee-rev {
+  from { transform: translateX(calc(-50% - 6px)); }
+  to { transform: translateX(0); }
+}
+@keyframes scroll-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+@keyframes bar {
+  from { transform: scaleY(0.25); }
+  to { transform: scaleY(1); }
+}
+@keyframes pop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
 }
 @keyframes orbit {
   to { transform: rotate(360deg); }

@@ -6,6 +6,7 @@ import { Benefits } from "@/components/home/Benefits";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { PracticePreview } from "@/components/home/PracticePreview";
 import { LearnPreview } from "@/components/home/LearnPreview";
+import { SkillsMarquee } from "@/components/home/SkillsMarquee";
 import { Audience } from "@/components/home/Audience";
 import { FinalCta } from "@/components/home/FinalCta";
 
@@ -28,6 +29,7 @@ export default async function HomePage() {
       <Hero />
       <Intro />
       <Benefits />
+      <SkillsMarquee />
       <HowItWorks />
       <PracticePreview
         levels={levels
