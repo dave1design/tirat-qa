@@ -1,20 +1,9 @@
-import { Bug, ClipboardCheck, ChartPie, Search, BadgeCheck, BookOpen, Compass, FileText, Rocket } from "lucide-react";
+import { BadgeCheck, BookOpen, Compass, FileText, Rocket } from "lucide-react";
 import { HangingIcons } from "./HangingIcons";
 import { Button } from "@/components/ui/Button";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 import { Reveal } from "@/components/ui/Reveal";
 import type { LucideIcon } from "lucide-react";
-
-function MobileIcons() {
-  const items: [LucideIcon, Tone][] = [[Bug, "orange"], [Search, "black"], [ChartPie, "violet"], [ClipboardCheck, "green"]];
-  return (
-    <div aria-hidden className="mb-8 flex justify-center gap-3 sm:hidden">
-      {items.map(([I, t], i) => (
-        <AppTile key={i} icon={I} tone={t} size={48} />
-      ))}
-    </div>
-  );
-}
 
 const steps: { title: string; pill: string; icon: LucideIcon; tone: Tone }[] = [
   { title: "Learn", pill: "Free guides and resources", icon: BookOpen, tone: "blue" },
@@ -50,10 +39,9 @@ function StepCards() {
 
 export function Hero() {
   return (
-    <section className="hero-bg relative overflow-hidden pb-24 pt-32 sm:pb-28 sm:pt-[260px]">
+    <section className="hero-bg relative overflow-hidden pb-24 pt-[310px] sm:pb-28 sm:pt-[260px]">
       <HangingIcons />
       <div className="container-x relative">
-        <MobileIcons />
         <div className="mx-auto flex max-w-[860px] flex-col items-center text-center">
           <Reveal>
             <div className="inline-flex items-center gap-1.5 text-sm font-medium">

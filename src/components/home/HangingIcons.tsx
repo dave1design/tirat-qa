@@ -1,27 +1,28 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Bug, ChartPie, ClipboardCheck, Flag, Search, ToggleRight, type LucideIcon } from "lucide-react";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 
 interface Hang {
   x: number; // % from left
   len: number; // rope length in px (anchor → top of tile)
+  mx: number; // x % on phones
+  mlen: number; // rope length on phones
   tilt: number; // resting angle in degrees (+ leans right going down), from the original layout
   start: number; // extra initial swing angle in degrees
   icon: LucideIcon;
   tone: Tone;
 }
 
-const SIZE = 60;
 const hangs: Hang[] = [
-  { x: 20, len: 410, tilt: 2.2, start: -14, icon: Bug, tone: "orange" },
-  { x: 29.2, len: 237, tilt: 0.3, start: 16, icon: Search, tone: "black" },
-  { x: 49.7, len: 153, tilt: -6, start: -18, icon: ChartPie, tone: "violet" },
-  { x: 70.8, len: 240, tilt: -1, start: 12, icon: ArrowUpRight, tone: "green" },
-  { x: 80.2, len: 398, tilt: 1.6, start: -10, icon: ToggleRight, tone: "blue" },
-  { x: 26.7, len: 588, tilt: -2.4, start: 9, icon: ClipboardCheck, tone: "green" },
-  { x: 73.3, len: 586, tilt: 1.6, start: -9, icon: Flag, tone: "lime" },
+  { x: 20, len: 410, mx: 12, mlen: 170, tilt: 2.2, start: -14, icon: Bug, tone: "orange" },
+  { x: 29.2, len: 237, mx: 30, mlen: 110, tilt: 0.3, start: 16, icon: Search, tone: "black" },
+  { x: 49.7, len: 153, mx: 50, mlen: 80, tilt: -6, start: -18, icon: ChartPie, tone: "violet" },
+  { x: 70.8, len: 240, mx: 62, mlen: 130, tilt: -1, start: 12, icon: ArrowUpRight, tone: "green" },
+  { x: 80.2, len: 398, mx: 90, mlen: 165, tilt: 1.6, start: -10, icon: ToggleRight, tone: "blue" },
+  { x: 26.7, len: 588, mx: 22, mlen: 250, tilt: -2.4, start: 9, icon: ClipboardCheck, tone: "green" },
+  { x: 73.3, len: 586, mx: 76, mlen: 240, tilt: 1.6, start: -9, icon: Flag, tone: "lime" },
 ];
 
 const SEGMENTS = 16;
@@ -44,10 +45,10 @@ interface Rope {
   asleep: number; // consecutive calm frames
 }
 
-function makeRope(h: Hang, ax: number, swing: boolean): Rope {
+function makeRope(h: Hang, ax: number, swing: boolean, len: number): Rope {
   const n = SEGMENTS + 1;
   const t = (h.tilt * Math.PI) / 180;
-  const r: Rope = { ax, x: new Float64Array(n), y: new Float64Array(n), px: new Float64Array(n), py: new Float64Array(n), seg: h.len / SEGMENTS, gx: Math.sin(t), gy: Math.cos(t), grab: null, asleep: 0 };
+  const r: Rope = { ax, x: new Float64Array(n), y: new Float64Array(n), px: new Float64Array(n), py: new Float64Array(n), seg: len / SEGMENTS, gx: Math.sin(t), gy: Math.cos(t), grab: null, asleep: 0 };
   const a = t + (swing ? (h.start * Math.PI) / 180 : 0);
   for (let i = 0; i < n; i++) {
     r.x[i] = r.px[i] = ax + Math.sin(a) * r.seg * i;
@@ -75,6 +76,10 @@ function ropePath(r: Rope) {
  */
 export function HangingIcons() {
   const box = useRef<HTMLDivElement>(null);
+  const [compact, setCompact] = useState(false);
+  const size = compact ? 48 : 60;
+  const sizeRef = useRef(size);
+  sizeRef.current = size;
   const paths = useRef<(SVGPathElement | null)[]>([]);
   const tiles = useRef<(HTMLSpanElement | null)[]>([]);
   const ropes = useRef<Rope[]>([]);
@@ -90,7 +95,7 @@ export function HangingIcons() {
       const dy = r.y[n] - r.y[n - 2];
       const deg = (Math.atan2(-dx, Math.max(1, dy)) * 180) / Math.PI;
       const t = tiles.current[i];
-      if (t) t.style.transform = `translate(${r.x[n] - SIZE / 2}px, ${r.y[n]}px) rotate(${deg}deg)`;
+      if (t) t.style.transform = `translate(${r.x[n] - sizeRef.current / 2}px, ${r.y[n]}px) rotate(${deg}deg)`;
     });
   };
 
@@ -160,8 +165,10 @@ export function HangingIcons() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const init = () => {
       const w = el.offsetWidth;
-      if (w === 0) return; // hidden on small screens
-      ropes.current = hangs.map((h) => makeRope(h, (w * h.x) / 100, !reduce));
+      if (w === 0) return;
+      const small = w < 640;
+      setCompact(small);
+      ropes.current = hangs.map((h) => makeRope(h, (w * (small ? h.mx : h.x)) / 100, !reduce, small ? h.mlen : h.len));
       paint();
       wake();
     };
@@ -220,7 +227,7 @@ export function HangingIcons() {
   };
 
   return (
-    <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-20 hidden h-[760px] sm:block">
+    <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[760px]">
       <svg className="absolute inset-0 h-full w-full overflow-visible" fill="none">
         {hangs.map((_, i) => (
           <path key={i} ref={(el) => { paths.current[i] = el; }} stroke="#9b9b9b" strokeWidth="1.6" strokeLinecap="round" />
@@ -235,9 +242,9 @@ export function HangingIcons() {
           onPointerUp={onUp(i)}
           onPointerCancel={onUp(i)}
           className="pointer-events-auto absolute left-0 top-0 cursor-grab touch-none select-none will-change-transform active:cursor-grabbing"
-          style={{ transformOrigin: "50% 0", width: SIZE, transform: `translate(${-SIZE}px, 0)` }}
+          style={{ transformOrigin: "50% 0", width: size, transform: `translate(${-size}px, 0)` }}
         >
-          <AppTile icon={h.icon} tone={h.tone} size={SIZE} />
+          <AppTile icon={h.icon} tone={h.tone} size={size} />
         </span>
       ))}
     </div>
