@@ -3,11 +3,11 @@ import { SplitText } from "@/components/ui/SplitText";
 import { Check } from "lucide-react";
 
 const skills = [
-  { initials: "AU", color: "bg-lime text-ink", title: "Authentication", items: ["Form validation", "Authentication states", "Error messages"] },
-  { initials: "FO", color: "bg-[#2ee6c3] text-ink", title: "Forms", items: ["Required fields", "Format validation", "Duplicate data"] },
-  { initials: "EC", color: "bg-orange text-ink", title: "E-commerce", items: ["Search and filters", "Sorting", "Product details"] },
-  { initials: "CA", color: "bg-[#b8cfff] text-ink", title: "Cart and checkout", items: ["Quantity", "Totals", "Address validation"] },
-  { initials: "BK", color: "bg-[#e0795a] text-ink", title: "Booking", items: ["Date selection", "Validation", "Confirmation"] },
+  { initials: "RD", color: "bg-lime text-ink", title: "Read BRD & Documents", items: ["Understand requirements", "Spot gaps and ambiguity", "Turn them into test ideas"] },
+  { initials: "DS", color: "bg-[#2ee6c3] text-ink", title: "Design Testing", items: ["Layout and consistency", "Visual and spacing checks", "Usability and accessibility"] },
+  { initials: "FE", color: "bg-orange text-ink", title: "Frontend Testing", items: ["Forms and validation", "Navigation and links", "Search, filters and sorting"] },
+  { initials: "BE", color: "bg-[#b8cfff] text-ink", title: "Backend Testing (API)", items: ["Requests and responses", "Status codes", "Data and error handling"] },
+  { initials: "BR", color: "bg-[#e0795a] text-ink", title: "Bug Reporting", items: ["Steps to reproduce", "Expected vs. actual", "Severity and evidence"] },
 ];
 
 /** Dark band of five skill cards, each with an initials badge and a short check list. */
