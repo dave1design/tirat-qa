@@ -25,8 +25,12 @@ export interface NavUser {
 export function Nav({ user }: { user: NavUser | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState<string | null>(null); // highlights the clicked link immediately
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    setOpen(false);
+    setPending(null);
+  }, [pathname]);
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -34,7 +38,10 @@ export function Nav({ user }: { user: NavUser | null }) {
     };
   }, [open]);
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const isActive = (href: string) => {
+    const p = pending ?? pathname;
+    return href === "/" ? p === "/" : p.startsWith(href);
+  };
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-4">
@@ -49,6 +56,7 @@ export function Nav({ user }: { user: NavUser | null }) {
             <li key={l.href}>
               <Link
                 href={l.href}
+                onClick={() => setPending(l.href)}
                 aria-current={isActive(l.href) ? "page" : undefined}
                 className={cn(
                   "rounded-full px-3.5 py-2 text-[15px] font-medium tracking-[-0.01em] transition-colors",
@@ -103,6 +111,7 @@ export function Nav({ user }: { user: NavUser | null }) {
               <li key={l.href}>
                 <Link
                   href={l.href}
+                  onClick={() => setPending(l.href)}
                   aria-current={isActive(l.href) ? "page" : undefined}
                   className={cn("block rounded-2xl px-4 py-3.5 text-lg font-medium tracking-[-0.02em]", isActive(l.href) ? "bg-chip" : "hover:bg-card")}
                 >
