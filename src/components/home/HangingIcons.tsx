@@ -9,20 +9,19 @@ interface Hang {
   len: number; // rope length in px (anchor → top of tile)
   mx: number; // x % on phones
   mlen: number; // rope length on phones
-  tilt: number; // resting angle in degrees (+ leans right going down), from the original layout
   start: number; // extra initial swing angle in degrees
   icon: LucideIcon;
   tone: Tone;
 }
 
 const hangs: Hang[] = [
-  { x: 20, len: 410, mx: 12, mlen: 170, tilt: 2.2, start: -14, icon: Bug, tone: "orange" },
-  { x: 29.2, len: 237, mx: 30, mlen: 110, tilt: 0.3, start: 16, icon: Search, tone: "black" },
-  { x: 49.7, len: 153, mx: 50, mlen: 80, tilt: -6, start: -18, icon: ChartPie, tone: "violet" },
-  { x: 70.8, len: 240, mx: 62, mlen: 130, tilt: -1, start: 12, icon: ArrowUpRight, tone: "green" },
-  { x: 80.2, len: 398, mx: 90, mlen: 165, tilt: 1.6, start: -10, icon: ToggleRight, tone: "blue" },
-  { x: 26.7, len: 588, mx: 22, mlen: 250, tilt: -2.4, start: 9, icon: ClipboardCheck, tone: "green" },
-  { x: 73.3, len: 586, mx: 76, mlen: 240, tilt: 1.6, start: -9, icon: Flag, tone: "lime" },
+  { x: 20, len: 410, mx: 12, mlen: 170, start: -14, icon: Bug, tone: "orange" },
+  { x: 29.2, len: 237, mx: 30, mlen: 110, start: 16, icon: Search, tone: "black" },
+  { x: 49.7, len: 153, mx: 50, mlen: 80, start: -18, icon: ChartPie, tone: "violet" },
+  { x: 70.8, len: 240, mx: 62, mlen: 130, start: 12, icon: ArrowUpRight, tone: "green" },
+  { x: 80.2, len: 398, mx: 90, mlen: 165, start: -10, icon: ToggleRight, tone: "blue" },
+  { x: 26.7, len: 588, mx: 22, mlen: 250, start: 9, icon: ClipboardCheck, tone: "green" },
+  { x: 73.3, len: 586, mx: 76, mlen: 240, start: -9, icon: Flag, tone: "lime" },
 ];
 
 const SEGMENTS = 16;
@@ -39,17 +38,14 @@ interface Rope {
   px: Float64Array;
   py: Float64Array;
   seg: number;
-  gx: number; // gravity direction, tilted so the rope rests at its own angle
-  gy: number;
   grab: { idx: number; dx: number; dy: number } | null; // which rope point is held, and the offset from the pointer
   asleep: number; // consecutive calm frames
 }
 
 function makeRope(h: Hang, ax: number, swing: boolean, len: number): Rope {
   const n = SEGMENTS + 1;
-  const t = (h.tilt * Math.PI) / 180;
-  const r: Rope = { ax, x: new Float64Array(n), y: new Float64Array(n), px: new Float64Array(n), py: new Float64Array(n), seg: len / SEGMENTS, gx: Math.sin(t), gy: Math.cos(t), grab: null, asleep: 0 };
-  const a = t + (swing ? (h.start * Math.PI) / 180 : 0);
+  const r: Rope = { ax, x: new Float64Array(n), y: new Float64Array(n), px: new Float64Array(n), py: new Float64Array(n), seg: len / SEGMENTS, grab: null, asleep: 0 };
+  const a = swing ? (h.start * Math.PI) / 180 : 0;
   for (let i = 0; i < n; i++) {
     r.x[i] = r.px[i] = ax + Math.sin(a) * r.seg * i;
     r.y[i] = r.py[i] = Math.cos(a) * r.seg * i;
@@ -102,6 +98,14 @@ export function HangingIcons() {
     });
   };
 
+  /** Once a rope has stopped swinging, lay it exactly straight below its anchor. */
+  const straighten = (r: Rope) => {
+    for (let i = 1; i < r.x.length; i++) {
+      r.x[i] = r.px[i] = r.ax;
+      r.y[i] = r.py[i] = r.seg * i;
+    }
+  };
+
   const stepRope = (r: Rope, dt: number) => {
     const n = r.x.length;
     const g = GRAVITY * dt * dt;
@@ -112,8 +116,8 @@ export function HangingIcons() {
       r.px[i] = r.x[i];
       r.py[i] = r.y[i];
       const w = g * (i === n - 1 ? TILE_WEIGHT : 1);
-      r.x[i] += vx + r.gx * w;
-      r.y[i] += vy + r.gy * w;
+      r.x[i] += vx;
+      r.y[i] += vy + w;
     }
     r.x[0] = r.px[0] = r.ax;
     r.y[0] = r.py[0] = 0;
@@ -149,6 +153,7 @@ export function HangingIcons() {
       let e = 0;
       for (let i = 1; i < r.x.length; i++) e = Math.max(e, Math.abs(r.x[i] - r.px[i]) + Math.abs(r.y[i] - r.py[i]));
       r.asleep = e < 0.02 && !r.grab ? r.asleep + 1 : 0;
+      if (r.asleep === 60) straighten(r);
       if (r.asleep < 90) busy = true;
     });
     paint();
@@ -178,7 +183,17 @@ export function HangingIcons() {
     init();
     const ro = new ResizeObserver(init);
     ro.observe(el);
+    // coming back to the page (browser back, or returning to the tab): the ropes swing in again, ready to grab
+    const back = (e?: Event) => {
+      if (e?.type === "visibilitychange" && document.visibilityState !== "visible") return;
+      if (e?.type === "pageshow" && !(e as PageTransitionEvent).persisted) return;
+      init();
+    };
+    window.addEventListener("pageshow", back);
+    document.addEventListener("visibilitychange", back);
     return () => {
+      window.removeEventListener("pageshow", back);
+      document.removeEventListener("visibilitychange", back);
       ro.disconnect();
       cancelAnimationFrame(raf.current);
       raf.current = 0;
