@@ -30,8 +30,8 @@
 }
 
 @theme {
-  --font-sans: "Switzer", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Switzer", var(--font-ethiopic), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), var(--font-ethiopic), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --color-ink: #141414;
   --color-ink-2: #2b2b2b;
@@ -169,3 +169,11 @@ body {
 /* The home page's final CTA frame flows straight into the footer frame */
 main:has(> .cta-frame:last-child) + .footer-frame { margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
 .footer-frame { margin-top: 12px; }
+
+/* Amharic: the Ethiopic script needs normal letter-spacing and a little more line height than the tight Latin headings. */
+html[lang="am"] body *,
+html[lang="am"] body *::before,
+html[lang="am"] body *::after { letter-spacing: normal !important; }
+html[lang="am"] body { line-height: 1.65; }
+html[lang="am"] :is(h1, h2, h3, h4, .h-display, .h-section, .h-card) { line-height: 1.25 !important; }
+html[lang="am"] .lead { line-height: 1.7; }

@@ -6,10 +6,16 @@ import { requireUser } from "@/lib/auth";
 import { EXAM_BLUEPRINT_VERSION, examQuestions } from "@/content/exam";
 import { buildOrder, finalizeAttempt, newExpiry } from "@/lib/exam";
 import { getLevel } from "@/content/curriculum";
+import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
 
 export async function startExamAction(levelN: number) {
   const user = await requireUser(`/learn/levels/${levelN}/exam`);
-  if (!getLevel(levelN) || !examQuestions(levelN)) redirect("/learn");
+  const level = getLevel(levelN);
+  if (!level || !examQuestions(levelN)) redirect("/learn");
+
+  // the level exam opens once every lesson quiz of the level has been passed
+  const progress = await loadProgress(user.id);
+  if (!level.lessons.every((l) => isLessonPassed(progress.get(`${levelN}/${l.slug}`)))) redirect(`/learn/levels/${levelN}/exam`);
 
   const open = await db.examAttempt.findFirst({ where: { userId: user.id, levelN, status: "IN_PROGRESS" }, orderBy: { startedAt: "desc" } });
   if (open && open.expiresAt.getTime() > Date.now()) redirect(`/learn/levels/${levelN}/exam`);

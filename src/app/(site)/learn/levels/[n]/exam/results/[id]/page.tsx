@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getLevel } from "@/content/curriculum";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { EXAM_PASS_POINTS, examQuestions } from "@/content/exam";
 import { scoreResponses, type ExamOrder } from "@/lib/exam";
 import { PageTop } from "@/components/layout/SiteShell";
@@ -18,8 +19,10 @@ type Params = Promise<{ n: string; id: string }>;
 export default async function ExamResultsPage({ params }: { params: Params }) {
   const { n, id } = await params;
   const levelN = Number(n);
-  const level = getLevel(levelN);
-  const bank = examQuestions(levelN);
+  const locale = await getLocale();
+  const t = await getT();
+  const level = getLevel(levelN, locale);
+  const bank = examQuestions(levelN, locale);
   if (!level || !bank) notFound();
   const user = await requireUser(`/learn/levels/${levelN}/exam/results/${id}`);
 
@@ -42,26 +45,26 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
     <PageTop className="pb-20">
       <div className="container-x max-w-[880px]">
         <Link href={`/learn/levels/${levelN}/exam`} className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink">
-          <ChevronLeft className="size-4" aria-hidden /> Level {levelN} exam
+          <ChevronLeft className="size-4" aria-hidden /> {t("Level {n} exam", { n: levelN })}
         </Link>
 
         <div className="mt-6 rounded-[36px] bg-[#141414] p-8 text-white sm:p-10">
-          <p className="text-sm text-white/60">Level {levelN} exam · {formatDateTime(attempt.submittedAt)}</p>
+          <p className="text-sm text-white/60">{t("Level {n} exam", { n: levelN })} · {formatDateTime(attempt.submittedAt)}</p>
           <p className="mt-3 text-[clamp(3rem,9vw,5rem)] font-semibold leading-none tracking-[-0.05em]">
             {result.score}
             <span className="text-white/45">/100</span>
           </p>
           <p className={`mt-3 text-xl font-medium ${result.passed ? "text-lime" : "text-[#ff8a7a]"}`}>
-            {result.passed ? "Passed. Well done." : `Not passed yet. You need ${EXAM_PASS_POINTS} to pass.`}
+            {result.passed ? t("Passed. Well done.") : t("Not passed yet. You need {n} to pass.", { n: EXAM_PASS_POINTS })}
           </p>
-          {attempt.timedOut && <p className="mt-2 text-sm text-white/60">Time ran out and your saved answers were submitted automatically.</p>}
+          {attempt.timedOut && <p className="mt-2 text-sm text-white/60">{t("Time ran out and your saved answers were submitted automatically.")}</p>}
           <dl className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl bg-white/[0.08] p-4">
-              <dt className="text-sm text-white/60">Part A · knowledge</dt>
+              <dt className="text-sm text-white/60">{t("Part A · knowledge")}</dt>
               <dd className="mt-1 text-2xl font-semibold">{result.partA}/50</dd>
             </div>
             <div className="rounded-2xl bg-white/[0.08] p-4">
-              <dt className="text-sm text-white/60">Part B · interview scenarios</dt>
+              <dt className="text-sm text-white/60">{t("Part B · interview scenarios")}</dt>
               <dd className="mt-1 text-2xl font-semibold">{result.partB}/50</dd>
             </div>
           </dl>
@@ -69,7 +72,7 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
 
         <section className="mt-12" aria-labelledby="gaps">
           <h2 id="gaps" className="text-2xl font-semibold tracking-[-0.035em]">
-            Where to focus next
+            {t("Where to focus next")}
           </h2>
           <ul className="mt-5 grid gap-3">
             {gaps.map((g) => (
@@ -79,7 +82,7 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
                     {g.lesson.n} {g.lesson.title}
                   </p>
                   <p className="text-sm text-muted">
-                    {g.correct} of {g.total} correct
+                    {t("{done} of {total} correct", { done: g.correct, total: g.total })}
                   </p>
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-white" aria-hidden>
@@ -87,7 +90,7 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
                 </div>
                 {g.pct < 80 && (
                   <Link href={`/learn/levels/${levelN}/${g.lesson.slug}`} className="mt-3 inline-block text-sm font-medium text-brand underline underline-offset-4">
-                    Review this lesson
+                    {t("Review this lesson")}
                   </Link>
                 )}
               </li>
@@ -97,15 +100,15 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
 
         <section className="mt-12" aria-labelledby="review">
           <h2 id="review" className="text-2xl font-semibold tracking-[-0.035em]">
-            Questions to review
+            {t("Questions to review")}
           </h2>
           {review.length === 0 ? (
-            <p className="mt-4 rounded-3xl bg-ok-soft p-6 text-ink-2">You answered every question correctly.</p>
+            <p className="mt-4 rounded-3xl bg-ok-soft p-6 text-ink-2">{t("You answered every question correctly.")}</p>
           ) : (
             <ol className="mt-5 grid gap-4">
               {review.map(({ id: qid, q, chosen }) => (
                 <li key={qid} className="rounded-3xl bg-card p-5 sm:p-6">
-                  <p className="text-xs font-medium uppercase tracking-wider text-muted">{q.part === "A" ? "Part A" : "Part B · select all that apply"}</p>
+                  <p className="text-xs font-medium uppercase tracking-wider text-muted">{q.part === "A" ? t("Part A") : t("Part B · select all that apply")}</p>
                   <p className="mt-2 text-[17px] font-semibold leading-snug">{q.q}</p>
                   <ul className="mt-4 grid gap-2 text-[15px]">
                     {q.o.map((text, i) => {
@@ -117,9 +120,9 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
                           className={`rounded-xl border px-4 py-2.5 ${isKey ? "border-ok bg-ok-soft" : picked ? "border-bad bg-bad-soft" : "border-line bg-white"}`}
                         >
                           {text}
-                          {isKey && <span className="ml-2 text-xs font-semibold text-ok">Correct answer</span>}
-                          {picked && !isKey && <span className="ml-2 text-xs font-semibold text-bad">Your answer</span>}
-                          {picked && isKey && <span className="ml-2 text-xs font-semibold text-ok">You chose this</span>}
+                          {isKey && <span className="ml-2 text-xs font-semibold text-ok">{t("Correct answer")}</span>}
+                          {picked && !isKey && <span className="ml-2 text-xs font-semibold text-bad">{t("Your answer")}</span>}
+                          {picked && isKey && <span className="ml-2 text-xs font-semibold text-ok">{t("You chose this")}</span>}
                         </li>
                       );
                     })}
@@ -133,10 +136,10 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
 
         <div className="mt-12 flex flex-wrap gap-3">
           <Link href={`/learn/levels/${levelN}/exam`} className="rounded-full bg-brand px-6 py-3.5 font-medium text-white hover:bg-brand-dark">
-            {result.passed ? "Back to the exam page" : "Try again"}
+            {result.passed ? t("Back to the exam page") : t("Try again")}
           </Link>
           <Link href={`/learn/levels/${levelN}`} className="rounded-full bg-chip px-6 py-3.5 font-medium hover:bg-[#e5e5e5]">
-            Back to the level
+            {t("Back to the level")}
           </Link>
         </div>
       </div>

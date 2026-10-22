@@ -4,6 +4,7 @@ import { useEffect, useRef, type CSSProperties } from "react";
 import { BookOpen, FileText, ListChecks, MessageSquareText, Search, Target, type LucideIcon } from "lucide-react";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 import { COMPARE_EVENT } from "./compare-events";
+import { useT } from "@/lib/i18n/client";
 
 /** Resting layout: angle `a` (deg), position in % of the area, card width in px. */
 const cards: { t: string; d: string; icon: LucideIcon; tone: Tone; a: number; x: number; y: number; w: number; delay: number }[] = [
@@ -34,6 +35,7 @@ interface Drag {
  * direction you move it, and when you let go the tilt eases out while the card stays where you dropped it.
  */
 export function NoteCards() {
+  const t = useT();
   const inner = useRef<(HTMLDivElement | null)[]>([]);
   const outer = useRef<(HTMLDivElement | null)[]>([]);
   const area = useRef<HTMLDivElement>(null);
@@ -159,8 +161,8 @@ export function NoteCards() {
           >
             <AppTile icon={c.icon} tone={c.tone} size={34} />
             <span className="min-w-0">
-              <span className="block text-[14px] font-medium leading-tight tracking-[-0.02em]">{c.t}</span>
-              <span className="block truncate text-[11.5px] text-muted">{c.d}</span>
+              <span className="block text-[14px] font-medium leading-tight tracking-[-0.02em]">{t(c.t)}</span>
+              <span className="block truncate text-[11.5px] text-muted">{t(c.d)}</span>
             </span>
           </div>
         </div>

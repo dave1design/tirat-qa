@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { SectionTag } from "@/components/ui/SectionTag";
 import { SplitText } from "@/components/ui/SplitText";
 import { Reveal } from "@/components/ui/Reveal";
+import { useT } from "@/lib/i18n/client";
 
 const steps: { n: string; title: string; text: string; icon: LucideIcon; grad: string }[] = [
   {
@@ -33,6 +34,7 @@ const steps: { n: string; title: string; text: string; icon: LucideIcon; grad: s
 
 /** Story as a vertical timeline: a line draws down as you scroll and each dot lights up when its card is reached. */
 export function StoryTimeline() {
+  const t = useT();
   const list = useRef<HTMLOListElement>(null);
   const fill = useRef<HTMLSpanElement>(null);
   const dots = useRef<(HTMLSpanElement | null)[]>([]);
@@ -72,14 +74,14 @@ export function StoryTimeline() {
       <div className="container-x grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
         <div className="lg:sticky lg:top-32 lg:self-start">
           <Reveal>
-            <SectionTag index="1" icon={BookOpenCheck} iconClass="text-green" label="Our Story" />
+            <SectionTag index="1" icon={BookOpenCheck} iconClass="text-green" label={t("Our Story")} />
           </Reveal>
-          <SplitText id="story-title" className="h-section mt-6 max-w-[480px] text-balance" parts={[{ text: "From Learning Testing to Practicing Testing." }]} />
+          <SplitText id="story-title" className="h-section mt-6 max-w-[480px] text-balance" parts={[{ text: t("From Learning Testing to Practicing Testing.") }]} />
           <Reveal delay={120}>
-            <p className="lead mt-6 max-w-[420px]">Our goal is to make practical QA training more accessible and give learners a structured way to build their confidence.</p>
+            <p className="lead mt-6 max-w-[420px]">{t("Our goal is to make practical QA training more accessible and give learners a structured way to build their confidence.")}</p>
             <div className="mt-7">
               <Button href="/learn" variant="light" arrow>
-                Explore Learning Resources
+                {t("Explore Learning Resources")}
               </Button>
             </div>
           </Reveal>
@@ -110,8 +112,8 @@ export function StoryTimeline() {
                     </div>
                     <div className="px-2 pb-3 sm:py-3 sm:pr-5">
                       <p className="font-mono text-[12px] font-medium text-brand">{s.n}</p>
-                      <h3 className="mt-1.5 text-[1.3rem] font-medium tracking-[-0.03em]">{s.title}</h3>
-                      <p className="mt-1.5 text-[15px] leading-snug text-muted">{s.text}</p>
+                      <h3 className="mt-1.5 text-[1.3rem] font-medium tracking-[-0.03em]">{t(s.title)}</h3>
+                      <p className="mt-1.5 text-[15px] leading-snug text-muted">{t(s.text)}</p>
                     </div>
                   </article>
                 </Reveal>

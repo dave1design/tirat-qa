@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { findLesson } from "@/content/curriculum";
+import { getLocale } from "@/lib/i18n/server";
 
 /** Pass mark for a subsection quiz: 4 out of 5 (80%). */
 const QUIZ_PASS = 4;
@@ -18,7 +19,7 @@ export interface QuizResult {
 
 /** Scores a quiz against the author key. The key never leaves the server until the learner has submitted. */
 export async function submitQuizAction(levelN: number, lessonSlug: string, answers: (number | null)[]): Promise<QuizResult | null> {
-  const found = findLesson(levelN, lessonSlug);
+  const found = findLesson(levelN, lessonSlug, await getLocale());
   if (!found || !Array.isArray(answers)) return null;
   const { lesson } = found;
 
@@ -55,7 +56,7 @@ export interface LabResult {
 
 /** Rule-based lab feedback. The answers stay on the server, and this is not an AI grade. */
 export async function checkLabAction(levelN: number, lessonSlug: string, answers: (number | null)[]): Promise<LabResult | null> {
-  const found = findLesson(levelN, lessonSlug);
+  const found = findLesson(levelN, lessonSlug, await getLocale());
   if (!found || !Array.isArray(answers)) return null;
   const { lab } = found.lesson;
   const items = lab.items.map((it, i) => ({ correct: answers[i] === it.c, answer: it.c }));

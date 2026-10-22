@@ -8,6 +8,8 @@ import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { logoutAction } from "@/actions/auth";
+import { useT } from "@/lib/i18n/client";
+import { LanguageSwitch } from "./LanguageSwitch";
 
 const links = [
   { href: "/", label: "Home" },
@@ -36,6 +38,7 @@ function Collapse({ hidden, className, children }: { hidden: boolean; className?
 }
 
 export function Nav({ user }: { user: NavUser | null }) {
+  const t = useT();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false); // desktop: collapses to logo + button while scrolling down
@@ -73,7 +76,7 @@ export function Nav({ user }: { user: NavUser | null }) {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-4">
       <nav
-        aria-label="Main"
+        aria-label={t("Main")}
         className={cn(
           "pointer-events-auto relative flex w-full items-center justify-between gap-2 rounded-full border border-black/5 bg-white/85 py-2 pl-3 pr-2 shadow-float backdrop-blur-xl transition-[max-width] duration-500 ease-[cubic-bezier(.2,.8,.2,1)]",
           compact ? "lg:max-w-[330px]" : "max-w-[860px]",
@@ -94,7 +97,7 @@ export function Nav({ user }: { user: NavUser | null }) {
                   isActive(l.href) ? "bg-chip text-ink" : "text-muted hover:text-ink",
                 )}
               >
-                {l.label}
+                {t(l.label)}
               </Link>
             </li>
           ))}
@@ -102,15 +105,18 @@ export function Nav({ user }: { user: NavUser | null }) {
         </Collapse>
 
         <div className="flex items-center gap-1.5">
+          <Collapse hidden={compact} className="hidden md:grid">
+            <LanguageSwitch />
+          </Collapse>
           {user ? (
             <>
               <Button href={user.isStaff ? "/admin" : "/dashboard"} variant={compact ? "dark" : "ghost"} size="sm" className="hidden sm:inline-flex">
-                {user.isStaff ? "Admin" : "Dashboard"}
+                {user.isStaff ? t("Admin") : t("Dashboard")}
               </Button>
               <Collapse hidden={compact} className="hidden sm:grid">
                 <form action={logoutAction}>
                   <Button type="submit" size="sm" variant="dark">
-                    Log Out
+                    {t("Log Out")}
                   </Button>
                 </form>
               </Collapse>
@@ -119,17 +125,17 @@ export function Nav({ user }: { user: NavUser | null }) {
             <>
               <Collapse hidden={compact} className="hidden sm:grid">
                 <Button href="/login" variant="ghost" size="sm">
-                  Log In
+                  {t("Log In")}
                 </Button>
               </Collapse>
               <Button href="/sign-up" size="sm" arrow>
-                Sign Up
+                {t("Sign Up")}
               </Button>
             </>
           )}
           <button
             type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("Close menu") : t("Open menu")}
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
@@ -151,30 +157,34 @@ export function Nav({ user }: { user: NavUser | null }) {
                   aria-current={isActive(l.href) ? "page" : undefined}
                   className={cn("block rounded-2xl px-4 py-3.5 text-lg font-medium tracking-[-0.02em]", isActive(l.href) ? "bg-chip" : "hover:bg-card")}
                 >
-                  {l.label}
+                  {t(l.label)}
                 </Link>
               </li>
             ))}
           </ul>
+          <div className="mt-2 flex items-center justify-between border-t border-line pt-3">
+            <span className="text-sm text-muted">{t("Language")}</span>
+            <LanguageSwitch />
+          </div>
           <div className="mt-2 flex gap-2 border-t border-line pt-3">
             {user ? (
               <>
                 <Button href={user.isStaff ? "/admin" : "/dashboard"} variant="light" className="flex-1">
-                  {user.isStaff ? "Admin" : "Dashboard"}
+                  {user.isStaff ? t("Admin") : t("Dashboard")}
                 </Button>
                 <form action={logoutAction} className="flex-1">
                   <Button type="submit" className="w-full">
-                    Log Out
+                    {t("Log Out")}
                   </Button>
                 </form>
               </>
             ) : (
               <>
                 <Button href="/login" variant="light" className="flex-1">
-                  Log In
+                  {t("Log In")}
                 </Button>
                 <Button href="/sign-up" className="flex-1">
-                  Sign Up
+                  {t("Sign Up")}
                 </Button>
               </>
             )}

@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitText } from "@/components/ui/SplitText";
 import { Rocket } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { getT } from "@/lib/i18n/server";
 
 const sats: { ring: number; angle: number; icon: LucideIcon; tone: Tone }[] = [
   { ring: 100, angle: 300, icon: ClipboardCheck, tone: "black" },
@@ -47,7 +48,7 @@ function Orbit() {
   );
 }
 
-export function FinalCta({
+export async function FinalCta({
   label = "Get Started",
   title = "Your Next Bug Is Waiting to Be Found.",
   text = "Put your knowledge into action. Explore a practice website, investigate its behavior, and take the next step in your QA journey.",
@@ -60,18 +61,19 @@ export function FinalCta({
   primary?: { href: string; label: string };
   secondary?: { href: string; label: string } | null;
 } = {}) {
+  const t = await getT();
   return (
     <section className="cta-frame mx-3 mt-16 rounded-t-[40px] bg-card px-3 pb-3 pt-3 sm:mx-4 sm:mt-24 sm:px-4 sm:pt-4 lg:rounded-t-[48px]" aria-labelledby="cta-title">
       <div className="mx-auto grid max-w-[1136px] items-center gap-10 overflow-hidden rounded-[32px] bg-white px-7 py-12 shadow-soft sm:px-12 sm:py-16 md:grid-cols-[1.2fr_1fr]">
         <Reveal>
-          <SectionTag index="6" icon={Rocket} label={label} />
-          <SplitText id="cta-title" className="h-section mt-6 max-w-[520px] text-balance" parts={[{ text: title }]} />
-          <p className="lead mt-5 max-w-[500px]">{text}</p>
+          <SectionTag index="6" icon={Rocket} label={t(label)} />
+          <SplitText id="cta-title" className="h-section mt-6 max-w-[520px] text-balance" parts={[{ text: t(title) }]} />
+          <p className="lead mt-5 max-w-[500px]">{t(text)}</p>
           <div className="mt-8 flex flex-wrap gap-2.5">
-            <Button href={primary.href}>{primary.label}</Button>
+            <Button href={primary.href}>{t(primary.label)}</Button>
             {secondary && (
               <Button href={secondary.href} variant="light" arrow>
-                {secondary.label}
+                {t(secondary.label)}
               </Button>
             )}
           </div>

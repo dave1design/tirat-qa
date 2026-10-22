@@ -6,33 +6,36 @@ import { Bug, ChartPie, ClipboardCheck, Compass, Layers } from "lucide-react";
 import { AppTile } from "@/components/ui/AppTile";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 /* ---- mock UIs shown inside each stacked panel ---- */
 
 function LevelMock() {
+  const t = useT();
   return (
     <div className="rounded-3xl bg-white p-6 shadow-soft">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-muted">Practice Lab</p>
-        <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-medium">Beginner</span>
+        <p className="text-sm font-medium text-muted">{t("Practice Lab")}</p>
+        <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-medium">{t("Beginner")}</span>
       </div>
-      <p className="mt-3 text-2xl font-semibold tracking-[-0.03em]">Level 01 — Beginner</p>
+      <p className="mt-3 text-2xl font-semibold tracking-[-0.03em]">{t("Level 01 — Beginner")}</p>
       <div className="mt-4 flex flex-wrap gap-1.5">
         {["Functional testing", "Form validation", "Navigation testing"].map((s) => (
-          <span key={s} className="rounded-full border border-line px-2.5 py-1 text-xs text-muted">{s}</span>
+          <span key={s} className="rounded-full border border-line px-2.5 py-1 text-xs text-muted">{t(s)}</span>
         ))}
       </div>
-      <Link href="/practice-lab" className="mt-5 inline-flex rounded-full bg-ink px-4 py-2 text-sm font-medium text-white">View Level</Link>
+      <Link href="/practice-lab" className="mt-5 inline-flex rounded-full bg-ink px-4 py-2 text-sm font-medium text-white">{t("View Level")}</Link>
     </div>
   );
 }
 
 function SiteMock() {
+  const t = useT();
   return (
     <div className="overflow-hidden rounded-3xl border border-line bg-white shadow-soft">
       <div className="flex items-center gap-1.5 border-b border-line bg-card px-4 py-3">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" /><span className="size-2.5 rounded-full bg-[#febc2e]" /><span className="size-2.5 rounded-full bg-[#28c840]" />
-        <span className="ml-3 h-5 flex-1 rounded-full bg-white text-center text-[11px] leading-5 text-faint">practice website</span>
+        <span className="ml-3 h-5 flex-1 rounded-full bg-white text-center text-[11px] leading-5 text-faint">{t("practice website")}</span>
       </div>
       <div className="grid gap-3 p-6">
         <div className="h-3 w-24 rounded-full bg-chip" />
@@ -47,30 +50,32 @@ function SiteMock() {
 }
 
 function ReportMock() {
+  const t = useT();
   return (
     <div className="rounded-3xl bg-white p-6 shadow-soft">
-      <p className="text-sm font-medium text-muted">Report a Bug</p>
+      <p className="text-sm font-medium text-muted">{t("Report a Bug")}</p>
       {[["Bug Title", "w-2/3"], ["Steps to Reproduce", "w-full"], ["Expected Result", "w-4/5"], ["Actual Result", "w-3/5"]].map(([l, w]) => (
         <div key={l} className="mt-4">
-          <p className="text-xs font-medium">{l}</p>
+          <p className="text-xs font-medium">{t(l)}</p>
           <div className="mt-1.5 rounded-xl border border-line p-2.5"><div className={`h-2 rounded-full bg-chip ${w}`} /></div>
         </div>
       ))}
-      <span className="mt-5 inline-flex rounded-full bg-brand px-4 py-2 text-sm font-medium text-white">Submit Bug Report</span>
+      <span className="mt-5 inline-flex rounded-full bg-brand px-4 py-2 text-sm font-medium text-white">{t("Submit Bug Report")}</span>
     </div>
   );
 }
 
 function ResultMock() {
+  const t = useT();
   return (
     <div className="rounded-3xl bg-white p-6 shadow-soft">
-      <p className="text-sm font-medium text-muted">Your Testing Results</p>
+      <p className="text-sm font-medium text-muted">{t("Your Testing Results")}</p>
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
         {[["Valid", "text-ok bg-ok-soft"], ["Duplicate", "text-warn bg-[#fff4e5]"], ["Missed", "text-bad bg-bad-soft"]].map(([l, c]) => (
-          <div key={l} className={`rounded-2xl px-2 py-4 text-sm font-medium ${c}`}>{l}</div>
+          <div key={l} className={`rounded-2xl px-2 py-4 text-sm font-medium ${c}`}>{t(l)}</div>
         ))}
       </div>
-      <div className="mt-4 rounded-2xl bg-card p-4 text-sm text-muted">Feedback explains what you found, what you missed and how to improve next time.</div>
+      <div className="mt-4 rounded-2xl bg-card p-4 text-sm text-muted">{t("Feedback explains what you found, what you missed and how to improve next time.")}</div>
     </div>
   );
 }
@@ -83,6 +88,7 @@ const panels: { n: string; title: string; text: string; icon: typeof Layers; ton
 ];
 
 export function StepsTour() {
+  const t = useT();
   const [active, setActive] = useState(0);
   const refs = useRef<(HTMLElement | null)[]>([]);
 
@@ -115,7 +121,7 @@ export function StepsTour() {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[240px_1fr] lg:gap-8">
-      <nav aria-label="Practice journey steps" className="hidden lg:block">
+      <nav aria-label={t("Practice journey steps")} className="hidden lg:block">
         <ol className="sticky top-32 border-l border-line">
           {panels.map((p, i) => (
             <li key={p.n} className="relative">
@@ -125,7 +131,7 @@ export function StepsTour() {
                 aria-current={i === active ? "step" : undefined}
                 className={cn("block py-2.5 pl-5 text-[15px] font-medium transition-colors", i === active ? "text-ink" : "text-faint hover:text-muted")}
               >
-                {p.n}. {p.title}
+                {p.n}. {t(p.title)}
               </a>
             </li>
           ))}
@@ -147,17 +153,17 @@ export function StepsTour() {
               <AppTile icon={p.icon} tone={p.tone} size={48} />
               <h3 className="text-[1.7rem] font-medium tracking-[-0.03em]">
                 <span className="mr-2 text-faint">{p.n}.</span>
-                {p.title}
+                {t(p.title)}
               </h3>
             </div>
             <div className="mt-6 min-h-[270px]">{p.mock}</div>
-            <p className="mt-6 max-w-[520px] text-base text-muted">{p.text}</p>
+            <p className="mt-6 max-w-[520px] text-base text-muted">{t(p.text)}</p>
           </section>
         ))}
         </div>
         <div className="mt-14 flex justify-center">
           <Button href="/practice-lab" arrow>
-            Start Your First Challenge
+            {t("Start Your First Challenge")}
           </Button>
         </div>
       </div>

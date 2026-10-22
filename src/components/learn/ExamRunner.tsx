@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { saveExamAnswerAction, submitExamAction } from "@/actions/exam";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 export interface RunnerQuestion {
   id: string;
@@ -38,6 +39,7 @@ export function ExamRunner({
   expiresAt: string;
   serverNow: string;
 }) {
+  const t = useT();
   const offset = useRef(new Date(serverNow).getTime() - Date.now());
   const end = new Date(expiresAt).getTime();
   const [left, setLeft] = useState(() => end - (Date.now() + offset.current));
@@ -58,15 +60,15 @@ export function ExamRunner({
   );
 
   useEffect(() => {
-    const t = setInterval(() => {
+    const tick = setInterval(() => {
       const ms = end - (Date.now() + offset.current);
       setLeft(ms);
       if (ms <= 0) submit(true);
-      else if (ms <= 2 * 60_000) setWarn("Only 2 minutes left. Your answers are saved and the exam submits automatically at zero.");
-      else if (ms <= 10 * 60_000) setWarn("10 minutes remaining.");
+      else if (ms <= 2 * 60_000) setWarn(t("Only 2 minutes left. Your answers are saved and the exam submits automatically at zero."));
+      else if (ms <= 10 * 60_000) setWarn(t("10 minutes remaining."));
     }, 1000);
-    return () => clearInterval(t);
-  }, [end, submit]);
+    return () => clearInterval(tick);
+  }, [end, submit, t]);
 
   const q = questions[idx];
   const multi = q.part === "B";
@@ -88,13 +90,13 @@ export function ExamRunner({
     <div>
       <div className="sticky top-24 z-20 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-white/95 px-5 py-3 shadow-soft backdrop-blur">
         <p className="text-sm font-medium">
-          Question {idx + 1} of {questions.length} <span className="text-muted">· {answered} answered</span>
+          {t("Question {n} of {total}", { n: idx + 1, total: questions.length })} <span className="text-muted">· {t("{n} answered", { n: answered })}</span>
         </p>
-        <p className={cn("inline-flex items-center gap-2 text-lg font-semibold tabular-nums", low ? "text-bad" : "text-ink")} role="timer" aria-label="Time remaining">
+        <p className={cn("inline-flex items-center gap-2 text-lg font-semibold tabular-nums", low ? "text-bad" : "text-ink")} role="timer" aria-label={t("Time remaining")}>
           <Clock className="size-4" aria-hidden /> {fmt(left)}
         </p>
         <p className="text-xs text-muted" aria-live="polite">
-          {save === "saving" ? "Saving…" : save === "saved" ? "Answer saved" : save === "error" ? "Could not save. Check your connection." : "Answers save automatically"}
+          {save === "saving" ? t("Saving…") : save === "saved" ? t("Answer saved") : save === "error" ? t("Could not save. Check your connection.") : t("Answers save automatically")}
         </p>
       </div>
       {warn && (
@@ -106,12 +108,12 @@ export function ExamRunner({
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_260px]">
         <section aria-labelledby="exam-q" className="rounded-[28px] bg-card p-6 sm:p-8">
           <p className="text-sm font-medium text-muted">
-            {q.part === "A" ? "Part A · single best answer" : "Part B · interview scenarios, select all that apply"}
+            {q.part === "A" ? t("Part A · single best answer") : t("Part B · interview scenarios, select all that apply")}
           </p>
           <h2 id="exam-q" className="mt-3 text-[1.35rem] font-semibold leading-snug tracking-[-0.03em]">
             {q.q}
           </h2>
-          {multi && <p className="mt-2 text-sm font-medium text-brand">Select all that apply. You earn points only when your selection exactly matches.</p>}
+          {multi && <p className="mt-2 text-sm font-medium text-brand">{t("Select all that apply. You earn points only when your selection exactly matches.")}</p>}
           <div className="mt-5 grid gap-2.5" role={multi ? "group" : "radiogroup"} aria-labelledby="exam-q">
             {q.options.map((o, pos) => {
               const on = chosen.includes(o.i);
@@ -135,22 +137,22 @@ export function ExamRunner({
 
           <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
             <button type="button" disabled={idx === 0} onClick={() => setIdx((i) => i - 1)} className="inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-3 font-medium shadow-soft hover:bg-chip disabled:opacity-40">
-              <ChevronLeft className="size-4" aria-hidden /> Previous
+              <ChevronLeft className="size-4" aria-hidden /> {t("Previous")}
             </button>
             {idx < questions.length - 1 ? (
               <button type="button" onClick={() => setIdx((i) => i + 1)} className="inline-flex items-center gap-1.5 rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark">
-                Next <ChevronRight className="size-4" aria-hidden />
+                {t("Next")} <ChevronRight className="size-4" aria-hidden />
               </button>
             ) : (
               <button type="button" onClick={() => setConfirm(true)} className="rounded-full bg-ink px-5 py-3 font-medium text-white hover:bg-black">
-                Review and submit
+                {t("Review and submit")}
               </button>
             )}
           </div>
         </section>
 
-        <aside aria-label="Question navigator" className="rounded-[28px] border border-line p-5">
-          <p className="text-sm font-semibold">Questions</p>
+        <aside aria-label={t("Question navigator")} className="rounded-[28px] border border-line p-5">
+          <p className="text-sm font-semibold">{t("Questions")}</p>
           <ol className="mt-3 grid grid-cols-5 gap-1.5">
             {questions.map((x, i) => {
               const done = (answers[x.id] ?? []).length > 0;
@@ -159,7 +161,7 @@ export function ExamRunner({
                   <button
                     type="button"
                     onClick={() => setIdx(i)}
-                    aria-label={`Question ${i + 1}${done ? ", answered" : ", not answered"}`}
+                    aria-label={done ? t("Question {n}, answered", { n: i + 1 }) : t("Question {n}, not answered", { n: i + 1 })}
                     aria-current={i === idx ? "true" : undefined}
                     className={cn(
                       "h-9 w-full rounded-lg text-[13px] font-medium",
@@ -173,9 +175,9 @@ export function ExamRunner({
               );
             })}
           </ol>
-          <p className="mt-3 text-xs text-muted">Part A: 1 to 25. Part B: 26 to 50.</p>
+          <p className="mt-3 text-xs text-muted">{t("Part A: 1 to 25. Part B: 26 to 50.")}</p>
           <button type="button" onClick={() => setConfirm(true)} className="mt-4 w-full rounded-full bg-ink py-3 text-sm font-medium text-white hover:bg-black">
-            Submit exam
+            {t("Submit exam")}
           </button>
         </aside>
       </div>
@@ -184,25 +186,25 @@ export function ExamRunner({
         <div role="dialog" aria-modal="true" aria-labelledby="confirm-title" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-[440px] rounded-[28px] bg-white p-7 shadow-float">
             <h2 id="confirm-title" className="text-xl font-semibold tracking-[-0.03em]">
-              Submit your exam?
+              {t("Submit your exam?")}
             </h2>
             <p className="mt-3 text-[15px] text-ink-2">
-              You answered {answered} of {questions.length} questions.
-              {answered < questions.length ? " Unanswered questions score zero." : ""} You cannot change answers after submitting.
+              {t("You answered {done} of {total} questions.", { done: answered, total: questions.length })}
+              {answered < questions.length ? ` ${t("Unanswered questions score zero.")}` : ""} {t("You cannot change answers after submitting.")}
             </p>
             <div className="mt-6 flex gap-3">
               <button type="button" onClick={() => setConfirm(false)} className="flex-1 rounded-full bg-chip py-3 font-medium hover:bg-[#e5e5e5]">
-                Keep working
+                {t("Keep working")}
               </button>
               <button type="button" onClick={() => submit(false)} className="flex-1 rounded-full bg-brand py-3 font-medium text-white hover:bg-brand-dark">
-                Submit now
+                {t("Submit now")}
               </button>
             </div>
           </div>
         </div>
       )}
       <p className="sr-only" aria-live="assertive">
-        {left <= 0 ? "Time is up. Submitting your exam." : ""}
+        {left <= 0 ? t("Time is up. Submitting your exam.") : ""}
       </p>
       <span hidden>{levelN}</span>
     </div>

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionTag } from "@/components/ui/SectionTag";
 import { SplitText } from "@/components/ui/SplitText";
+import { useT } from "@/lib/i18n/client";
 
 /* ── Card mockups (styled after the reference's "Every Flow" cards) ── */
 
@@ -18,6 +19,7 @@ const findings = [
 
 /** Findings list whose rows fade out toward the bottom; rows nudge right on hover. */
 function FindingsList() {
+  const t = useT();
   return (
     <ul className="mt-auto mb-12">
       {findings.map((f, i) => (
@@ -26,8 +28,8 @@ function FindingsList() {
           className="flex items-center justify-between border-b border-line py-[9px] text-[15px] transition-transform duration-300 last:border-0 group-hover/card:translate-x-1"
           style={{ opacity: Math.max(0.18, 1 - Math.max(0, i - 2) * 0.24), transitionDelay: `${i * 40}ms` }}
         >
-          <span className={i < 3 ? "font-medium" : ""}>{f.name}</span>
-          <span className={cn("text-[13px]", f.tone)}>{f.value}</span>
+          <span className={i < 3 ? "font-medium" : ""}>{t(f.name)}</span>
+          <span className={cn("text-[13px]", f.tone)}>{t(f.value)}</span>
         </li>
       ))}
     </ul>
@@ -36,6 +38,7 @@ function FindingsList() {
 
 /** A single report card with two ghost cards stacked beneath it, like the reference's bank-account card. */
 function ReportStack() {
+  const t = useT();
   return (
     <div className="relative mt-auto mb-11">
       <span className="absolute inset-x-6 -bottom-5 h-10 rounded-2xl bg-[#ececec]" />
@@ -46,13 +49,13 @@ function ReportStack() {
             <Bug className="size-4" aria-hidden />
           </span>
           <div>
-            <p className="text-[15px] font-medium leading-tight">Bug report</p>
+            <p className="text-[15px] font-medium leading-tight">{t("Bug report")}</p>
             <p className="font-mono text-[11px] text-faint">•••• TQ-4F21</p>
           </div>
         </div>
-        <p className="mt-3 text-[17px] font-medium leading-snug tracking-[-0.02em]">Form accepts an invalid email</p>
+        <p className="mt-3 text-[17px] font-medium leading-snug tracking-[-0.02em]">{t("Form accepts an invalid email")}</p>
         <p className="mt-3 flex items-center gap-1.5 text-[13px] text-muted">
-          <span className="size-1.5 rounded-full bg-ok" /> Submitted just now
+          <span className="size-1.5 rounded-full bg-ok" /> {t("Submitted just now")}
         </p>
       </div>
     </div>
@@ -68,6 +71,7 @@ const sheet = [
 
 /** Mini spreadsheet of results: formula bar, column letters, row numbers, status cells; rows highlight on hover. */
 function ResultSheet() {
+  const t = useT();
   const cell = "border-b border-r border-[#e6e6e6] px-1.5 py-[3px] leading-[14px]";
   return (
     <div className="mt-auto mb-12 -mx-2 overflow-hidden rounded-xl border border-[#e2e2e2] bg-white text-[11px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)]">
@@ -88,16 +92,16 @@ function ResultSheet() {
         <tbody>
           <tr className="font-semibold">
             <td className={cn(cell, "bg-[#f3f3f3] text-center text-[10px] font-normal text-faint")}>1</td>
-            <td className={cell}>Report</td>
-            <td className={cell}>Result</td>
-            <td className={cell}>Points</td>
+            <td className={cell}>{t("Report")}</td>
+            <td className={cell}>{t("Result")}</td>
+            <td className={cell}>{t("Points")}</td>
           </tr>
           {sheet.map((r, i) => (
             <tr key={r.id} className="transition-colors duration-300 group-hover/card:bg-[#eef4ff]" style={{ transitionDelay: `${i * 90}ms` }}>
               <td className={cn(cell, "bg-[#f3f3f3] text-center text-[10px] text-faint")}>{i + 2}</td>
               <td className={cn(cell, "font-mono text-[10px]")}>{r.id}</td>
               <td className={cell}>
-                <span className={cn("rounded px-1 text-[10px] font-medium", r.tone)}>{r.status}</span>
+                <span className={cn("rounded px-1 text-[10px] font-medium", r.tone)}>{t(r.status)}</span>
               </td>
               <td className={cn(cell, "text-right tabular-nums")}>{r.pts}</td>
             </tr>
@@ -105,7 +109,7 @@ function ResultSheet() {
           <tr>
             <td className={cn(cell, "bg-[#f3f3f3] text-center text-[10px] text-faint")}>6</td>
             <td className={cn(cell, "font-semibold")} colSpan={2}>
-              Total
+              {t("Total")}
             </td>
             <td className={cn(cell, "relative text-right font-semibold tabular-nums outline outline-2 -outline-offset-2 outline-brand")}>
               30
@@ -120,13 +124,14 @@ function ResultSheet() {
 
 /** Chart card that bleeds off the right edge, bars growing in turn. */
 function ProgressChart() {
+  const t = useT();
   const bars = [32, 40, 36, 52, 46, 62, 70, 78, 92];
   return (
     <div className="mt-auto mb-12 -mr-10 rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)] transition-transform duration-500 group-hover/card:-translate-x-8">
       <p className="text-[12px] text-muted">
-        Practice progress <span aria-hidden>·</span> Level 01
+        {t("Practice progress")} <span aria-hidden>·</span> {t("Level 01")}
       </p>
-      <p className="mt-1 text-[20px] font-medium tracking-[-0.03em]">+3 completed</p>
+      <p className="mt-1 text-[20px] font-medium tracking-[-0.03em]">{t("+3 completed")}</p>
       <div className="mt-3 flex h-[70px] items-end gap-2">
         {bars.map((h, i) => (
           <span
@@ -148,11 +153,12 @@ const items: { kicker: string; title: string; text: string; art: ReactNode; offs
 ];
 
 function BenefitCard({ kicker, title, text, art }: { kicker: string; title: string; text: string; art: ReactNode }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   return (
     <article className="group/card relative flex h-[360px] flex-col overflow-hidden rounded-[32px] bg-card px-6 pt-6">
-      <p className="text-[13px] text-muted">{kicker}</p>
-      <h3 className="mt-1 text-[1.9rem] font-medium leading-tight tracking-[-0.035em]">{title}</h3>
+      <p className="text-[13px] text-muted">{t(kicker)}</p>
+      <h3 className="mt-1 text-[1.9rem] font-medium leading-tight tracking-[-0.035em]">{t(title)}</h3>
       {art}
 
       {/* description panel, revealed by the + button */}
@@ -163,13 +169,13 @@ function BenefitCard({ kicker, title, text, art }: { kicker: string; title: stri
         )}
         aria-hidden={!open}
       >
-        <p className="text-[15px] leading-relaxed text-ink-2">{text}</p>
+        <p className="text-[15px] leading-relaxed text-ink-2">{t(text)}</p>
       </div>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label={open ? `Hide details about ${kicker} ${title}` : `Show details about ${kicker} ${title}`}
+        aria-label={open ? t("Hide details about {kicker} {title}", { kicker: t(kicker), title: t(title) }) : t("Show details about {kicker} {title}", { kicker: t(kicker), title: t(title) })}
         className="absolute bottom-3.5 right-3.5 flex size-9 items-center justify-center rounded-full bg-white shadow-soft transition-transform duration-300 hover:scale-110"
       >
         <Plus className={cn("size-4 transition-transform duration-300", open && "rotate-45")} aria-hidden />
@@ -179,13 +185,14 @@ function BenefitCard({ kicker, title, text, art }: { kicker: string; title: stri
 }
 
 export function Benefits() {
+  const t = useT();
   return (
     <section className="py-16 sm:py-24" aria-labelledby="benefits-title">
       <div className="container-x">
         <Reveal className="flex flex-col items-center text-center">
-          <SectionTag index="1" icon={Layers} label="Why Tirat QA" />
+          <SectionTag index="1" icon={Layers} label={t("Why Tirat QA")} />
         </Reveal>
-        <SplitText id="benefits-title" className="h-section mx-auto mt-6 max-w-[760px] text-balance text-center" parts={[{ text: "Build Skills That Go Beyond Theory." }]} />
+        <SplitText id="benefits-title" className="h-section mx-auto mt-6 max-w-[760px] text-balance text-center" parts={[{ text: t("Build Skills That Go Beyond Theory.") }]} />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((it, i) => (
             <Reveal key={it.title} delay={i * 90} className={it.offset}>

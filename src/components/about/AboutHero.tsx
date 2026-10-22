@@ -5,6 +5,7 @@ import { SplitText } from "@/components/ui/SplitText";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
 
 const floaters: { icon: LucideIcon; tone: Tone; size: number; cls: string; delay: string }[] = [
   { icon: Bug, tone: "orange", size: 84, cls: "left-[9%] top-[16%]", delay: "0s" },
@@ -16,7 +17,8 @@ const floaters: { icon: LucideIcon; tone: Tone; size: number; cls: string; delay
 ];
 
 /** Split hero: eyebrow chip + two-tone headline on the left, copy and buttons on the right, then a framed visual. */
-export function AboutHero() {
+export async function AboutHero() {
+  const t = await getT();
   return (
     <section className="hero-bg pb-16 pt-36 sm:pb-24 sm:pt-44">
       <div className="container-x">
@@ -27,25 +29,25 @@ export function AboutHero() {
                 <span className="inline-flex h-[34px] items-center gap-2 rounded-lg bg-brand pl-2.5 pr-2 text-white">
                   Tirat QA <Users className="size-[18px] text-lime" fill="currentColor" strokeWidth={1.5} aria-hidden />
                 </span>
-                <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">About Tirat QA</span>
+                <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">{t("About Tirat QA")}</span>
               </div>
             </Reveal>
             <SplitText
               as="h1"
               className="h-display mt-6 !text-[clamp(2.6rem,6.4vw,5rem)] text-balance"
               stagger={80}
-              parts={[{ text: "Making Software Testing" }, { text: "Skills Practical.", className: "text-brand" }]}
+              parts={[{ text: t("Making Software Testing") }, { text: t("Skills Practical."), className: "text-brand" }]}
             />
           </div>
           <Reveal delay={150}>
             <p className="lead">
-              Tirat QA is a hands-on software quality assurance practice platform designed to help aspiring and junior QA testers develop practical testing skills.
+              {t("Tirat QA is a hands-on software quality assurance practice platform designed to help aspiring and junior QA testers develop practical testing skills.")}
             </p>
-            <p className="lead mt-3">We believe testing is a skill you develop by doing, observing, investigating, and learning from your results.</p>
+            <p className="lead mt-3">{t("We believe testing is a skill you develop by doing, observing, investigating, and learning from your results.")}</p>
             <div className="mt-7 flex flex-wrap gap-2.5">
-              <Button href="/practice-lab">Start Practicing</Button>
+              <Button href="/practice-lab">{t("Start Practicing")}</Button>
               <Button href="#story" variant="light" arrow>
-                Our Story
+                {t("Our Story")}
               </Button>
             </div>
           </Reveal>
@@ -60,14 +62,14 @@ export function AboutHero() {
 
               {/* centre: a report card, like the ones learners write */}
               <div className="absolute left-1/2 top-1/2 w-[78%] max-w-[360px] -translate-x-1/2 -translate-y-[58%] animate-float rounded-3xl bg-white p-5 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.5)]">
-                <p className="text-[11px] font-medium uppercase tracking-wider text-faint">Bug report</p>
-                <p className="mt-1 text-lg font-medium leading-snug tracking-[-0.02em]">Registration form submits without a valid email</p>
+                <p className="text-[11px] font-medium uppercase tracking-wider text-faint">{t("Bug report")}</p>
+                <p className="mt-1 text-lg font-medium leading-snug tracking-[-0.02em]">{t("Registration form submits without a valid email")}</p>
                 <div className="mt-4 grid gap-2">
                   {[88, 70, 54].map((w) => (
                     <span key={w} className="block h-2 rounded-full bg-chip" style={{ width: `${w}%` }} />
                   ))}
                 </div>
-                <span className="mt-4 inline-flex rounded-full bg-ok-soft px-2.5 py-1 text-xs font-medium text-ok">Valid finding</span>
+                <span className="mt-4 inline-flex rounded-full bg-ok-soft px-2.5 py-1 text-xs font-medium text-ok">{t("Valid finding")}</span>
               </div>
 
               {floaters.map((f, i) => (
@@ -79,14 +81,14 @@ export function AboutHero() {
               {/* glass pills along the bottom, like the reference's team pill and hiring pill */}
               <div className="absolute inset-x-3 bottom-3 flex flex-wrap items-center justify-between gap-2 sm:inset-x-4 sm:bottom-4">
                 <div className="rounded-full border border-white/50 bg-white/70 px-5 py-3 backdrop-blur-xl">
-                  <p className="text-[15px] font-medium leading-tight">Practice. Find bugs. Improve.</p>
-                  <p className="hidden text-[12px] text-muted sm:block">A hands-on platform for practical software testing skills</p>
+                  <p className="text-[15px] font-medium leading-tight">{t("Practice. Find bugs. Improve.")}</p>
+                  <p className="hidden text-[12px] text-muted sm:block">{t("A hands-on platform for practical software testing skills")}</p>
                 </div>
                 <Link
                   href="/practice-lab"
                   className="group flex items-center gap-3 rounded-full border border-white/50 bg-white/70 py-2 pl-5 pr-2 backdrop-blur-xl transition-colors hover:bg-white"
                 >
-                  <span className="text-[15px] font-medium">Start practicing</span>
+                  <span className="text-[15px] font-medium">{t("Start practicing")}</span>
                   <span className="flex size-10 items-center justify-center rounded-full bg-ink text-white transition-transform duration-300 group-hover:translate-x-0.5">
                     <ArrowRight className="size-4" aria-hidden />
                   </span>

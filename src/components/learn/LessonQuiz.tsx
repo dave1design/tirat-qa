@@ -4,6 +4,8 @@ import { useMemo, useState, useTransition } from "react";
 import { Check, RotateCcw, X } from "lucide-react";
 import { submitQuizAction, type QuizResult } from "@/actions/learn";
 import { cn } from "@/lib/utils";
+import { useLessonPassed } from "./LessonFlow";
+import { useT } from "@/lib/i18n/client";
 
 interface QuizQuestion {
   q: string;
@@ -34,6 +36,8 @@ export function LessonQuiz({
   questions: QuizQuestion[];
   previousBest: number | null;
 }) {
+  const t = useT();
+  const onPassed = useLessonPassed();
   const [round, setRound] = useState(0);
   const [picked, setPicked] = useState<(number | null)[]>(() => questions.map(() => null));
   const [result, setResult] = useState<QuizResult | null>(null);
@@ -49,8 +53,10 @@ export function LessonQuiz({
     setError("");
     start(async () => {
       const r = await submitQuizAction(levelN, lessonSlug, picked);
-      if (r) setResult(r);
-      else setError("Something went wrong. Please try again.");
+      if (r) {
+        setResult(r);
+        if (r.passed) onPassed?.();
+      } else setError(t("Something went wrong. Please try again."));
     });
   };
   const retry = () => {
@@ -63,7 +69,7 @@ export function LessonQuiz({
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted" aria-live="polite">
-          {result ? "Submitted" : `${answered} of ${questions.length} answered`}
+          {result ? t("Submitted") : t("{done} of {total} answered", { done: answered, total: questions.length })}
         </p>
         <div className="h-1.5 w-40 overflow-hidden rounded-full bg-chip" aria-hidden>
           <div className="h-full rounded-full bg-brand transition-[width] duration-300" style={{ width: `${((result ? questions.length : answered) / questions.length) * 100}%` }} />
@@ -107,15 +113,15 @@ export function LessonQuiz({
                         <span className="mr-2 font-medium text-muted">{String.fromCharCode(65 + pos)}.</span>
                         {qu.o[oi]}
                       </span>
-                      {isCorrect && <Check className="mt-0.5 size-4 shrink-0 text-ok" aria-label="Correct answer" />}
-                      {wrongPick && <X className="mt-0.5 size-4 shrink-0 text-bad" aria-label="Your answer was incorrect" />}
+                      {isCorrect && <Check className="mt-0.5 size-4 shrink-0 text-ok" aria-label={t("Correct answer")} />}
+                      {wrongPick && <X className="mt-0.5 size-4 shrink-0 text-bad" aria-label={t("Your answer was incorrect")} />}
                     </label>
                   );
                 })}
               </div>
               {result && (
                 <p className={cn("mt-4 rounded-2xl px-4 py-3 text-[14px] leading-relaxed", result.results[qi].correct ? "bg-ok-soft text-ink-2" : "bg-white text-ink-2")}>
-                  <span className="font-semibold">{result.results[qi].correct ? "Correct. " : "Not quite. "}</span>
+                  <span className="font-semibold">{result.results[qi].correct ? t("Correct.") : t("Not quite.")} </span>
                   {result.results[qi].explanation}
                 </p>
               )}
@@ -132,26 +138,26 @@ export function LessonQuiz({
             disabled={answered < questions.length || pending}
             className="rounded-full bg-brand px-6 py-3.5 font-medium text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {pending ? "Scoring…" : "Submit answers"}
+            {pending ? t("Scoring…") : t("Submit answers")}
           </button>
-          {answered < questions.length && <span className="text-sm text-muted">Answer all five questions to submit.</span>}
+          {answered < questions.length && <span className="text-sm text-muted">{t("Answer all five questions to submit.")}</span>}
           {error && <span role="alert" className="text-sm text-bad">{error}</span>}
-          {previousBest !== null && <span className="text-sm text-muted">Best so far: {previousBest}/{questions.length}</span>}
+          {previousBest !== null && <span className="text-sm text-muted">{t("Best so far: {best}/{total}", { best: previousBest, total: questions.length })}</span>}
         </div>
       ) : (
         <div className="mt-6 rounded-3xl bg-[#141414] p-6 text-white" role="status">
-          <p className="text-sm text-white/60">Your score</p>
+          <p className="text-sm text-white/60">{t("Your score")}</p>
           <p className="mt-1 text-4xl font-semibold tracking-[-0.04em]">
             {result.score}/{result.total}
           </p>
           <p className="mt-2 text-[15px] text-white/75">
-            {result.passed ? "You passed the knowledge check (4 of 5 needed)." : "You need 4 of 5 to pass. Review the explanations and try again."}
+            {result.passed ? t("You passed the knowledge check (4 of 5 needed).") : t("You need 4 of 5 to pass. Review the explanations and try again.")}
           </p>
           <p className="mt-1 text-sm text-white/55">
-            {result.saved ? `Saved to your progress. Best score: ${result.best}/${result.total}.` : "Sign in to save your score and progress."}
+            {result.saved ? t("Saved to your progress. Best score: {best}/{total}.", { best: result.best ?? 0, total: result.total }) : t("Sign in to save your score and progress.")}
           </p>
           <button type="button" onClick={retry} className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-medium text-ink hover:bg-card">
-            <RotateCcw className="size-4" aria-hidden /> Try again with shuffled options
+            <RotateCcw className="size-4" aria-hidden /> {t("Try again with shuffled options")}
           </button>
         </div>
       )}

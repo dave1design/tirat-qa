@@ -4,6 +4,7 @@ import { SectionTag } from "@/components/ui/SectionTag";
 import { SplitText } from "@/components/ui/SplitText";
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 import type { LucideIcon } from "lucide-react";
+import { getT } from "@/lib/i18n/server";
 
 const items: { n: string; title: string; text: string; icon: LucideIcon; tone: Tone }[] = [
   { n: "01", title: "Hands-On Practice", text: "Provide practice websites where learners can explore functionality and investigate potential issues.", icon: Target, tone: "blue" },
@@ -13,17 +14,18 @@ const items: { n: string; title: string; text: string; icon: LucideIcon; tone: T
 ];
 
 /** Mission statement above four numbered cards inside a grey frame. */
-export function ValuesGrid() {
+export async function ValuesGrid() {
+  const t = await getT();
   return (
     <section className="py-16 sm:py-24" aria-labelledby="values-title">
       <div className="container-x">
         <Reveal className="flex flex-col items-center text-center">
-          <SectionTag index="2" icon={Puzzle} iconClass="text-orange" label="Our Mission" />
+          <SectionTag index="2" icon={Puzzle} iconClass="text-orange" label={t("Our Mission")} />
         </Reveal>
-        <SplitText id="values-title" className="h-section mx-auto mt-6 max-w-[760px] text-balance text-center" parts={[{ text: "Make Practical QA Learning Accessible." }]} />
+        <SplitText id="values-title" className="h-section mx-auto mt-6 max-w-[760px] text-balance text-center" parts={[{ text: t("Make Practical QA Learning Accessible.") }]} />
         <Reveal delay={100}>
           <p className="lead mx-auto mt-5 max-w-[620px] text-center">
-            Our mission is to help people develop useful software testing skills through accessible, structured, and hands-on learning experiences.
+            {t("Our mission is to help people develop useful software testing skills through accessible, structured, and hands-on learning experiences.")}
           </p>
         </Reveal>
 
@@ -40,8 +42,8 @@ export function ValuesGrid() {
                       <span className="font-mono text-[12px] text-muted">{it.n}</span>
                     </div>
                     <div className="mt-auto">
-                      <h3 className="text-[1.55rem] font-medium leading-tight tracking-[-0.035em]">{it.title}</h3>
-                      <p className="mt-2.5 text-[15px] leading-snug text-muted">{it.text}</p>
+                      <h3 className="text-[1.55rem] font-medium leading-tight tracking-[-0.035em]">{t(it.title)}</h3>
+                      <p className="mt-2.5 text-[15px] leading-snug text-muted">{t(it.text)}</p>
                     </div>
                   </article>
                 </Reveal>

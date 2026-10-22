@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink, Play } from "lucide-react";
+import { useT } from "@/lib/i18n/client";
 
 type InlineYouTubeProps = { videoId: string; title: string; summary: string };
 
@@ -11,6 +12,7 @@ type InlineYouTubeProps = { videoId: string; title: string; summary: string };
  * requires to play embedded videos, and a plain "open on YouTube" link stays available if a network blocks the player.
  */
 export function InlineYouTube({ videoId, title, summary }: InlineYouTubeProps) {
+  const t = useT();
   const [playing, setPlaying] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
@@ -33,7 +35,7 @@ export function InlineYouTube({ videoId, title, summary }: InlineYouTubeProps) {
           <button
             type="button"
             onClick={() => setPlaying(true)}
-            aria-label={`Play video: ${title}`}
+            aria-label={t("Play video: {title}", { title })}
             className="group absolute inset-0 flex h-full w-full items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-brand"
           >
             {!posterFailed && (
@@ -55,12 +57,12 @@ export function InlineYouTube({ videoId, title, summary }: InlineYouTubeProps) {
       </div>
       <figcaption className="mt-4 grid gap-2 text-[15px] leading-relaxed text-ink-2">
         <p>
-          <span className="font-medium text-ink">In short.</span> {summary}
+          <span className="font-medium text-ink">{t("In short.")}</span> {summary}
         </p>
         <p className="text-sm text-muted">
-          Video not playing on your network?{" "}
+          {t("Video not playing on your network?")}{" "}
           <a href={watchUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-brand underline underline-offset-2">
-            Open it on YouTube <ExternalLink className="size-3.5" aria-hidden />
+            {t("Open it on YouTube")} <ExternalLink className="size-3.5" aria-hidden />
           </a>
         </p>
       </figcaption>

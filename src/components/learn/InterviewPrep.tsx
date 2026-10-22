@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 const GUIDE = [
   "Define the concept in one or two sentences.",
@@ -12,6 +13,7 @@ const GUIDE = [
 
 /** Practice workspace: think first, optional hint, then reveal the answer structure and self-rate. */
 export function InterviewPrep({ prompts }: { prompts: string[] }) {
+  const t = useT();
   const [open, setOpen] = useState<number | null>(null);
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
   const [rating, setRating] = useState<Record<number, number>>({});
@@ -37,28 +39,28 @@ export function InterviewPrep({ prompts }: { prompts: string[] }) {
             </button>
             {isOpen && (
               <div className="px-5 pb-5 pl-[3.75rem]">
-                <p className="text-sm text-muted">Think first. Answer out loud in 60 to 90 seconds before you look at the guide.</p>
+                <p className="text-sm text-muted">{t("Think first. Answer out loud in 60 to 90 seconds before you look at the guide.")}</p>
                 {!shown ? (
                   <button
                     type="button"
                     onClick={() => setRevealed((s) => new Set(s).add(i))}
                     className="mt-3 rounded-full bg-white px-4 py-2 text-sm font-medium shadow-soft hover:bg-chip"
                   >
-                    I have answered, show the answer guide
+                    {t("I have answered, show the answer guide")}
                   </button>
                 ) : (
                   <div className="mt-3 rounded-2xl bg-white p-4">
-                    <p className="text-sm font-semibold">Answer guide</p>
+                    <p className="text-sm font-semibold">{t("Answer guide")}</p>
                     <ul className="mt-2 grid gap-1.5 text-[14.5px] leading-snug text-ink-2">
                       {GUIDE.map((g) => (
                         <li key={g} className="flex gap-2">
                           <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                          {g}
+                          {t(g)}
                         </li>
                       ))}
                     </ul>
-                    <p className="mt-4 text-sm font-semibold">Self-rating</p>
-                    <div className="mt-2 flex gap-1.5" role="radiogroup" aria-label="How well did you answer?">
+                    <p className="mt-4 text-sm font-semibold">{t("Self-rating")}</p>
+                    <div className="mt-2 flex gap-1.5" role="radiogroup" aria-label={t("How well did you answer?")}>
                       {[1, 2, 3, 4, 5].map((n) => (
                         <button
                           key={n}
@@ -72,7 +74,7 @@ export function InterviewPrep({ prompts }: { prompts: string[] }) {
                         </button>
                       ))}
                     </div>
-                    <p className="mt-2 text-xs text-muted">A practice tool only. Tirat QA does not score interview answers unless a human mock interviewer reviews them.</p>
+                    <p className="mt-2 text-xs text-muted">{t("A practice tool only. Tirat QA does not score interview answers unless a human mock interviewer reviews them.")}</p>
                   </div>
                 )}
               </div>

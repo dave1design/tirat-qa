@@ -1,0 +1,28 @@
+import type { Dict } from "../index";
+
+export const layout: Dict = {
+  Main: "ዋና",
+  Home: "መነሻ",
+  About: "ስለ እኛ",
+  Learn: "ተማር",
+  "Practice Lab": "የልምምድ ቤተ-ሙከራ",
+  Contact: "ያግኙን",
+  Admin: "አስተዳዳሪ",
+  Dashboard: "ዳሽቦርድ",
+  "Log In": "ግባ",
+  "Log Out": "ውጣ",
+  "Sign Up": "ተመዝገብ",
+  "Close menu": "ምናሌውን ዝጋ",
+  "Open menu": "ምናሌውን ክፈት",
+  Language: "ቋንቋ",
+  "Skip to content": "ወደ ዋናው ይዘት ዝለል",
+  Platform: "መድረክ",
+  Company: "ድርጅት",
+  Account: "መለያ",
+  Legal: "ሕጋዊ",
+  "Privacy Policy": "የግላዊነት ፖሊሲ",
+  "Terms of Service": "የአገልግሎት ውሎች",
+  "Practice. Find bugs. Improve.": "ተለማመድ። ስህተቶችን አግኝ። ተሻሻል።",
+  "Build practical software testing skills through hands-on website challenges.": "በተግባራዊ የድረ-ገጽ ፈተናዎች አማካኝነት ተግባራዊ የሶፍትዌር ሙከራ ክህሎቶችን ገንባ።",
+  "© 2026 Tirat QA. All rights reserved.": "© 2026 Tirat QA። መብቱ በሕግ የተጠበቀ ነው።",
+};

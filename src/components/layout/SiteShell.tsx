@@ -3,13 +3,15 @@ import { getCurrentUser, isStaff } from "@/lib/auth";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { NavProgress } from "./NavProgress";
+import { getT } from "@/lib/i18n/server";
 
 export async function SiteShell({ children }: { children: ReactNode }) {
   const user = await getCurrentUser();
+  const t = await getT();
   return (
     <>
       <a href="#main" className="sr-only z-[60] rounded-full bg-ink px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
-        Skip to content
+        {t("Skip to content")}
       </a>
       <NavProgress />
       <Nav user={user ? { name: user.name, isStaff: isStaff(user.role) } : null} />

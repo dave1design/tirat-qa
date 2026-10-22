@@ -3,14 +3,16 @@
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { COMPARE_EVENT } from "./compare-events";
+import { useT } from "@/lib/i18n/client";
 
 /** The blue arrow joining the panels: shuffles the notes on the left. */
 export function FlowArrow() {
+  const t = useT();
   const [turns, setTurns] = useState(0);
   return (
     <button
       type="button"
-      aria-label="Shuffle the notes"
+      aria-label={t("Shuffle the notes")}
       onClick={() => {
         setTurns((t) => t + 1);
         window.dispatchEvent(new Event(COMPARE_EVENT));

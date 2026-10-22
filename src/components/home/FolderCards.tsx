@@ -4,16 +4,18 @@ import { BookOpen, Bug, Check, Compass, FileText, Rocket, type LucideIcon } from
 import { AppTile, type Tone } from "@/components/ui/AppTile";
 import { Reveal } from "@/components/ui/Reveal";
 import { cn } from "@/lib/utils";
+import { getT } from "@/lib/i18n/server";
 
 /* ── Mini contents for the papers inside each folder ── */
 
 const Line = ({ w, className }: { w: string; className?: string }) => <span className={cn("block h-1.5 rounded-full bg-chip", className)} style={{ width: w }} />;
 
-function LessonPaper() {
+async function LessonPaper() {
+  const t = await getT();
   return (
     <>
-      <span className="text-[9px] font-semibold uppercase tracking-wider text-brand">Lesson</span>
-      <span className="mt-1 block text-[11px] font-semibold leading-tight">What is software testing?</span>
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-brand">{t("Lesson")}</span>
+      <span className="mt-1 block text-[11px] font-semibold leading-tight">{t("What is software testing?")}</span>
       <span className="mt-2 grid gap-1">
         <Line w="92%" />
         <Line w="80%" />
@@ -23,15 +25,16 @@ function LessonPaper() {
   );
 }
 
-function ChecklistPaper() {
+async function ChecklistPaper() {
+  const t = await getT();
   return (
     <span className="grid gap-1.5">
-      {["Test links", "Check forms", "Try edge cases"].map((t) => (
-        <span key={t} className="flex items-center gap-1.5 text-[10px] font-medium">
+      {["Test links", "Check forms", "Try edge cases"].map((item) => (
+        <span key={item} className="flex items-center gap-1.5 text-[10px] font-medium">
           <span className="flex size-3.5 items-center justify-center rounded-full bg-ok text-white">
             <Check className="size-2.5" strokeWidth={3} aria-hidden />
           </span>
-          {t}
+          {t(item)}
         </span>
       ))}
     </span>
@@ -57,13 +60,14 @@ function BrowserPaper() {
   );
 }
 
-function ReportPaper() {
+async function ReportPaper() {
+  const t = await getT();
   return (
     <>
-      <span className="text-[9px] font-semibold uppercase tracking-wider text-orange">Bug report</span>
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-orange">{t("Bug report")}</span>
       {["Title", "Steps", "Expected", "Actual"].map((l, i) => (
         <span key={l} className="mt-1.5 flex items-center gap-1.5">
-          <span className="w-9 shrink-0 text-[8px] font-medium text-faint">{l}</span>
+          <span className="w-9 shrink-0 text-[8px] font-medium text-faint">{t(l)}</span>
           <Line w={["70%", "85%", "60%", "50%"][i]} />
         </span>
       ))}
@@ -71,18 +75,19 @@ function ReportPaper() {
   );
 }
 
-function ScorePaper() {
+async function ScorePaper() {
+  const t = await getT();
   return (
     <>
-      <span className="text-[9px] font-semibold uppercase tracking-wider text-ok">Results</span>
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-ok">{t("Results")}</span>
       <span className="mt-1.5 flex items-end gap-1">
         {[40, 62, 50, 78, 92].map((h, i) => (
           <span key={i} className="block w-full rounded-sm bg-green" style={{ height: h * 0.32, opacity: 0.4 + i * 0.15 }} />
         ))}
       </span>
       <span className="mt-2 flex gap-1">
-        <span className="rounded-full bg-ok-soft px-1.5 py-0.5 text-[8px] font-semibold text-ok">Valid</span>
-        <span className="rounded-full bg-bad-soft px-1.5 py-0.5 text-[8px] font-semibold text-bad">Missed</span>
+        <span className="rounded-full bg-ok-soft px-1.5 py-0.5 text-[8px] font-semibold text-ok">{t("Valid")}</span>
+        <span className="rounded-full bg-bad-soft px-1.5 py-0.5 text-[8px] font-semibold text-bad">{t("Missed")}</span>
       </span>
     </>
   );
@@ -126,7 +131,8 @@ const paper = "absolute inset-x-[12%] top-0 h-[150px] rounded-2xl border border-
  * Folder-style cards: papers sit tucked inside the folder; on hover/focus they slide up and fan out
  * while the front flap tips forward.
  */
-export function FolderCards() {
+export async function FolderCards() {
+  const t = await getT();
   return (
     <div className="mx-auto mt-24 grid max-w-[1136px] grid-cols-2 gap-x-4 gap-y-12 px-5 sm:mt-40 lg:grid-cols-4 lg:gap-x-6">
       {folders.map((f, i) => (
@@ -167,9 +173,9 @@ export function FolderCards() {
                 <span className="absolute inset-x-4 bottom-5 h-px bg-black/[0.07]" />
               </div>
             </div>
-            <p className="mt-5 text-xl tracking-[-0.03em]">{f.title}</p>
+            <p className="mt-5 text-xl tracking-[-0.03em]">{t(f.title)}</p>
             <p className="mx-auto mt-3 inline-block rounded-full bg-chip px-3 py-1.5 text-[13px] font-medium text-muted transition-colors group-hover:bg-ink group-hover:text-white">
-              {f.pill}
+              {t(f.pill)}
             </p>
           </Link>
         </Reveal>

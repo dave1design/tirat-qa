@@ -20,7 +20,7 @@ export function LessonDiagram({ diagram }: { diagram: Diagram }) {
             </li>
           ))}
         </ol>
-        <p className="mt-5 text-xs text-muted">Tirat QA lesson illustration</p>
+        <p className="mt-5 text-xs text-muted">Tirat QA</p>
       </div>
       <figcaption className="mt-3 text-center text-sm italic text-muted">{diagram.caption}</figcaption>
     </figure>

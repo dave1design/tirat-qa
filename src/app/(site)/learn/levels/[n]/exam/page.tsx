@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Lock } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getLevel } from "@/content/curriculum";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { EXAM_MINUTES, EXAM_PASS_POINTS, examQuestions } from "@/content/exam";
 import { examSummary, finalizeAttempt, type ExamOrder } from "@/lib/exam";
+import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
 import { startExamAction } from "@/actions/exam";
 import { PageTop } from "@/components/layout/SiteShell";
 import { ExamRunner, type RunnerQuestion } from "@/components/learn/ExamRunner";
@@ -23,12 +25,17 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ExamPage({ params }: { params: Params }) {
   const levelN = Number((await params).n);
-  const level = getLevel(levelN);
-  const bank = examQuestions(levelN);
+  const locale = await getLocale();
+  const t = await getT();
+  const level = getLevel(levelN, locale);
+  const bank = examQuestions(levelN, locale);
   if (!level || !bank) notFound();
   const user = await requireUser(`/learn/levels/${levelN}/exam`);
 
   const summary = await examSummary(user.id, levelN);
+  const progress = await loadProgress(user.id);
+  const lessonStatus = level.lessons.map((l) => ({ lesson: l, passed: isLessonPassed(progress.get(`${levelN}/${l.slug}`)) }));
+  const unlocked = lessonStatus.every((l) => l.passed);
   const open = await db.examAttempt.findFirst({ where: { userId: user.id, levelN, status: "IN_PROGRESS" }, orderBy: { startedAt: "desc" } });
   if (open && open.expiresAt.getTime() <= Date.now()) {
     await finalizeAttempt(open.id, true);
@@ -47,7 +54,7 @@ export default async function ExamPage({ params }: { params: Params }) {
       <PageTop className="pb-20">
         <div className="container-x max-w-[1100px]">
           <h1 className="text-[1.6rem] font-semibold tracking-[-0.035em]">
-            Level {level.n} exam: {level.title}
+            {t("Level {n} exam", { n: level.n })}: {level.title}
           </h1>
           <div className="mt-5">
             <ExamRunner
@@ -65,21 +72,21 @@ export default async function ExamPage({ params }: { params: Params }) {
   }
 
   const rules = [
-    ["50 questions", "Part A has 25 knowledge questions on the lessons and videos (one best answer). Part B has 25 harder interview-style scenarios (select all that apply)."],
-    [`${EXAM_MINUTES} minutes`, "A visible countdown, with warnings at 10 and 2 minutes. The exam submits itself when time runs out."],
-    ["100 points", `Each question is worth 2 points. You need ${EXAM_PASS_POINTS} to pass. In Part B you earn the 2 points only when your selection exactly matches.`],
-    ["Autosave", "Every answer is saved as you go, and you can pick the exam up again if your connection drops."],
-    ["Results", "You see your total, your Part A and Part B scores, which lessons to revisit, and an explanation for each question you missed."],
+    [t("50 questions"), t("Part A has 25 knowledge questions on the lessons and videos (one best answer). Part B has 25 harder interview-style scenarios (select all that apply).")],
+    [t("{n} minutes", { n: EXAM_MINUTES }), t("A visible countdown, with warnings at 10 and 2 minutes. The exam submits itself when time runs out.")],
+    [t("100 points"), t("Each question is worth 2 points. You need {n} to pass. In Part B you earn the 2 points only when your selection exactly matches.", { n: EXAM_PASS_POINTS })],
+    [t("Autosave"), t("Every answer is saved as you go, and you can pick the exam up again if your connection drops.")],
+    [t("Results"), t("You see your total, your Part A and Part B scores, which lessons to revisit, and an explanation for each question you missed.")],
   ];
 
   return (
     <PageTop className="pb-20">
       <div className="container-x max-w-[860px]">
         <Link href={`/learn/levels/${level.n}`} className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink">
-          <ChevronLeft className="size-4" aria-hidden /> Level {level.n}: {level.title}
+          <ChevronLeft className="size-4" aria-hidden /> {t("Level")} {level.n}: {level.title}
         </Link>
-        <h1 className="mt-6 text-[clamp(2rem,4.6vw,3.2rem)] font-semibold leading-[1.05] tracking-[-0.045em] text-balance">Level {level.n} exam</h1>
-        <p className="lead mt-4">Show what you learned from the lessons and videos, then stretch yourself on questions like the ones interviewers ask.</p>
+        <h1 className="mt-6 text-[clamp(2rem,4.6vw,3.2rem)] font-semibold leading-[1.05] tracking-[-0.045em] text-balance">{t("Level {n} exam", { n: level.n })}</h1>
+        <p className="lead mt-4">{t("Show what you learned from the lessons and videos, then stretch yourself on questions like the ones interviewers ask.")}</p>
 
         <ul className="mt-8 grid gap-3">
           {rules.map(([k, v]) => (
@@ -89,18 +96,38 @@ export default async function ExamPage({ params }: { params: Params }) {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-muted">Tip: finish the three lessons and their quizzes first. The questions are in a new order each attempt.</p>
+        <p className="mt-4 text-sm text-muted">{t("The questions are in a new order each attempt.")}</p>
 
-        <form action={startExamAction.bind(null, levelN)} className="mt-8">
-          <button type="submit" className="rounded-full bg-brand px-7 py-4 text-base font-medium text-white hover:bg-brand-dark">
-            {summary.attempts.length ? "Start a new attempt" : "Start the exam"}
-          </button>
-        </form>
+        {unlocked ? (
+          <form action={startExamAction.bind(null, levelN)} className="mt-8">
+            <button type="submit" className="rounded-full bg-brand px-7 py-4 text-base font-medium text-white hover:bg-brand-dark">
+              {summary.attempts.length ? t("Start a new attempt") : t("Start the exam")}
+            </button>
+          </form>
+        ) : (
+          <div className="mt-8 rounded-[28px] border border-dashed border-line bg-card p-6">
+            <p className="flex items-center gap-2 font-semibold">
+              <Lock className="size-4" aria-hidden /> {t("Pass every lesson quiz to unlock this exam")}
+            </p>
+            <ul className="mt-4 grid gap-2">
+              {lessonStatus.map(({ lesson, passed }) => (
+                <li key={lesson.slug}>
+                  <Link href={`/learn/levels/${levelN}/${lesson.slug}`} className="flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-[15px] hover:bg-chip">
+                    <span>
+                      {lesson.n} {lesson.title}
+                    </span>
+                    <span className={passed ? "font-medium text-ok" : "text-muted"}>{passed ? t("Quiz passed") : t("Quiz not passed yet")}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {summary.attempts.length > 0 && (
           <section className="mt-12" aria-labelledby="past">
             <h2 id="past" className="text-xl font-semibold tracking-[-0.03em]">
-              Your attempts
+              {t("Your attempts")}
             </h2>
             <ul className="mt-4 grid gap-2">
               {summary.attempts.map((a) => (
@@ -108,7 +135,7 @@ export default async function ExamPage({ params }: { params: Params }) {
                   <Link href={`/learn/levels/${levelN}/exam/results/${a.id}`} className="flex items-center justify-between gap-3 rounded-2xl bg-card px-5 py-3.5 hover:bg-chip">
                     <span className="text-[15px]">{formatDateTime(a.submittedAt)}</span>
                     <span className="font-semibold">
-                      {a.score}/100 <span className={(a.score ?? 0) >= EXAM_PASS_POINTS ? "text-ok" : "text-bad"}>{(a.score ?? 0) >= EXAM_PASS_POINTS ? "Passed" : "Not passed"}</span>
+                      {a.score}/100 <span className={(a.score ?? 0) >= EXAM_PASS_POINTS ? "text-ok" : "text-bad"}>{(a.score ?? 0) >= EXAM_PASS_POINTS ? t("Passed") : t("Not passed")}</span>
                     </span>
                   </Link>
                 </li>
