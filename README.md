@@ -49,3 +49,12 @@ Seeded accounts (password `TiratQA#2026`, dev/pilot only — change or delete be
 4. Redeploy. Every push to `main` then deploys automatically.
 - Legal pages are drafts with "to be confirmed" sections. Quizzes, certificates, variant rotation and in-app notifications are out of this MVP.
 - Session JWTs are stateless (logout clears the cookie but can't revoke a stolen token).
+
+## Sign in with Google / Telegram (optional)
+
+The buttons appear on the login and sign-up pages only when the matching variables are set (see `.env.example`).
+
+- **Google** – create an OAuth client (Web application) in Google Cloud Console and add `<SITE_URL>/api/auth/google/callback` as an authorised redirect URI. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+- **Telegram** – create a bot with @BotFather, run `/setdomain` with your HTTPS domain (the widget does not work on `localhost`), then set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME`. Telegram shares no email, so those accounts get a placeholder address.
+
+An existing account with the same verified Google email is linked automatically; otherwise a new learner account is created.

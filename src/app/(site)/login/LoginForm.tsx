@@ -5,14 +5,22 @@ import { useActionState } from "react";
 import { loginAction } from "@/actions/auth";
 import { Checkbox, FormMessage, SubmitButton, TextField, type FormState } from "@/components/ui/form";
 import { useT } from "@/lib/i18n/client";
+import { SocialButtons, type SocialConfig } from "@/components/auth/SocialButtons";
 
 const initial: FormState = {};
 
-export function LoginForm({ next, expired }: { next?: string; expired?: boolean }) {
+export function LoginForm({ next, expired, social, providers }: { next?: string; expired?: boolean; social?: string; providers: SocialConfig }) {
   const t = useT();
   const [state, action] = useActionState(loginAction, initial);
   const e = state.errors ?? {};
-  const message = state.message ?? (expired ? "Your session has expired. Please log in again." : undefined);
+  const socialMessage: Record<string, string> = {
+    cancelled: "Sign-in was cancelled.",
+    failed: "We couldn't sign you in with that provider. Please try again.",
+    email: "Your Google account has no verified email address.",
+    suspended: "This account is not active.",
+    unavailable: "That sign-in method is not available right now.",
+  };
+  const message = state.message ?? (expired ? "Your session has expired. Please log in again." : social ? socialMessage[social] : undefined);
   return (
     <form action={action} noValidate className="grid gap-5">
       <FormMessage state={{ ...state, message }} />
@@ -28,6 +36,7 @@ export function LoginForm({ next, expired }: { next?: string; expired?: boolean 
       <SubmitButton pendingText="Logging in…" className="w-full">
         Log In
       </SubmitButton>
+      <SocialButtons providers={providers} next={next} />
       <p className="text-center text-[15px] text-muted">
         {t("Don't have an account?")}{" "}
         <Link href="/sign-up" className="font-medium text-ink underline underline-offset-2">

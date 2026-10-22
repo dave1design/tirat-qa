@@ -141,4 +141,11 @@ export const auth: Dict = {
   "Hide password": "የይለፍ ቃል ደብቅ",
   "Log in to continue building your testing skills.": "የሙከራ ክህሎትህን መገንባት ለመቀጠል ግባ።",
   "Find bugs. Build real testing skills.": "ስህተቶችን አግኝ። እውነተኛ የሙከራ ክህሎት ገንባ።",
+  OR: "ወይም",
+  "Continue with Google": "በGoogle ቀጥል",
+  "Sign-in was cancelled.": "መግባት ተሰርዟል።",
+  "We couldn't sign you in with that provider. Please try again.": "በዚያ አቅራቢ ልናስገባህ አልቻልንም። እባክህ እንደገና ሞክር።",
+  "Your Google account has no verified email address.": "የGoogle መለያህ የተረጋገጠ የኢሜይል አድራሻ የለውም።",
+  "This account is not active.": "ይህ መለያ ንቁ አይደለም።",
+  "That sign-in method is not available right now.": "ይህ የመግቢያ ዘዴ አሁን አይገኝም።",
 };

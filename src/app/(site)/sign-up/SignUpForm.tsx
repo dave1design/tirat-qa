@@ -7,10 +7,11 @@ import { Checkbox, FormMessage, SubmitButton, TextField, type FormState } from "
 import { Button } from "@/components/ui/Button";
 import { PASSWORD_HINT } from "@/lib/validation";
 import { useT } from "@/lib/i18n/client";
+import { SocialButtons, type SocialConfig } from "@/components/auth/SocialButtons";
 
 const initial: FormState = {};
 
-export function SignUpForm({ signedInAs }: { signedInAs: string | null }) {
+export function SignUpForm({ signedInAs, providers }: { signedInAs: string | null; providers: SocialConfig }) {
   const t = useT();
   const [state, action] = useActionState(signUpAction, initial);
 
@@ -64,6 +65,7 @@ export function SignUpForm({ signedInAs }: { signedInAs: string | null }) {
       <SubmitButton pendingText="Creating account…" className="w-full">
         Create Account
       </SubmitButton>
+      <SocialButtons providers={providers} />
       <p className="text-center text-[15px] text-muted">
         {t("Already have an account?")}{" "}
         <Link href="/login" className="font-medium text-ink underline underline-offset-2">
