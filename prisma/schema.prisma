@@ -12,23 +12,24 @@ datasource db {
 // Works with any Postgres (Neon, Supabase, Vercel Postgres).
 
 model User {
-  id               String    @id @default(cuid())
-  name             String
-  email            String    @unique
-  passwordHash     String
-  role             String    @default("LEARNER") // LEARNER | CONTENT_CREATOR | REVIEWER | ADMIN | OWNER
-  status           String    @default("ACTIVE") // ACTIVE | SUSPENDED
-  experienceLevel  String? // NEW | BASICS | TESTER
-  learningGoal     String? // FIND_BUGS | WRITE_REPORTS | JOB_PREP | TECHNIQUES
-  onboardedAt      DateTime?
-  termsAcceptedAt  DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  passwordHash    String
+  role            String    @default("LEARNER") // LEARNER | CONTENT_CREATOR | REVIEWER | ADMIN | OWNER
+  status          String    @default("ACTIVE") // ACTIVE | SUSPENDED
+  experienceLevel String? // NEW | BASICS | TESTER
+  learningGoal    String? // FIND_BUGS | WRITE_REPORTS | JOB_PREP | TECHNIQUES
+  onboardedAt     DateTime?
+  termsAcceptedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  resetTokens   PasswordResetToken[]
-  attempts      Attempt[]
-  entitlements  Entitlement[]
-  payments      Payment[]
+  resetTokens    PasswordResetToken[]
+  attempts       Attempt[]
+  lessonProgress LessonProgress[]
+  entitlements   Entitlement[]
+  payments       Payment[]
 }
 
 model PasswordResetToken {
@@ -59,18 +60,18 @@ model Article {
 }
 
 model Level {
-  id          String            @id @default(cuid())
-  slug        String            @unique
-  number      Int               @unique
-  name        String
-  difficulty  String
-  description String
-  skills      String            @default("[]") // JSON array
-  accessRule  String            @default("FREE") // FREE | PAID
-  priceEtb    Int               @default(0)
-  status      String            @default("DRAFT") // DRAFT | PUBLISHED | PAUSED | RETIRED
-  order       Int               @default(0)
-  websites    PracticeWebsite[]
+  id           String            @id @default(cuid())
+  slug         String            @unique
+  number       Int               @unique
+  name         String
+  difficulty   String
+  description  String
+  skills       String            @default("[]") // JSON array
+  accessRule   String            @default("FREE") // FREE | PAID
+  priceEtb     Int               @default(0)
+  status       String            @default("DRAFT") // DRAFT | PUBLISHED | PAUSED | RETIRED
+  order        Int               @default(0)
+  websites     PracticeWebsite[]
   entitlements Entitlement[]
 }
 
@@ -173,20 +174,20 @@ model BugReport {
 }
 
 model Payment {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   userId        String
   levelId       String?
   websiteId     String?
   amountEtb     Int
-  currency      String    @default("ETB")
-  method        String    @default("MANUAL")
+  currency      String        @default("ETB")
+  method        String        @default("MANUAL")
   reference     String
-  status        String    @default("PENDING") // PENDING | CONFIRMED | FAILED | REFUNDED
+  status        String        @default("PENDING") // PENDING | CONFIRMED | FAILED | REFUNDED
   note          String?
   confirmedById String?
   confirmedAt   DateTime?
-  createdAt     DateTime  @default(now())
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   entitlements  Entitlement[]
 
   @@index([status])
@@ -245,7 +246,26 @@ model AnalyticsEvent {
 }
 
 model RateLimit {
-  key       String   @id
-  count     Int      @default(0)
-  resetAt   DateTime
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime
+}
+
+/// A learner's progress on one Learn lesson: quiz scores, lab completion and reflection.
+model LessonProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  lessonKey  String // "<level>/<lesson-slug>"
+  attempts   Int      @default(0)
+  lastScore  Int?
+  bestScore  Int?
+  labDone    Boolean  @default(false)
+  reflection String   @default("")
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonKey])
+  @@index([userId])
 }
