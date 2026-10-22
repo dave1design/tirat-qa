@@ -139,4 +139,6 @@ export const auth: Dict = {
   "Screenshot must be a PNG, JPG or WebP image.": "ስክሪንሾቱ የPNG፣ JPG ወይም WebP ምስል መሆን አለበት።",
   "Show password": "የይለፍ ቃል አሳይ",
   "Hide password": "የይለፍ ቃል ደብቅ",
+  "Log in to continue building your testing skills.": "የሙከራ ክህሎትህን መገንባት ለመቀጠል ግባ።",
+  "Find bugs. Build real testing skills.": "ስህተቶችን አግኝ። እውነተኛ የሙከራ ክህሎት ገንባ።",
 };

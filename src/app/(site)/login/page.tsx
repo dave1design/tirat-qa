@@ -15,9 +15,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   if (await getCurrentUser()) redirect(next || "/dashboard");
   return (
     <AuthShell
-      eyebrow={t("Welcome back")}
-      title={t("Continue Your QA Journey.")}
-      intro={<p>{t("Log in to access your practice challenges, review your progress, and continue building your testing skills.")}</p>}
+      title={t("Welcome to Tirat QA")}
+      intro={<p>{t("Log in to continue building your testing skills.")}</p>}
     >
       <LoginForm next={next || undefined} expired={sp.expired === "1"} />
     </AuthShell>

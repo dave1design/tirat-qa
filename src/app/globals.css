@@ -180,5 +180,8 @@ html[lang="am"] .lead { line-height: 1.7; }
 /* Ethiopic glyphs are wider than the Latin headline face, so large headings are scaled down a little. */
 html[lang="am"] .h-display { font-size: clamp(2.2rem, 5.4vw, 4.4rem) !important; }
 html[lang="am"] .h-section { font-size: clamp(1.8rem, 3.9vw, 3rem); }
-/* Sign-in pages: pill-shaped fields, like the reference sign-up card. */
-.auth-card .field { border-radius: 9999px; padding-inline: 20px; }
+/* Sign-in pages: roomy rounded fields with a firm grey border, like Pinterest's. */
+.auth-card .field { border-radius: 16px; border: 2px solid #cdcdcd; padding: 13px 16px; font-size: 1rem; }
+.auth-card .field:hover { border-color: #b5b5b5; }
+.auth-card .field:focus { border-color: var(--color-brand); }
+.auth-card label { font-size: 0.875rem; }
