@@ -6,6 +6,7 @@ import { submitReportAction } from "@/actions/practice";
 import { FormMessage, SelectField, SubmitButton, TextArea, TextField, type FormState } from "@/components/ui/form";
 import { Button } from "@/components/ui/Button";
 import { SEVERITIES, SEVERITY_HELP, EVIDENCE } from "@/lib/constants";
+import { useT } from "@/lib/i18n/client";
 
 const initial: FormState = {};
 const FIELDS = ["title", "description", "steps", "expected", "actual", "severity", "environment"] as const;
@@ -23,6 +24,7 @@ export function ReportForm(props: { attemptId: string; requireSeverity: boolean 
 }
 
 function ReportFormInner({ attemptId, requireSeverity, onReset }: { attemptId: string; requireSeverity: boolean; onReset: () => void }) {
+  const t = useT();
   const [state, action] = useActionState(submitReportAction, initial);
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [formKey, setFormKey] = useState(0);
@@ -59,13 +61,13 @@ function ReportFormInner({ attemptId, requireSeverity, onReset }: { attemptId: s
     return (
       <div className="rounded-[28px] bg-ok-soft p-8 text-center" role="status">
         <CheckCircle2 className="mx-auto size-10 text-ok" aria-hidden />
-        <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em]">Your bug report has been submitted.</h3>
-        <p className="mt-2 text-ink-2">Your findings have been saved for review.</p>
+        <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em]">{t("Your bug report has been submitted.")}</h3>
+        <p className="mt-2 text-ink-2">{t("Your findings have been saved for review.")}</p>
         <p className="mt-3 text-sm text-muted">
-          Report ID: <span className="font-mono font-medium text-ink">TQ-{state.data?.id}</span>
+          {t("Report ID")}: <span className="font-mono font-medium text-ink">TQ-{state.data?.id}</span>
         </p>
         <div className="mt-6 flex justify-center">
-          <Button onClick={onReset}>Continue Testing</Button>
+          <Button onClick={onReset}>{t("Continue Testing")}</Button>
         </div>
       </div>
     );
@@ -99,10 +101,10 @@ function ReportFormInner({ attemptId, requireSeverity, onReset }: { attemptId: s
           error={e.severity}
           hint="Pick the level that matches the impact on the user."
         >
-          <option value="">Select severity…</option>
+          <option value="">{t("Select severity…")}</option>
           {SEVERITIES.map((s) => (
             <option key={s} value={s}>
-              {s[0] + s.slice(1).toLowerCase()} — {SEVERITY_HELP[s]}
+              {t(s[0] + s.slice(1).toLowerCase())} — {t(SEVERITY_HELP[s])}
             </option>
           ))}
         </SelectField>

@@ -8,6 +8,7 @@ import { PageTop } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/Button";
 import { Pill, StatusBadge } from "@/components/ui/StatusBadge";
 import { Reveal } from "@/components/ui/Reveal";
+import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ level: st
 }
 
 export default async function LevelPage({ params }: { params: Promise<{ level: string }> }) {
+  const t = await getT();
   const { level: slug } = await params;
   const user = await getCurrentUser();
   const level = (await loadLab(user)).find((l) => l.slug === slug);
@@ -25,49 +27,49 @@ export default async function LevelPage({ params }: { params: Promise<{ level: s
     <PageTop className="pb-24">
       <div className="container-x">
         <Link href="/practice-lab" className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink">
-          <ChevronLeft className="size-4" aria-hidden /> Practice Lab
+          <ChevronLeft className="size-4" aria-hidden /> {t("Practice Lab")}
         </Link>
         <Reveal className="mt-6 grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
           <div>
             <h1 className="h-section text-balance">
-              Level {String(level.number).padStart(2, "0")} — {level.name}
+              {t("Level")} {String(level.number).padStart(2, "0")} — {t(level.name)}
             </h1>
-            <p className="lead mt-5 max-w-[560px]">{level.description}</p>
+            <p className="lead mt-5 max-w-[560px]">{t(level.description)}</p>
           </div>
           <div>
-            <p className="text-sm font-medium">Skills you&apos;ll practice</p>
+            <p className="text-sm font-medium">{t("Skills you'll practice")}</p>
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {level.skillList.map((s) => (
-                <li key={s} className="rounded-full border border-line bg-white px-3 py-1.5 text-[13px]">{s}</li>
+                <li key={s} className="rounded-full border border-line bg-white px-3 py-1.5 text-[13px]">{t(s)}</li>
               ))}
             </ul>
           </div>
         </Reveal>
 
-        <h2 className="mt-16 text-2xl font-semibold tracking-[-0.03em]">Practice Websites</h2>
+        <h2 className="mt-16 text-2xl font-semibold tracking-[-0.03em]">{t("Practice websites")}</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {level.sites.map((s, i) => (
             <Reveal key={s.id} delay={i * 80}>
               <article className="flex h-full flex-col rounded-[32px] bg-card p-7">
                 <div className="flex items-center justify-between gap-2">
                   <StatusBadge status={s.status} />
-                  <Pill>{s.accessRule === "FREE" ? "Free" : `${s.priceEtb} ETB`}</Pill>
+                  <Pill>{s.accessRule === "FREE" ? t("Free") : `${s.priceEtb} ETB`}</Pill>
                 </div>
-                <h3 className="mt-6 text-2xl font-medium leading-tight tracking-[-0.035em]">{s.name}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-muted">{s.description}</p>
+                <h3 className="mt-6 text-2xl font-medium leading-tight tracking-[-0.035em]">{t(s.name)}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-muted">{t(s.description)}</p>
                 <ul className="mt-4 flex flex-wrap gap-1.5">
                   {s.skillList.map((k) => (
-                    <li key={k} className="rounded-full border border-line bg-white px-2.5 py-1 text-xs text-muted">{k}</li>
+                    <li key={k} className="rounded-full border border-line bg-white px-2.5 py-1 text-xs text-muted">{t(k)}</li>
                   ))}
                 </ul>
-                <p className="mt-4 text-sm text-muted">About {s.estimatedMinutes} minutes</p>
+                <p className="mt-4 text-sm text-muted">{t("About {n} minutes", { n: s.estimatedMinutes })}</p>
                 <div className="mt-auto pt-6">
                   <Button
                     href={s.status === "COMPLETED" && s.latestAttemptId ? `/practice-lab/results/${s.latestAttemptId}` : `/practice-lab/${level.slug}/${s.slug}`}
                     variant={s.status === "LOCKED" ? "light" : "dark"}
                     arrow
                   >
-                    {SITE_CTA[s.status]}
+                    {t(SITE_CTA[s.status])}
                   </Button>
                 </div>
               </article>

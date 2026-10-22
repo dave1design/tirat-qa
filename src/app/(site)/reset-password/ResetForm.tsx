@@ -5,17 +5,19 @@ import { resetPasswordAction } from "@/actions/auth";
 import { FormMessage, SubmitButton, TextField, type FormState } from "@/components/ui/form";
 import { Button } from "@/components/ui/Button";
 import { PASSWORD_HINT } from "@/lib/validation";
+import { useT } from "@/lib/i18n/client";
 
 const initial: FormState = {};
 
 export function ResetForm({ token }: { token: string }) {
+  const t = useT();
   const [state, action] = useActionState(resetPasswordAction, initial);
   if (state.ok) {
     return (
       <div className="py-2 text-center" role="status">
-        <p className="text-lg font-medium">Your password has been updated successfully.</p>
+        <p className="text-lg font-medium">{t("Your password has been updated successfully.")}</p>
         <div className="mt-6 flex justify-center">
-          <Button href="/login">Log In</Button>
+          <Button href="/login">{t("Log In")}</Button>
         </div>
       </div>
     );

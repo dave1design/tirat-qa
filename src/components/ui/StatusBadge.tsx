@@ -1,7 +1,10 @@
+"use client";
+
 import { Check, CircleDashed, Clock, Lock } from "lucide-react";
-import type { SiteStatus } from "@/lib/lab";
-import { SITE_STATUS_LABEL } from "@/lib/lab";
+import type { SiteStatus } from "@/lib/lab-labels";
+import { SITE_STATUS_LABEL } from "@/lib/lab-labels";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 const styles: Record<SiteStatus, string> = {
   NOT_STARTED: "bg-chip text-muted",
@@ -13,11 +16,12 @@ const icons = { NOT_STARTED: CircleDashed, IN_PROGRESS: Clock, COMPLETED: Check,
 
 /** Status is always icon + text, never colour alone. */
 export function StatusBadge({ status, className }: { status: SiteStatus; className?: string }) {
+  const t = useT();
   const Icon = icons[status];
   return (
     <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium", styles[status], className)}>
       <Icon className="size-3.5" aria-hidden />
-      {SITE_STATUS_LABEL[status]}
+      {t(SITE_STATUS_LABEL[status])}
     </span>
   );
 }

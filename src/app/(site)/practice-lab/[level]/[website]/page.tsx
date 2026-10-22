@@ -15,6 +15,7 @@ import { FinishAttempt } from "@/components/practice/FinishAttempt";
 import { RequestAccessForm } from "@/components/practice/RequestAccessForm";
 import { startAttemptAction } from "@/actions/practice";
 import { ATTEMPT_STATUS_LABEL } from "@/lib/scoring/service";
+import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Practice Website" };
@@ -28,6 +29,7 @@ const STEPS = [
 ];
 
 export default async function WebsitePage({ params }: { params: Promise<{ level: string; website: string }> }) {
+  const t = await getT();
   const { level: levelSlug, website: siteSlug } = await params;
   const path = `/practice-lab/${levelSlug}/${siteSlug}`;
   const user = await requireUser(path);
@@ -47,24 +49,23 @@ export default async function WebsitePage({ params }: { params: Promise<{ level:
         <div className="container-x">
           <div className="mx-auto max-w-[620px] text-center">
             <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-chip"><Lock className="size-6" aria-hidden /></span>
-            <h1 className="h-section mt-6 !text-[clamp(2rem,4.5vw,3rem)] text-balance">This Challenge Isn&apos;t Available Yet.</h1>
-            <p className="lead mt-4">You don&apos;t currently have access to this practice challenge.</p>
-            <p className="lead mt-2">Return to the Practice Lab to explore the challenges available to you.</p>
+            <h1 className="h-section mt-6 !text-[clamp(2rem,4.5vw,3rem)] text-balance">{t("This Challenge Isn't Available Yet.")}</h1>
+            <p className="lead mt-4">{t("You don't currently have access to this practice challenge.")}</p>
+            <p className="lead mt-2">{t("Return to the Practice Lab to explore the challenges available to you.")}</p>
             <div className="mt-8 flex justify-center">
-              <Button href="/practice-lab" variant="light">Back to Practice Lab</Button>
+              <Button href="/practice-lab" variant="light">{t("Back to Practice Lab")}</Button>
             </div>
           </div>
           <div className="mx-auto mt-14 max-w-[620px] rounded-[32px] bg-card p-7 sm:p-9">
-            <h2 className="text-2xl font-semibold tracking-[-0.03em]">{site.name}</h2>
-            <p className="mt-1 text-muted">{site.description}</p>
+            <h2 className="text-2xl font-semibold tracking-[-0.03em]">{t(site.name)}</h2>
+            <p className="mt-1 text-muted">{t(site.description)}</p>
             <p className="mt-5 rounded-2xl bg-white p-4 text-[15px]">
-              <strong className="font-medium">{site.priceEtb} ETB</strong> — one-time access to this practice website. Pay using the method shared by our team, then submit
-              the payment reference below. Access is unlocked after the payment is confirmed.
+              <strong className="font-medium">{site.priceEtb} ETB</strong> — {t("one-time access to this practice website. Pay using the method shared by our team, then submit the payment reference below. Access is unlocked after the payment is confirmed.")}
             </p>
             <div className="mt-6">
               {pending ? (
                 <p role="status" className="rounded-2xl bg-[#e6efff] px-4 py-3 text-brand">
-                  Your payment is pending confirmation (reference {pending.reference}). We&apos;ll unlock access as soon as it&apos;s verified.
+                  {t("Your payment is pending confirmation (reference {ref}). We'll unlock access as soon as it's verified.", { ref: pending.reference })}
                 </p>
               ) : (
                 <RequestAccessForm websiteId={site.id} levelId={site.levelId} />
@@ -97,38 +98,38 @@ export default async function WebsitePage({ params }: { params: Promise<{ level:
     <PageTop className="pb-24">
       <div className="container-x">
         <Link href={`/practice-lab/${site.level.slug}`} className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink">
-          <ChevronLeft className="size-4" aria-hidden /> Level {String(site.level.number).padStart(2, "0")} — {site.level.name}
+          <ChevronLeft className="size-4" aria-hidden /> {t("Level")} {String(site.level.number).padStart(2, "0")} — {t(site.level.name)}
         </Link>
 
         <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
           <div>
             <div className="flex flex-wrap gap-2">
-              <Pill>{site.accessRule === "FREE" ? "Free" : `${site.priceEtb} ETB`}</Pill>
-              <Pill>About {site.estimatedMinutes} minutes</Pill>
+              <Pill>{site.accessRule === "FREE" ? t("Free") : `${site.priceEtb} ETB`}</Pill>
+              <Pill>{t("About {n} minutes", { n: site.estimatedMinutes })}</Pill>
               <Pill>
-                Attempt {active ? active.attemptNumber : Math.min(used + 1, site.maxAttempts)} of {site.maxAttempts}
+                {t("Attempt {n} of {max}", { n: active ? active.attemptNumber : Math.min(used + 1, site.maxAttempts), max: site.maxAttempts })}
               </Pill>
             </div>
-            <h1 className="h-section mt-5 text-balance">{site.name}</h1>
+            <h1 className="h-section mt-5 text-balance">{t(site.name)}</h1>
             <p className="lead mt-4">
-              Explore this website as a QA tester. Investigate its features, test its behavior, and document any issues you discover.
+              {t("Explore this website as a QA tester. Investigate its features, test its behavior, and document any issues you discover.")}
             </p>
 
-            <h2 className="mt-9 text-lg font-semibold tracking-[-0.02em]">Instructions</h2>
+            <h2 className="mt-9 text-lg font-semibold tracking-[-0.02em]">{t("Instructions")}</h2>
             <ol className="mt-3 grid gap-2.5">
               {STEPS.map((s, i) => (
                 <li key={s} className="flex gap-3 text-[15px]">
                   <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-chip text-xs font-medium">{i + 1}</span>
-                  <span className="pt-0.5">{s}</span>
+                  <span className="pt-0.5">{t(s)}</span>
                 </li>
               ))}
             </ol>
 
             <details id="instructions" className="group mt-8 rounded-3xl bg-card p-5" open={!active}>
               <summary className="cursor-pointer list-none font-medium">
-                <span className="underline-offset-4 group-open:underline">Testing instructions for this challenge</span>
+                <span className="underline-offset-4 group-open:underline">{t("Testing instructions for this challenge")}</span>
               </summary>
-              <p className="mt-3 font-medium">Objective</p>
+              <p className="mt-3 font-medium">{t("Objective")}</p>
               <p className="text-[15px] text-muted">{site.objective}</p>
               <div className="prose-tirat mt-4 [&_p]:!text-[15px] [&_p]:!leading-relaxed">
                 <ReactMarkdown>{site.instructions}</ReactMarkdown>
@@ -139,21 +140,21 @@ export default async function WebsitePage({ params }: { params: Promise<{ level:
               {active ? (
                 <>
                   <Button href={site.appUrl} external arrow>
-                    Open Practice Website
+                    {t("Open Practice Website")}
                   </Button>
                   <Button href="#instructions" variant="light">
-                    View Testing Instructions
+                    {t("View Testing Instructions")}
                   </Button>
                 </>
               ) : canRetry ? (
                 <form action={startAttemptAction.bind(null, site.id, path)}>
                   <Button type="submit" arrow>
-                    {used === 0 ? "Start Testing" : "Practice Again"}
+                    {used === 0 ? t("Start Testing") : t("Practice Again")}
                   </Button>
                 </form>
               ) : (
                 <p className="rounded-2xl bg-card px-4 py-3 text-sm text-muted">
-                  You&apos;ve used all {site.maxAttempts} attempts for this website. Review your results below or try another website.
+                  {t("You've used all {n} attempts for this website. Review your results below or try another website.", { n: site.maxAttempts })}
                 </p>
               )}
             </div>
@@ -162,16 +163,16 @@ export default async function WebsitePage({ params }: { params: Promise<{ level:
           <div>
             {active ? (
               <div className="rounded-[32px] border border-line bg-white p-6 shadow-soft sm:p-8">
-                <h2 className="text-2xl font-semibold tracking-[-0.03em]">Report a Bug</h2>
-                <p className="mt-1 text-sm text-muted">One report per issue. Your draft is saved on this device as you type.</p>
+                <h2 className="text-2xl font-semibold tracking-[-0.03em]">{t("Report a Bug")}</h2>
+                <p className="mt-1 text-sm text-muted">{t("One report per issue. Your draft is saved on this device as you type.")}</p>
                 <div className="mt-6">
                   <ReportForm attemptId={active.id} requireSeverity={site.requireSeverity} />
                 </div>
 
                 <div className="mt-10 border-t border-line pt-6">
-                  <h3 className="font-medium">Your reports in this attempt ({reports.length})</h3>
+                  <h3 className="font-medium">{t("Your reports in this attempt ({n})", { n: reports.length })}</h3>
                   {reports.length === 0 ? (
-                    <p className="mt-2 text-sm text-muted">No reports yet. Reports are scored when you finish testing.</p>
+                    <p className="mt-2 text-sm text-muted">{t("No reports yet. Reports are scored when you finish testing.")}</p>
                   ) : (
                     <ul className="mt-3 grid gap-2">
                       {reports.map((r) => (
@@ -189,24 +190,24 @@ export default async function WebsitePage({ params }: { params: Promise<{ level:
               </div>
             ) : (
               <div className="rounded-[32px] bg-card p-7 sm:p-9">
-                <h2 className="text-2xl font-semibold tracking-[-0.03em]">{used === 0 ? "Ready when you are" : "Your attempts"}</h2>
+                <h2 className="text-2xl font-semibold tracking-[-0.03em]">{used === 0 ? t("Ready when you are") : t("Your attempts")}</h2>
                 {used === 0 ? (
                   <p className="mt-2 text-muted">
-                    Start testing to open the practice website and unlock the bug report form. You&apos;ll see your results when you finish.
+                    {t("Start testing to open the practice website and unlock the bug report form. You'll see your results when you finish.")}
                   </p>
                 ) : (
                   <ul className="mt-4 grid gap-2.5">
                     {attempts.map((a) => (
                       <li key={a.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4">
                         <div>
-                          <p className="font-medium">Attempt {a.attemptNumber}</p>
+                          <p className="font-medium">{t("Attempt {n}", { n: a.attemptNumber })}</p>
                           <p className="text-sm text-muted">
-                            {formatDateTime(a.startedAt)} · {a._count.reports} reports · {ATTEMPT_STATUS_LABEL[a.status] ?? a.status}
+                            {formatDateTime(a.startedAt)} · {t("{n} reports", { n: a._count.reports })} · {t(ATTEMPT_STATUS_LABEL[a.status] ?? a.status)}
                           </p>
                         </div>
                         {a.finishedAt && (
                           <Button href={`/practice-lab/results/${a.id}`} variant="light" size="sm" arrow>
-                            Review Results
+                            {t("Review Results")}
                           </Button>
                         )}
                       </li>
@@ -218,7 +219,7 @@ export default async function WebsitePage({ params }: { params: Promise<{ level:
             {active && (
               <p className="mt-4 flex items-start gap-2 text-sm text-muted">
                 <ExternalLink className="mt-0.5 size-4 shrink-0" aria-hidden />
-                The practice website opens in a new tab. Keep this tab open to submit your reports.
+                {t("The practice website opens in a new tab. Keep this tab open to submit your reports.")}
               </p>
             )}
           </div>

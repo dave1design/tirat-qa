@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { AuthShell } from "@/components/layout/AuthShell";
 import { ForgotForm } from "./ForgotForm";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Forgot Password" };
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage() {
+  const t = await getT();
   return (
     <AuthShell
-      title="Forgot Your Password?"
-      intro={<p>It happens. Enter the email address associated with your account and we&apos;ll guide you through resetting your password.</p>}
+      title={t("Forgot Your Password?")}
+      intro={<p>{t("It happens. Enter the email address associated with your account and we'll guide you through resetting your password.")}</p>}
     >
       <ForgotForm />
     </AuthShell>

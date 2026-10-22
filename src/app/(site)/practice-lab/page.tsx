@@ -9,6 +9,7 @@ import { SplitText } from "@/components/ui/SplitText";
 import { WebsiteGrid, type LabCard } from "@/components/lab/WebsiteGrid";
 import { SkillsBand } from "@/components/lab/SkillsBand";
 import { FinalCta } from "@/components/home/FinalCta";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Practice Lab",
@@ -31,6 +32,7 @@ const planned: LabCard[] = [
 ];
 
 export default async function PracticeLabPage() {
+  const t = await getT();
   const user = await getCurrentUser();
   const levels = await loadLab(user);
 
@@ -53,14 +55,23 @@ export default async function PracticeLabPage() {
       };
     }),
   );
-  const cards = [...live, ...planned];
+  const tr = (c: LabCard): LabCard => ({
+    ...c,
+    name: t(c.name),
+    category: t(c.category),
+    desc: t(c.desc),
+    skills: c.skills.map((k) => t(k)),
+    level: c.level.startsWith("Level") ? `${t("Level")} ${c.level.slice(6)}` : c.level,
+    access: c.access === "Free" || c.access === "Paid" ? t(c.access) : c.access,
+  });
+  const cards = [...live, ...planned].map(tr);
 
   const siteCount = live.length;
   const freeCount = live.filter((c) => c.access === "Free").length;
   const stats: [string, string][] = [
-    [String(levels.length), levels.length === 1 ? "practice level available" : "practice levels available"],
-    [String(siteCount), siteCount === 1 ? "practice website to test" : "practice websites to test"],
-    [String(freeCount), freeCount === 1 ? "website free to start" : "websites free to start"],
+    [String(levels.length), t(levels.length === 1 ? "practice level available" : "practice levels available")],
+    [String(siteCount), t(siteCount === 1 ? "practice website to test" : "practice websites to test")],
+    [String(freeCount), t(freeCount === 1 ? "website free to start" : "websites free to start")],
   ];
 
   return (
@@ -73,27 +84,27 @@ export default async function PracticeLabPage() {
                 <span className="inline-flex h-[34px] items-center gap-2 rounded-lg bg-brand pl-2.5 pr-2 text-white">
                   Tirat QA <Puzzle className="size-[18px] text-lime" fill="currentColor" strokeWidth={1.5} aria-hidden />
                 </span>
-                <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">Hands-on QA training</span>
+                <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">{t("Hands-on QA training")}</span>
               </div>
             </Reveal>
             <SplitText
               as="h1"
               className="h-display mt-6 text-balance"
               stagger={90}
-              parts={[{ text: "Find the Bugs. Prove What" }, { text: "You Found.", className: "text-brand" }]}
+              parts={[{ text: t("Find the Bugs. Prove What") }, { text: t("You Found."), className: "text-brand" }]}
             />
             <Reveal delay={150}>
               <p className="lead mt-6 max-w-[560px]">
-                Explore practice websites, investigate unexpected behavior, and submit bug reports to develop your real-world software testing skills.
+                {t("Explore practice websites, investigate unexpected behavior, and submit bug reports to develop your real-world software testing skills.")}
               </p>
-              <p className="lead mt-3 max-w-[560px]">Every challenge is an opportunity to think critically, test systematically, and improve.</p>
+              <p className="lead mt-3 max-w-[560px]">{t("Every challenge is an opportunity to think critically, test systematically, and improve.")}</p>
               <div className="mt-8 flex flex-wrap gap-2.5">
-                <Button href="#websites">Explore Practice Levels</Button>
+                <Button href="#websites">{t("Explore Practice Levels")}</Button>
                 <Button href="/learn" variant="light" arrow>
-                  Go to Learn
+                  {t("Go to Learn")}
                 </Button>
               </div>
-              <p className="mt-5 text-sm font-medium text-muted">Choose a level. Test a website. Report your findings.</p>
+              <p className="mt-5 text-sm font-medium text-muted">{t("Choose a level. Test a website. Report your findings.")}</p>
             </Reveal>
           </div>
 
@@ -116,22 +127,22 @@ export default async function PracticeLabPage() {
             <div>
               <Reveal>
                 <p className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-wider text-muted">
-                  <span className="size-2 rounded-full bg-brand" /> Practice websites
+                  <span className="size-2 rounded-full bg-brand" /> {t("Practice websites")}
                 </p>
               </Reveal>
-              <SplitText id="websites-title" className="h-section mt-4 max-w-[560px] text-balance" parts={[{ text: "Choose Your Practice Level" }]} />
+              <SplitText id="websites-title" className="h-section mt-4 max-w-[560px] text-balance" parts={[{ text: t("Choose Your Practice Level") }]} />
             </div>
             <Reveal delay={120}>
               <p className="lead lg:ml-auto lg:max-w-[520px]">
-                Start with the fundamentals or challenge yourself with more advanced testing scenarios as your skills develop.
+                {t("Start with the fundamentals or challenge yourself with more advanced testing scenarios as your skills develop.")}
               </p>
             </Reveal>
           </div>
 
           {cards.length === 0 ? (
             <div className="mt-12 rounded-[36px] bg-card p-12 text-center">
-              <h3 className="text-3xl font-semibold tracking-[-0.04em]">Your Next Challenge Starts Here.</h3>
-              <p className="mt-3 text-muted">There are no practice websites available in this section yet. Check back soon for new challenges.</p>
+              <h3 className="text-3xl font-semibold tracking-[-0.04em]">{t("Your Next Challenge Starts Here.")}</h3>
+              <p className="mt-3 text-muted">{t("There are no practice websites available in this section yet. Check back soon for new challenges.")}</p>
             </div>
           ) : (
             <div className="mt-10">
@@ -141,15 +152,15 @@ export default async function PracticeLabPage() {
 
           {levels.length > 0 && (
             <div className="mt-14 flex flex-wrap items-center gap-3 rounded-[28px] bg-card p-5 text-[15px]">
-              <span className="font-medium">Browse by level:</span>
+              <span className="font-medium">{t("Browse by level:")}</span>
               {levels.map((l) => (
                 <Link key={l.id} href={`/practice-lab/${l.slug}`} className="rounded-full bg-white px-4 py-2 font-medium shadow-soft transition-colors hover:bg-chip">
-                  Level {String(l.number).padStart(2, "0")} — {l.name}
+                  {t("Level")} {String(l.number).padStart(2, "0")} — {t(l.name)}
                 </Link>
               ))}
               {!user && (
                 <Link href="/sign-up" className="ml-auto font-medium underline underline-offset-4">
-                  Create a free account to start
+                  {t("Create a free account to start")}
                 </Link>
               )}
             </div>

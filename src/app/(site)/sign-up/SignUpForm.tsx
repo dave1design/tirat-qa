@@ -6,20 +6,22 @@ import { signUpAction } from "@/actions/auth";
 import { Checkbox, FormMessage, SubmitButton, TextField, type FormState } from "@/components/ui/form";
 import { Button } from "@/components/ui/Button";
 import { PASSWORD_HINT } from "@/lib/validation";
+import { useT } from "@/lib/i18n/client";
 
 const initial: FormState = {};
 
 export function SignUpForm({ signedInAs }: { signedInAs: string | null }) {
+  const t = useT();
   const [state, action] = useActionState(signUpAction, initial);
 
   if (state.ok) {
     return (
       <div className="py-4 text-center" role="status">
-        <h2 className="text-3xl font-semibold tracking-[-0.04em]">Welcome to Tirat QA!</h2>
-        <p className="mt-3 text-muted">Your account is ready. Let&apos;s personalize your experience and get you started with practice.</p>
+        <h2 className="text-3xl font-semibold tracking-[-0.04em]">{t("Welcome to Tirat QA!")}</h2>
+        <p className="mt-3 text-muted">{t("Your account is ready. Let's personalize your experience and get you started with practice.")}</p>
         <div className="mt-8 flex justify-center">
           <Button href="/onboarding" arrow>
-            Continue to Onboarding
+            {t("Continue to Onboarding")}
           </Button>
         </div>
       </div>
@@ -29,10 +31,10 @@ export function SignUpForm({ signedInAs }: { signedInAs: string | null }) {
   if (signedInAs) {
     return (
       <div className="py-4 text-center">
-        <p className="text-lg font-medium">You&apos;re already logged in as {signedInAs}.</p>
+        <p className="text-lg font-medium">{t("You're already logged in as {name}.", { name: signedInAs })}</p>
         <div className="mt-6 flex justify-center">
           <Button href="/dashboard" arrow>
-            Go to My Dashboard
+            {t("Go to My Dashboard")}
           </Button>
         </div>
       </div>
@@ -49,13 +51,13 @@ export function SignUpForm({ signedInAs }: { signedInAs: string | null }) {
       <TextField label="Password" name="password" type="password" placeholder="Create a password" autoComplete="new-password" hint={PASSWORD_HINT} error={e.password} />
       <TextField label="Confirm Password" name="confirmPassword" type="password" placeholder="Re-enter your password" autoComplete="new-password" error={e.confirmPassword} />
       <Checkbox name="terms" error={e.terms} defaultChecked={v.terms === "on"}>
-        I agree to the{" "}
+        {t("I agree to the")}{" "}
         <Link href="/terms" className="font-medium text-ink underline underline-offset-2">
-          Terms of Service
+          {t("Terms of Service")}
         </Link>{" "}
-        and have read the{" "}
+        {t("and have read the")}{" "}
         <Link href="/privacy-policy" className="font-medium text-ink underline underline-offset-2">
-          Privacy Policy
+          {t("Privacy Policy")}
         </Link>
         .
       </Checkbox>
@@ -63,9 +65,9 @@ export function SignUpForm({ signedInAs }: { signedInAs: string | null }) {
         Create Account
       </SubmitButton>
       <p className="text-center text-[15px] text-muted">
-        Already have an account?{" "}
+        {t("Already have an account?")}{" "}
         <Link href="/login" className="font-medium text-ink underline underline-offset-2">
-          Log In
+          {t("Log In")}
         </Link>
       </p>
     </form>

@@ -6,6 +6,7 @@ import { ArrowUpRight, Lock } from "lucide-react";
 import { SiteVisual, type VisualKind } from "./SiteVisual";
 import { Reveal } from "@/components/ui/Reveal";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 export interface LabCard {
   key: string;
@@ -40,6 +41,7 @@ const statusText: Record<LabCard["status"], string> = {
 };
 
 function Card({ c, i }: { c: LabCard; i: number }) {
+  const t = useT();
   const l = looks[c.look];
   const soon = c.status === "SOON";
   const body = (
@@ -52,9 +54,9 @@ function Card({ c, i }: { c: LabCard; i: number }) {
           {c.category} · {c.level}
         </span>
         <span className="absolute right-5 top-4 flex items-center gap-1.5">
-          {c.status === "LOCKED" && <Lock className="size-4" aria-label="Locked" />}
+          {c.status === "LOCKED" && <Lock className="size-4" aria-label={t("Locked")} />}
           {soon ? (
-            <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">Coming soon</span>
+            <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">{t("Coming soon")}</span>
           ) : (
             <ArrowUpRight className="size-5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
           )}
@@ -64,12 +66,12 @@ function Card({ c, i }: { c: LabCard; i: number }) {
       <h4 className="mt-5 min-h-[3.4rem] text-[1.15rem] font-medium leading-snug tracking-[-0.02em]">{c.desc}</h4>
       <p className="mt-1.5 text-[15px] leading-snug text-muted">{c.skills.join(" · ")}</p>
       <div className="mt-4 flex items-baseline gap-3 border-t border-line pt-3.5">
-        <span className="text-[1.35rem] font-medium tracking-[-0.03em]">{c.minutes ? `${c.minutes} min` : "—"}</span>
-        <span className="text-[13px] text-muted">estimated time</span>
+        <span className="text-[1.35rem] font-medium tracking-[-0.03em]">{c.minutes ? t("{n} min", { n: c.minutes }) : "—"}</span>
+        <span className="text-[13px] text-muted">{t("estimated time")}</span>
         <span className="ml-auto flex gap-1.5">
           <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-medium text-muted">{c.access}</span>
           <span className={cn("rounded-full px-2.5 py-1 text-xs font-medium", c.status === "IN_PROGRESS" ? "bg-[#e6efff] text-brand" : c.status === "COMPLETED" ? "bg-ok-soft text-ok" : "bg-chip text-muted")}>
-            {statusText[c.status]}
+            {t(statusText[c.status])}
           </span>
         </span>
       </div>
@@ -90,12 +92,13 @@ function Card({ c, i }: { c: LabCard; i: number }) {
 
 /** Category chips filter a two-column grid of big coloured website cards. */
 export function WebsiteGrid({ cards }: { cards: LabCard[] }) {
+  const t = useT();
   const cats = ["All", ...Array.from(new Set(cards.map((c) => c.category)))];
   const [cat, setCat] = useState("All");
   const shown = cat === "All" ? cards : cards.filter((c) => c.category === cat);
   return (
     <div>
-      <div role="tablist" aria-label="Filter practice websites" className="flex flex-wrap gap-2">
+      <div role="tablist" aria-label={t("Filter practice websites")} className="flex flex-wrap gap-2">
         {cats.map((c) => (
           <button
             key={c}
@@ -104,7 +107,7 @@ export function WebsiteGrid({ cards }: { cards: LabCard[] }) {
             onClick={() => setCat(c)}
             className={cn("rounded-full px-5 py-3 text-[15px] font-medium transition-colors", cat === c ? "bg-ink text-white" : "bg-chip text-ink hover:bg-[#e4e4e4]")}
           >
-            {c}
+            {t(c)}
           </button>
         ))}
       </div>

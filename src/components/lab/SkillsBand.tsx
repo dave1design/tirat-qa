@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitText } from "@/components/ui/SplitText";
 import { Check } from "lucide-react";
+import { getT } from "@/lib/i18n/server";
 
 /** Simplified tool marks drawn as inline SVG (Word, Figma, Chrome, Postman, Excel) used as each skill's badge. */
 const Word = () => (
@@ -64,28 +65,29 @@ const skills = [
 ];
 
 /** Dark band of five skill cards, each with an initials badge and a short check list. */
-export function SkillsBand() {
+export async function SkillsBand() {
+  const t = await getT();
   return (
     <section className="bg-[#141414] py-20 text-white sm:py-28" aria-labelledby="skills-title">
       <div className="container-x">
         <Reveal>
           <p className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-wider text-white/60">
-            <span className="size-2 rounded-full bg-lime" /> By skill
+            <span className="size-2 rounded-full bg-lime" /> {t("By skill")}
           </p>
         </Reveal>
-        <SplitText id="skills-title" className="h-section mt-4 max-w-[760px] text-balance" parts={[{ text: "Skills you'll practice." }]} />
+        <SplitText id="skills-title" className="h-section mt-4 max-w-[760px] text-balance" parts={[{ text: t("Skills you'll practice.") }]} />
         <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {skills.map((s, i) => (
             <li key={s.title}>
               <Reveal delay={i * 70} className="h-full lg:aspect-[260/280]">
                 <article className="flex h-full flex-col rounded-[32px] border border-white/[0.07] bg-[#262626] p-6">
-                  <span role="img" aria-label={`${s.tool} logo`} className="block size-[52px] shrink-0 overflow-hidden rounded-full">{s.logo}</span>
-                  <h3 className="mt-5 text-[1.1rem] font-medium leading-snug tracking-[-0.03em]">{s.title}</h3>
+                  <span role="img" aria-label={t("{tool} logo", { tool: s.tool })} className="block size-[52px] shrink-0 overflow-hidden rounded-full">{s.logo}</span>
+                  <h3 className="mt-5 text-[1.1rem] font-medium leading-snug tracking-[-0.03em]">{t(s.title)}</h3>
                   <ul className="mt-4 grid gap-2">
                     {s.items.map((it) => (
                       <li key={it} className="flex items-start gap-2.5 text-[14px] leading-snug text-white/70">
                         <Check className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={2.6} aria-hidden />
-                        {it}
+                        {t(it)}
                       </li>
                     ))}
                   </ul>

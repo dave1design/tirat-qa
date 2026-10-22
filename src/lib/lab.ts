@@ -1,16 +1,9 @@
 import "server-only";
 import { db } from "./db";
+import type { SiteStatus } from "./lab-labels";
+export { SITE_STATUS_LABEL, type SiteStatus } from "./lab-labels";
 import { entitlementIndex, isUnlocked } from "./access";
 import { parseJson } from "./utils";
-
-export type SiteStatus = "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "LOCKED";
-
-export const SITE_STATUS_LABEL: Record<SiteStatus, string> = {
-  NOT_STARTED: "Not Started",
-  IN_PROGRESS: "In Progress",
-  COMPLETED: "Completed",
-  LOCKED: "Locked",
-};
 
 export const SITE_CTA: Record<SiteStatus, string> = {
   NOT_STARTED: "Start Testing",
