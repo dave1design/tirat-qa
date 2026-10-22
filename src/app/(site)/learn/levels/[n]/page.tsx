@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Check, ChevronLeft, Clock, FileCheck2, Lock, Timer } from "lucide-react";
+import { ArrowRight, BookOpenCheck, Check, ChevronRight, Clock, FileCheck2, FlaskConical, Lock, MessagesSquare, PlayCircle, Timer, Video } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
 import { getLevel, levelsFor } from "@/content/curriculum";
-import { PageTop } from "@/components/layout/SiteShell";
 import { InterviewPrep } from "@/components/learn/InterviewPrep";
 import { examSummary } from "@/lib/exam";
 import { EXAM_PASS_POINTS } from "@/content/exam";
@@ -41,70 +40,189 @@ export default async function LevelPage({ params }: { params: Params }) {
   const next = levelsFor(locale).find((l) => l.n === level.n + 1);
   const isAutomation = level.track === "Automation QA";
 
-  return (
-    <PageTop className="pb-20">
-      <div className="container-x">
-        <Link href="/learn#roadmap" className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink">
-          <ChevronLeft className="size-4" aria-hidden /> {t("Learning roadmap")}
-        </Link>
+  const passedCount = level.lessons.filter((l) => isLessonPassed(progress.get(`${level.n}/${l.slug}`))).length;
+  const totalMinutes = level.lessons.reduce((sum, l) => sum + l.minutes, 0);
+  const resume = level.lessons.find((l) => !isLessonPassed(progress.get(`${level.n}/${l.slug}`)));
+  const startHref = resume ? `/learn/levels/${level.n}/${resume.slug}` : `/learn/levels/${level.n}/exam`;
+  const startLabel = passedCount === 0 ? t("Start learning") : resume ? t("Continue learning") : t("Take the level exam");
+  const includes: [typeof Video, string][] = [
+    [Video, t("{n} video lessons with summaries", { n: level.lessons.length })],
+    [BookOpenCheck, t("A required quiz after every lesson")],
+    [FlaskConical, t("Optional practice labs")],
+    [Timer, t("A 50-question timed level exam")],
+    [MessagesSquare, t("Interview preparation")],
+  ];
 
-        <header className="mt-6 max-w-[860px]">
-          <p className="inline-flex items-center gap-2 text-sm font-medium">
-            <span className="rounded-lg bg-brand px-2.5 py-1.5 text-white">{t("Level")} {level.n}</span>
-            <span className="rounded-lg border border-line bg-white px-2.5 py-1.5">{t(level.track)}</span>
-          </p>
-          <h1 className="mt-5 text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.03] tracking-[-0.045em] text-balance">{level.title}</h1>
-          <p className="lead mt-5">{level.goal}</p>
-        </header>
-
-        <dl className="mt-10 grid gap-3 sm:grid-cols-3">
-          {[
-            [t("Prerequisites"), level.prerequisites],
-            [t("Completion outcome"), level.outcome],
-            [t("Core deliverable"), level.deliverable],
-          ].map(([k, v]) => (
-            <div key={k} className="rounded-3xl bg-card p-6">
-              <dt className="eyebrow text-muted">{k}</dt>
-              <dd className="mt-2 text-[15.5px] leading-snug">{v}</dd>
+  const startCard = (
+    <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-float">
+      <Link href={startHref} className="group relative block aspect-video bg-ink" aria-label={startLabel}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`https://i.ytimg.com/vi/${level.lessons[0].video.id}/hqdefault.jpg`} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity group-hover:opacity-100" />
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="flex size-14 items-center justify-center rounded-full bg-white text-ink shadow-float transition-transform group-hover:scale-110">
+            <PlayCircle className="size-7" aria-hidden />
+          </span>
+        </span>
+      </Link>
+      <div className="p-6">
+        {user && (
+          <div className="mb-5">
+            <div className="flex justify-between text-sm font-medium">
+              <span>{t("Your progress")}</span>
+              <span>{passedCount} / {level.lessons.length}</span>
             </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-chip" role="progressbar" aria-valuenow={passedCount} aria-valuemin={0} aria-valuemax={level.lessons.length}>
+              <div className="h-full rounded-full bg-ok" style={{ width: `${(passedCount / level.lessons.length) * 100}%` }} />
+            </div>
+          </div>
+        )}
+        <Link href={startHref} className="flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-4 text-[16px] font-semibold text-white hover:bg-brand-dark">
+          {startLabel} <ArrowRight className="size-4" aria-hidden />
+        </Link>
+        <p className="mt-5 text-[15px] font-semibold">{t("This level includes")}</p>
+        <ul className="mt-3 grid gap-2.5 text-[14.5px] text-ink-2">
+          {includes.map(([Icon, label]) => (
+            <li key={label} className="flex items-center gap-3">
+              <Icon className="size-4 shrink-0 text-muted" aria-hidden /> {label}
+            </li>
           ))}
-        </dl>
+        </ul>
+      </div>
+    </div>
+  );
 
-        <section className="mt-16" aria-labelledby="lessons-title">
-          <h2 id="lessons-title" className="text-[1.9rem] font-semibold tracking-[-0.04em]">
-            {t("Lessons")}
-          </h2>
-          <ol className="mt-6 grid gap-3">
-            {level.lessons.map((l, idx) => {
-              const s = progress.get(`${level.n}/${l.slug}`);
-              const passed = isLessonPassed(s);
-              const before = idx > 0 ? { n: level.n, slug: level.lessons[idx - 1].slug } : prev ? { n: prev.n, slug: prev.lessons[prev.lessons.length - 1].slug } : null;
-              const locked = !!user && !!before && !isLessonPassed(progress.get(`${before.n}/${before.slug}`));
-              return (
-                <li key={l.slug}>
-                  <Link href={`/learn/levels/${level.n}/${l.slug}`} className="group flex items-center gap-4 rounded-3xl bg-card p-5 transition-colors hover:bg-chip sm:p-6">
-                    <span className={`flex size-11 shrink-0 items-center justify-center rounded-2xl text-[15px] font-semibold ${passed ? "bg-ok text-white" : "bg-white shadow-soft"}`}>
-                      {passed ? <Check className="size-5" strokeWidth={3} aria-label={t("Passed")} /> : l.n}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[17px] font-medium leading-snug tracking-[-0.02em]">{l.title}</span>
-                      <span className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
-                        <span className="inline-flex items-center gap-1">
-                          <Clock className="size-3.5" aria-hidden /> {t("{n} min", { n: l.minutes })}
-                        </span>
-                        <span>{t("Video and summary · required quiz")}</span>
-                        {s?.bestScore != null && <span>{t("Best score {n}/5", { n: s.bestScore })}</span>}
-                        {s?.labDone && <span>{t("Lab done")}</span>}
-                      </span>
-                    </span>
-                    {locked ? <Lock className="size-5 shrink-0 text-muted" aria-label={t("Locked")} /> : <ArrowRight className="size-5 shrink-0 text-muted transition-transform group-hover:translate-x-1" aria-hidden />}
+  return (
+    <div className="pb-20">
+      <section className="bg-ink pb-12 pt-32 text-white sm:pt-40 lg:pb-16">
+        <div className="container-x grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="max-w-[760px]">
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm font-medium text-[#9ec5ff]">
+              <Link href="/learn#roadmap" className="hover:underline">{t("Learning roadmap")}</Link>
+              <ChevronRight className="size-3.5 text-white/40" aria-hidden />
+              <span>{t(level.track)}</span>
+            </nav>
+            <h1 className="mt-4 text-[clamp(2rem,4.4vw,3.2rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-balance">
+              {t("Level")} {level.n}: {level.title}
+            </h1>
+            <p className="mt-4 text-[18px] leading-snug text-white/80">{level.goal}</p>
+            <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/75">
+              <span className="inline-flex items-center gap-1.5">
+                <Video className="size-4" aria-hidden /> {t("{n} lessons", { n: level.lessons.length })}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="size-4" aria-hidden /> {t("{n} min", { n: totalMinutes })}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Timer className="size-4" aria-hidden /> {t("Level {n} timed exam", { n: level.n })}
+              </span>
+            </p>
+          </div>
+          <div aria-hidden className="hidden lg:block" />
+        </div>
+      </section>
+
+      <div className="container-x">
+        <div className="mt-8 lg:mt-0 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-10">
+          <aside className="lg:order-2 lg:-mt-[19.5rem] lg:self-start lg:sticky lg:top-28">{startCard}</aside>
+
+          <div className="mt-10 min-w-0 lg:order-1 lg:mt-12">
+            <section aria-labelledby="learn-title" className="rounded-2xl border border-line p-6 sm:p-7">
+              <h2 id="learn-title" className="text-[1.5rem] font-semibold tracking-[-0.03em]">
+                {t("What you'll learn")}
+              </h2>
+              <ul className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                {level.lessons.flatMap((l) => l.objectives).map((o) => (
+                  <li key={o} className="flex gap-3 text-[15px] leading-snug">
+                    <Check className="mt-0.5 size-4 shrink-0" strokeWidth={2.5} aria-hidden /> {o}
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="mt-12" aria-labelledby="lessons-title">
+              <h2 id="lessons-title" className="text-[1.5rem] font-semibold tracking-[-0.03em]">
+                {t("Course content")}
+              </h2>
+              <p className="mt-2 text-sm text-muted">
+                {t("{n} lessons", { n: level.lessons.length })} · {t("{n} min", { n: totalMinutes })}
+              </p>
+              <ol className="mt-5 overflow-hidden rounded-2xl border border-line">
+                {level.lessons.map((l, idx) => {
+                  const s = progress.get(`${level.n}/${l.slug}`);
+                  const passed = isLessonPassed(s);
+                  const before = idx > 0 ? { n: level.n, slug: level.lessons[idx - 1].slug } : prev ? { n: prev.n, slug: prev.lessons[prev.lessons.length - 1].slug } : null;
+                  const locked = !!user && !!before && !isLessonPassed(progress.get(`${before.n}/${before.slug}`));
+                  return (
+                    <li key={l.slug} className="border-b border-line last:border-0">
+                      <details className="group">
+                        <summary className="flex cursor-pointer list-none items-center gap-4 bg-card px-5 py-4 hover:bg-chip [&::-webkit-details-marker]:hidden">
+                          <ChevronRight className="size-4 shrink-0 text-muted transition-transform group-open:rotate-90" aria-hidden />
+                          <span className="min-w-0 flex-1 text-[16px] font-semibold leading-snug">
+                            {l.n} {l.title}
+                          </span>
+                          {passed && (
+                            <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-ok-soft px-2 py-0.5 text-xs font-medium text-ok">
+                              <Check className="size-3" strokeWidth={3} aria-hidden /> {t("Passed")}
+                            </span>
+                          )}
+                          <span className="hidden shrink-0 text-sm text-muted sm:block">{t("{n} min", { n: l.minutes })}</span>
+                        </summary>
+                        <div className="bg-white px-5 pb-5 pt-4 sm:pl-12">
+                          <ul className="grid gap-2 text-[15px] text-ink-2">
+                            {l.objectives.map((o) => (
+                              <li key={o} className="flex gap-3 leading-snug">
+                                <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-muted" /> {o}
+                              </li>
+                            ))}
+                          </ul>
+                          <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+                            <span>{t("Video and summary · required quiz")}</span>
+                            {s?.bestScore != null && <span>{t("Best score {n}/5", { n: s.bestScore })}</span>}
+                            {s?.labDone && <span>{t("Lab done")}</span>}
+                          </p>
+                          <Link href={`/learn/levels/${level.n}/${l.slug}`} className="mt-4 inline-flex items-center gap-2 rounded-full border border-ink px-5 py-2.5 text-[14.5px] font-semibold hover:bg-chip">
+                            {locked ? <Lock className="size-4" aria-hidden /> : <PlayCircle className="size-4" aria-hidden />} {locked ? t("Locked") : passed ? t("Review lesson") : t("Start lesson")}
+                          </Link>
+                        </div>
+                      </details>
+                    </li>
+                  );
+                })}
+                <li className="bg-card px-5 py-4">
+                  <Link href={`/learn/levels/${level.n}/exam`} className="flex items-center gap-4 font-semibold">
+                    <FileCheck2 className="size-4 shrink-0 text-muted" aria-hidden />
+                    <span className="flex-1">{t("Level {n} exam", { n: level.n })}</span>
+                    <ArrowRight className="size-4 text-muted" aria-hidden />
                   </Link>
                 </li>
-              );
-            })}
-          </ol>
-          <p className="mt-4 text-sm text-muted">{t("Each lesson ends with a required quiz. Pass it with 4 of 5 to unlock the next lesson, and pass all three to unlock the level exam.")}</p>
-        </section>
+              </ol>
+              <p className="mt-4 text-sm text-muted">{t("Each lesson ends with a required quiz. Pass it with 4 of 5 to unlock the next lesson, and pass all three to unlock the level exam.")}</p>
+            </section>
+
+            <section className="mt-12" aria-labelledby="req-title">
+              <h2 id="req-title" className="text-[1.5rem] font-semibold tracking-[-0.03em]">
+                {t("Requirements")}
+              </h2>
+              <p className="mt-3 text-[16px] leading-relaxed text-ink-2">{level.prerequisites}</p>
+            </section>
+
+            <section className="mt-12" aria-labelledby="desc-title">
+              <h2 id="desc-title" className="text-[1.5rem] font-semibold tracking-[-0.03em]">
+                {t("Description")}
+              </h2>
+              <dl className="mt-4 grid gap-5 text-[16px] leading-relaxed text-ink-2">
+                <div>
+                  <dt className="font-semibold text-ink">{t("Completion outcome")}</dt>
+                  <dd className="mt-1">{level.outcome}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-ink">{t("Core deliverable")}</dt>
+                  <dd className="mt-1">{level.deliverable}</dd>
+                </div>
+              </dl>
+            </section>
+          </div>
+        </div>
 
         <section className="mt-16 grid gap-4 lg:grid-cols-2" aria-label={t("Level exam and milestone")}>
           <div className="rounded-[32px] bg-[#141414] p-7 text-white sm:p-9">
@@ -171,6 +289,6 @@ export default async function LevelPage({ params }: { params: Params }) {
           )}
         </nav>
       </div>
-    </PageTop>
+    </div>
   );
 }

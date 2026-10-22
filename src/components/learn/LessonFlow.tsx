@@ -1,16 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, Check, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
+import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
-
-const STEPS = [
-  { id: "learn", label: "Learn", hint: "Read, watch, understand" },
-  { id: "quiz", label: "Quiz", hint: "Required: pass 4 of 5" },
-  { id: "practice", label: "Practice lab", hint: "Optional hands-on lab" },
-] as const;
 
 const PassCtx = createContext<(() => void) | null>(null);
 
@@ -22,113 +17,139 @@ interface Nav {
   label: string;
 }
 
+type Tab = "overview" | "quiz" | "practice" | "resources" | "content";
+
 /**
- * One lesson as a guided path: learn it (notes, video, guides), then take the quiz, which is required, then an
- * optional practice lab. The quiz opens only when the learner says they have finished the lesson, and the next lesson
- * stays locked until the quiz is passed.
+ * The main column of the course player: the video stays on top while the learner moves between Overview, Quiz, Practice
+ * lab and Resources. The quiz is required (pass 4 of 5) before the next lesson opens; the lab opens after the quiz.
+ * On small screens the course-content sidebar becomes one more tab.
  */
 export function LessonFlow({
-  learn,
+  video,
+  heading,
+  overview,
   quiz,
   practice,
+  resources,
+  sidebar,
   startAtQuiz,
   alreadyPassed,
   prev,
   next,
-  nextIsEnd,
 }: {
-  learn: ReactNode;
+  video: ReactNode;
+  heading: ReactNode;
+  overview: ReactNode;
   quiz: ReactNode;
   practice: ReactNode;
+  resources: ReactNode | null;
+  sidebar: ReactNode;
   startAtQuiz: boolean;
   alreadyPassed: boolean;
   prev: Nav | null;
   next: Nav | null;
-  nextIsEnd: boolean;
 }) {
   const t = useT();
-  const [step, setStep] = useState(0);
-  const [reached, setReached] = useState(alreadyPassed ? 2 : startAtQuiz ? 1 : 0);
+  const router = useRouter();
+  const [tab, setTab] = useState<Tab>(startAtQuiz && !alreadyPassed ? "quiz" : "overview");
   const [passed, setPassed] = useState(alreadyPassed);
-  const top = useRef<HTMLDivElement>(null);
-  const first = useRef(true);
-
-  useEffect(() => {
-    if (first.current) {
-      first.current = false;
-      return;
-    }
-    top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [step]);
+  const tabs = useRef<HTMLDivElement>(null);
 
   const markPassed = useCallback(() => {
     setPassed(true);
-    setReached(2);
-  }, []);
+    router.refresh(); // so the sidebar and progress ring show the new check mark
+  }, [router]);
 
-  const go = (i: number) => {
-    setReached((r) => Math.max(r, i));
-    setStep(i);
+  const go = (id: Tab) => {
+    setTab(id);
+    tabs.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const items: { id: Tab; label: string; locked?: boolean; mobileOnly?: boolean }[] = [
+    { id: "overview", label: t("Overview") },
+    { id: "quiz", label: t("Quiz") },
+    { id: "practice", label: t("Practice lab"), locked: !passed },
+    ...(resources ? [{ id: "resources" as const, label: t("Resources") }] : []),
+    { id: "content", label: t("Course content"), mobileOnly: true },
+  ];
 
   return (
     <PassCtx.Provider value={markPassed}>
-      <div ref={top} className="scroll-mt-24">
-        <ol className="grid gap-2 sm:grid-cols-3" aria-label={t("Lesson steps")}>
-          {STEPS.map((s, i) => {
-            const locked = i > reached;
-            const done = (i === 0 && reached >= 1) || (i === 1 && passed);
-            const current = i === step;
-            return (
-              <li key={s.id}>
-                <button
-                  type="button"
-                  disabled={locked}
-                  aria-current={current ? "step" : undefined}
-                  onClick={() => setStep(i)}
-                  className={cn(
-                    "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand",
-                    current ? "border-brand bg-brand text-white" : "border-line bg-white",
-                    locked && "cursor-not-allowed opacity-55",
-                    !current && !locked && "hover:border-ink/30",
-                  )}
-                >
-                  <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold", current ? "bg-white text-brand" : done ? "bg-ok text-white" : "bg-chip text-ink")}>
-                    {locked ? <Lock className="size-3.5" aria-label={t("Locked")} /> : done && !current ? <Check className="size-4" strokeWidth={3} aria-label={t("Done")} /> : i + 1}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-[15px] font-semibold leading-tight">{t(s.label)}</span>
-                    <span className={cn("block truncate text-[12.5px]", current ? "text-white/75" : "text-muted")}>{t(s.hint)}</span>
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
+      <div className="bg-black">{video}</div>
 
-        <div className="mt-10">
-          {step === 0 && (
+      <div className="flex flex-wrap items-start justify-between gap-4 px-5 pt-6 sm:px-8">
+        <div className="min-w-0 max-w-[760px]">{heading}</div>
+        <div className="flex shrink-0 gap-2">
+          {prev && (
+            <Link href={prev.href} title={prev.label} className="inline-flex items-center gap-2 rounded-full border border-ink/80 px-4 py-2.5 text-[14px] font-semibold hover:bg-chip">
+              <ArrowLeft className="size-4" aria-hidden /> {t("Previous lesson")}
+            </Link>
+          )}
+          {next &&
+            (passed ? (
+              <Link href={next.href} title={next.label} className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
+                {t("Next lesson")} <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            ) : (
+              <button type="button" onClick={() => go("quiz")} title={t("Pass the quiz (4 of 5) to unlock it.")} className="inline-flex items-center gap-2 rounded-full bg-chip px-4 py-2.5 text-[14px] font-semibold text-muted">
+                <Lock className="size-4" aria-hidden /> {t("Next lesson")}
+              </button>
+            ))}
+        </div>
+      </div>
+
+      <div ref={tabs} className="mt-5 scroll-mt-14 border-b border-line px-5 sm:px-8">
+        <div role="tablist" aria-label={t("Lesson steps")} className="-mb-px -ml-3.5 flex gap-1 overflow-x-auto">
+          {items.map((it) => (
+            <button
+              key={it.id}
+              role="tab"
+              type="button"
+              id={`tab-${it.id}`}
+              aria-selected={tab === it.id}
+              aria-controls={`panel-${it.id}`}
+              disabled={it.locked}
+              onClick={() => go(it.id)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1.5 border-b-2 px-3.5 py-3.5 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand",
+                it.mobileOnly && "lg:hidden",
+                tab === it.id ? "border-ink text-ink" : "border-transparent text-muted hover:text-ink",
+                it.locked && "cursor-not-allowed opacity-50 hover:text-muted",
+              )}
+            >
+              {it.locked && <Lock className="size-3.5" aria-label={t("Locked")} />}
+              {it.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="px-5 pb-16 pt-8 sm:px-8">
+        <div className={cn(tab === "content" ? "max-w-[560px]" : "max-w-[800px]")}>
+          {tab === "overview" && (
             <div>
-              {learn}
-              <div className="mt-12 rounded-[28px] bg-[#141414] p-6 text-white sm:p-8">
-                <p className="text-xl font-semibold tracking-[-0.03em]">{t("Finished the video and the summary?")}</p>
-                <p className="mt-2 max-w-[560px] text-[15px] text-white/70">{t("Now test what you learned. The quiz is required: pass it with 4 of 5 to unlock the next lesson.")}</p>
-                <button type="button" onClick={() => go(1)} className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-medium text-ink hover:bg-card">
-                  {t("Start the quiz")} <ArrowRight className="size-4" aria-hidden />
+              {overview}
+              <div className="mt-12 rounded-2xl bg-ink p-6 text-white sm:p-8">
+                <p className="text-xl font-semibold tracking-[-0.03em]">{passed ? t("Quiz passed") : t("Finished the video and the summary?")}</p>
+                <p className="mt-2 max-w-[560px] text-[15px] text-white/70">
+                  {passed ? t("Your quiz result already counts. You can retake it or move to the next lesson.") : t("Now test what you learned. The quiz is required: pass it with 4 of 5 to unlock the next lesson.")}
+                </p>
+                <button type="button" onClick={() => go("quiz")} className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-ink hover:bg-card">
+                  {passed ? t("Retake the quiz") : t("Start the quiz")} <ArrowRight className="size-4" aria-hidden />
                 </button>
               </div>
             </div>
           )}
 
-          {step === 1 && (
+          {tab === "quiz" && (
             <div>
               {quiz}
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <button type="button" onClick={() => setStep(0)} className="rounded-full bg-chip px-5 py-3 font-medium hover:bg-[#e5e5e5]">
+                <button type="button" onClick={() => go("overview")} className="rounded-full bg-chip px-5 py-3 font-medium hover:bg-[#e5e5e5]">
                   {t("Review the lesson")}
                 </button>
                 {passed && (
-                  <button type="button" onClick={() => setStep(2)} className="rounded-full bg-white px-5 py-3 font-medium shadow-soft hover:bg-chip">
+                  <button type="button" onClick={() => go("practice")} className="rounded-full bg-white px-5 py-3 font-medium shadow-soft hover:bg-chip">
                     {t("Try the optional lab")}
                   </button>
                 )}
@@ -136,41 +157,16 @@ export function LessonFlow({
             </div>
           )}
 
-          {step === 2 && (
+          {tab === "practice" && (
             <div>
               <p className="mb-5 rounded-2xl bg-card px-4 py-3 text-sm text-muted">{t("This lab is optional practice. Your quiz result already counts.")}</p>
               {practice}
             </div>
           )}
-        </div>
 
-        <nav aria-label={t("Lesson navigation")} className="mt-16 grid gap-3 sm:grid-cols-2">
-          {prev ? (
-            <Link href={prev.href} className="group rounded-3xl bg-card p-5 transition-colors hover:bg-chip">
-              <span className="flex items-center gap-1.5 text-sm text-muted">
-                <ArrowLeft className="size-4" aria-hidden /> {t("Previous lesson")}
-              </span>
-              <span className="mt-1 block font-medium leading-snug">{prev.label}</span>
-            </Link>
-          ) : (
-            <span />
-          )}
-          {next && passed ? (
-            <Link href={next.href} className="group rounded-3xl bg-brand p-5 text-white transition-colors hover:bg-brand-dark sm:text-right">
-              <span className="flex items-center gap-1.5 text-sm text-white/75 sm:justify-end">
-                {nextIsEnd ? t("You reached the end of the roadmap") : t("Next lesson")} <ArrowRight className="size-4" aria-hidden />
-              </span>
-              <span className="mt-1 block font-medium leading-snug">{next.label}</span>
-            </Link>
-          ) : next ? (
-            <div aria-disabled="true" className="rounded-3xl border border-dashed border-line bg-white p-5 sm:text-right">
-              <span className="flex items-center gap-1.5 text-sm text-muted sm:justify-end">
-                <Lock className="size-4" aria-hidden /> {t("Next lesson")}
-              </span>
-              <span className="mt-1 block font-medium leading-snug text-muted">{t("Pass the quiz (4 of 5) to unlock it.")}</span>
-            </div>
-          ) : null}
-        </nav>
+          {tab === "resources" && resources}
+          {tab === "content" && <div className="-mx-5 sm:-mx-8">{sidebar}</div>}
+        </div>
       </div>
     </PassCtx.Provider>
   );
