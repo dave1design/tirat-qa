@@ -1,8 +1,9 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
+import { useId, useState, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
 import { Button } from "./Button";
+import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
 
@@ -59,17 +60,38 @@ export function TextField({
 }: { label: string; name: string; error?: string; hint?: string } & InputHTMLAttributes<HTMLInputElement>) {
   const t = useT();
   const id = useId();
+  const [show, setShow] = useState(false);
+  const isPassword = rest.type === "password";
+  const input = (
+    <input
+      id={id}
+      name={name}
+      aria-invalid={!!error}
+      aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined}
+      className={cn("field", isPassword && "pr-12", className)}
+      {...rest}
+      type={isPassword && show ? "text" : rest.type}
+      placeholder={rest.placeholder ? t(rest.placeholder) : undefined}
+    />
+  );
   return (
     <Wrap id={id} label={label} hint={hint} error={error}>
-      <input
-        id={id}
-        name={name}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined}
-        className={cn("field", className)}
-        {...rest}
-        placeholder={rest.placeholder ? t(rest.placeholder) : undefined}
-      />
+      {isPassword ? (
+        <div className="relative">
+          {input}
+          <button
+            type="button"
+            onClick={() => setShow((v) => !v)}
+            aria-label={show ? t("Hide password") : t("Show password")}
+            aria-pressed={show}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+          >
+            {show ? <EyeOff className="size-[18px]" aria-hidden /> : <Eye className="size-[18px]" aria-hidden />}
+          </button>
+        </div>
+      ) : (
+        input
+      )}
     </Wrap>
   );
 }

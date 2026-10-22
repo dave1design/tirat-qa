@@ -180,3 +180,5 @@ html[lang="am"] .lead { line-height: 1.7; }
 /* Ethiopic glyphs are wider than the Latin headline face, so large headings are scaled down a little. */
 html[lang="am"] .h-display { font-size: clamp(2.2rem, 5.4vw, 4.4rem) !important; }
 html[lang="am"] .h-section { font-size: clamp(1.8rem, 3.9vw, 3rem); }
+/* Sign-in pages: pill-shaped fields, like the reference sign-up card. */
+.auth-card .field { border-radius: 9999px; padding-inline: 20px; }

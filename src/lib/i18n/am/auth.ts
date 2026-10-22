@@ -137,4 +137,6 @@ export const auth: Dict = {
   "Screenshot uploads are not enabled on this deployment yet.": "የስክሪንሾት ጭነቶች በዚህ ማሰማራት ላይ እስካሁን አልነቁም።",
   "Screenshot must be 2 MB or smaller.": "ስክሪንሾቱ 2 ሜባ ወይም ያነሰ መሆን አለበት።",
   "Screenshot must be a PNG, JPG or WebP image.": "ስክሪንሾቱ የPNG፣ JPG ወይም WebP ምስል መሆን አለበት።",
+  "Show password": "የይለፍ ቃል አሳይ",
+  "Hide password": "የይለፍ ቃል ደብቅ",
 };
