@@ -1,6 +1,7 @@
 import type { ExamQuestion, LevelExam } from "./types";
 import type { Locale } from "@/lib/i18n";
 import { AM_EXAMS } from "./am";
+import { TRANSLATE_LESSON_CONTENT } from "../curriculum/localize";
 import { exam1 } from "./level1";
 import { exam2 } from "./level2";
 import { exam3 } from "./level3";
@@ -23,7 +24,7 @@ export const EXAM_BLUEPRINT_VERSION = "v1";
 export function examQuestions(levelN: number, locale: Locale = "en"): (ExamQuestion & { id: string })[] | null {
   const e = EXAMS[levelN];
   if (!e) return null;
-  const am = locale === "am" ? AM_EXAMS[levelN] : undefined;
+  const am = TRANSLATE_LESSON_CONTENT && locale === "am" ? AM_EXAMS[levelN] : undefined;
   // Amharic text is laid over the English question by position; the answer key always comes from the English entry.
   const merge = (q: ExamQuestion, tr: { q: string; o: string[]; e: string } | undefined, id: string) => ({ ...q, ...(tr ? { q: tr.q, o: tr.o, e: tr.e } : {}), id });
   return [...e.partA.map((q, i) => merge(q, am?.partA[i], `A${i + 1}`)), ...e.partB.map((q, i) => merge(q, am?.partB[i], `B${i + 1}`))];

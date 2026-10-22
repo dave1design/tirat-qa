@@ -26,9 +26,15 @@ function mergeLesson(en: Lesson, am: AmLevel["lessons"][number] | undefined): Le
   };
 }
 
-/** The English level with Amharic text laid over it where a translation exists. */
+/**
+ * Lessons, quizzes and labs stay in English: the language switch changes the system (menus, buttons, pages) only.
+ * The Amharic lesson text is kept in ./am; set this to true to show it again.
+ */
+export const TRANSLATE_LESSON_CONTENT = false;
+
+/** The English level, with Amharic text laid over it when lesson translation is switched on. */
 export function localizeLevel(level: Level, locale: Locale): Level {
-  const am = locale === "am" ? AM_LEVELS[level.n] : undefined;
+  const am = TRANSLATE_LESSON_CONTENT && locale === "am" ? AM_LEVELS[level.n] : undefined;
   if (!am) return level;
   return {
     ...level,
