@@ -7,6 +7,8 @@ import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
 import { getLevel, LEVELS } from "@/content/curriculum";
 import { PageTop } from "@/components/layout/SiteShell";
 import { InterviewPrep } from "@/components/learn/InterviewPrep";
+import { examSummary } from "@/lib/exam";
+import { EXAM_PASS_POINTS } from "@/content/exam";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +33,7 @@ export default async function LevelPage({ params }: { params: Params }) {
 
   const user = await getCurrentUser();
   const progress = await loadProgress(user?.id ?? null);
+  const exam_ = user ? await examSummary(user.id, level.n) : null;
   const prev = LEVELS.find((l) => l.n === level.n - 1);
   const next = LEVELS.find((l) => l.n === level.n + 1);
   const isAutomation = level.track === "Automation QA";
@@ -84,7 +87,7 @@ export default async function LevelPage({ params }: { params: Params }) {
                         <span className="inline-flex items-center gap-1">
                           <Clock className="size-3.5" aria-hidden /> {l.minutes} min
                         </span>
-                        <span>Notes · video · lab · 5-question quiz</span>
+                        <span>Learn · try it · 5-question quiz</span>
                         {s?.bestScore != null && <span>Best score {s.bestScore}/5</span>}
                         {s?.labDone && <span>Lab done</span>}
                       </span>
@@ -111,9 +114,13 @@ export default async function LevelPage({ params }: { params: Params }) {
                 </li>
               ))}
             </ul>
-            <p className="mt-5 rounded-2xl bg-white/[0.08] px-4 py-3 text-sm text-white/75">
-              The exam question bank is still being authored and reviewed by QA subject-matter experts, so the timed exam opens when it is ready.
+            <p className="mt-5 text-sm text-white/65">
+              Part A tests what you learned from the lessons and videos. Part B is harder and mostly interview questions.
+              {exam_?.best != null ? ` Your best score: ${exam_.best}/100${exam_.passed ? " (passed)" : ` (pass mark ${EXAM_PASS_POINTS})`}.` : ""}
             </p>
+            <Link href={`/learn/levels/${level.n}/exam`} className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-medium text-ink hover:bg-card">
+              {exam_?.active ? "Continue your exam" : exam_?.attempts.length ? "Take the exam again" : "Take the level exam"} <ArrowRight className="size-4" aria-hidden />
+            </Link>
           </div>
 
           <div className="rounded-[32px] bg-card p-7 sm:p-9">

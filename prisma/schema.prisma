@@ -28,6 +28,7 @@ model User {
   resetTokens    PasswordResetToken[]
   attempts       Attempt[]
   lessonProgress LessonProgress[]
+  examAttempts   ExamAttempt[]
   entitlements   Entitlement[]
   payments       Payment[]
 }
@@ -268,4 +269,26 @@ model LessonProgress {
 
   @@unique([userId, lessonKey])
   @@index([userId])
+}
+
+/// One timed level exam. `order` and `responses` are JSON strings (this schema keeps JSON as text).
+model ExamAttempt {
+  id          String    @id @default(cuid())
+  userId      String
+  levelN      Int
+  status      String    @default("IN_PROGRESS") // IN_PROGRESS | SUBMITTED
+  version     String
+  startedAt   DateTime  @default(now())
+  expiresAt   DateTime
+  submittedAt DateTime?
+  order       String // { qs: string[], opts: Record<string, number[]> }
+  responses   String    @default("{}") // Record<questionId, number[]> of original option indexes
+  score       Int?
+  partAScore  Int?
+  partBScore  Int?
+  timedOut    Boolean   @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, levelN])
 }

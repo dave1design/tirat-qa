@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
 import { findLesson, neighbours } from "@/content/curriculum";
 import { PageTop } from "@/components/layout/SiteShell";
+import { LessonFlow } from "@/components/learn/LessonFlow";
 import { InlineYouTube } from "@/components/learn/InlineYouTube";
 import { LessonDiagram } from "@/components/learn/LessonDiagram";
 import { LessonLab } from "@/components/learn/LessonLab";
@@ -21,22 +22,30 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return found ? { title: `${found.lesson.n} ${found.lesson.title}`, description: found.lesson.objectives[0] } : {};
 }
 
-const sections = [
-  ["notes", "Notes"],
-  ["example", "Worked example"],
-  ["illustration", "Illustration"],
-  ["video", "Video"],
-  ["lab", "Interactive lab"],
-  ["quiz", "Knowledge check"],
-  ["recap", "Recap"],
-] as const;
-
 function Heading({ id, children }: { id: string; children: React.ReactNode }) {
   return (
     <h2 id={id} className="scroll-mt-28 text-[1.6rem] font-semibold tracking-[-0.035em]">
       {children}
     </h2>
   );
+}
+
+function Paragraphs({ items }: { items: string[] }) {
+  return (
+    <>
+      {items.map((para, i) => (
+        <p key={i}>{para}</p>
+      ))}
+    </>
+  );
+}
+
+/** Splits dense notes into short paragraphs (two sentences each) so they are easier to read. */
+function paragraphs(text: string) {
+  const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z"])/);
+  const out: string[] = [];
+  for (let i = 0; i < sentences.length; i += 2) out.push(sentences.slice(i, i + 2).join(" "));
+  return out;
 }
 
 export default async function LessonPage({ params }: { params: Params }) {
@@ -80,135 +89,129 @@ export default async function LessonPage({ params }: { params: Params }) {
           </p>
         </header>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
-          <nav aria-label="In this lesson" className="hidden lg:block">
-            <div className="sticky top-28">
-              <p className="eyebrow text-muted">In this lesson</p>
-              <ul className="mt-4 grid gap-1 border-l border-line">
-                {sections.map(([id, label]) => (
-                  <li key={id}>
-                    <a href={`#${id}`} className="-ml-px block border-l border-transparent py-1.5 pl-4 text-[14.5px] text-muted hover:border-ink hover:text-ink">
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="mx-auto mt-10 max-w-[820px]">
+          <section aria-labelledby="objectives-title" className="rounded-[28px] bg-card p-6 sm:p-8">
+            <h2 id="objectives-title" className="text-lg font-semibold tracking-[-0.02em]">
+              By the end of this lesson you can
+            </h2>
+            <ul className="mt-4 grid gap-2.5">
+              {lesson.objectives.map((o) => (
+                <li key={o} className="flex gap-3 text-[16px] leading-snug">
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-lime text-ink">
+                    <Check className="size-3" strokeWidth={3} aria-hidden />
+                  </span>
+                  {o}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="mt-10">
+            <LessonFlow
+              startUnlocked={!!status && (status.attempts > 0 || status.labDone)}
+              learn={
+                <div className="grid gap-12">
+                  <section key="concepts" aria-labelledby="concepts">
+                    <Heading id="concepts">Core concepts</Heading>
+                    <div className="mt-4 grid gap-4 text-[17px] leading-[1.75] text-ink-2">
+                      <Paragraphs items={paragraphs(lesson.notes)} />
+                    </div>
+                  </section>
+
+                  <section key="example" aria-labelledby="example" className="rounded-[28px] bg-[#e8f6f2] p-6 sm:p-8">
+                    <h2 id="example" className="flex scroll-mt-28 items-center gap-2 text-lg font-semibold tracking-[-0.02em]">
+                      <Lightbulb className="size-5 text-[#0f9b8a]" aria-hidden /> Worked example
+                    </h2>
+                    <p className="mt-3 text-[16.5px] leading-[1.7] text-ink-2">{lesson.example}</p>
+                  </section>
+
+                  <section key="illustration" aria-label="Illustration">
+                    <LessonDiagram diagram={lesson.diagram} />
+                  </section>
+
+                  <section key="video" aria-labelledby="video">
+                    <Heading id="video">Watch</Heading>
+                    <div className="mt-5">
+                      <InlineYouTube videoId={lesson.video.id} title={lesson.video.title} summary={lesson.video.summary} />
+                    </div>
+                  </section>
+
+                  <section key="recap" aria-labelledby="recap" className="rounded-[28px] border border-line p-6 sm:p-8">
+                    <Heading id="recap">Before you move on</Heading>
+                    <p className="mt-2 text-[15px] text-muted">Can you do these without looking back at the lesson?</p>
+                    <ul className="mt-4 grid gap-2.5 text-[16px] leading-snug">
+                      <li className="flex gap-3">
+                        <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                        Explain &quot;{lesson.title}&quot; in your own words.
+                      </li>
+                      <li className="flex gap-3">
+                        <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                        Name one failure or misconception this lesson helps prevent.
+                      </li>
+                      <li className="flex gap-3">
+                        <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                        Describe the evidence you would collect on a real project.
+                      </li>
+                    </ul>
+                  </section>
+                </div>
+              }
+              practice={
+                <section aria-labelledby="lab">
+                  <Heading id="lab">{`Try it: ${lesson.lab.title}`}</Heading>
+                  <div className="mt-5">
+                    <LessonLab
+                      levelN={level.n}
+                      lessonSlug={lesson.slug}
+                      lab={labView}
+                      signedIn={!!user}
+                      initialReflection={status?.reflection ?? ""}
+                      initialDone={status?.labDone ?? false}
+                    />
+                  </div>
+                </section>
+              }
+              quiz={
+                <section aria-labelledby="quiz">
+                  <Heading id="quiz">Check yourself</Heading>
+                  <p className="mt-2 text-[15px] text-muted">Five questions. Answer all of them, submit, then see your score and why each answer is right. You can retry.</p>
+                  <div className="mt-6">
+                    <LessonQuiz levelN={level.n} lessonSlug={lesson.slug} questions={questions} previousBest={status?.bestScore ?? null} />
+                  </div>
+                </section>
+              }
+            />
+          </div>
+
+          <nav aria-label="Lesson navigation" className="mt-16 grid gap-3 sm:grid-cols-2">
+            {prev ? (
+              <Link href={`/learn/levels/${prev.levelN}/${prev.lesson.slug}`} className="group rounded-3xl bg-card p-5 transition-colors hover:bg-chip">
+                <span className="flex items-center gap-1.5 text-sm text-muted">
+                  <ArrowLeft className="size-4" aria-hidden /> Previous lesson
+                </span>
+                <span className="mt-1 block font-medium leading-snug">
+                  {prev.lesson.n} {prev.lesson.title}
+                </span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <Link href={`/learn/levels/${next.levelN}/${next.lesson.slug}`} className="group rounded-3xl bg-brand p-5 text-white transition-colors hover:bg-brand-dark sm:text-right">
+                <span className="flex items-center gap-1.5 text-sm text-white/75 sm:justify-end">
+                  Next lesson <ArrowRight className="size-4" aria-hidden />
+                </span>
+                <span className="mt-1 block font-medium leading-snug">
+                  {next.lesson.n} {next.lesson.title}
+                </span>
+              </Link>
+            ) : (
+              <Link href="/practice-lab" className="rounded-3xl bg-brand p-5 text-white hover:bg-brand-dark sm:text-right">
+                <span className="text-sm text-white/75">You reached the end of the roadmap</span>
+                <span className="mt-1 block font-medium">Go to the Practice Lab</span>
+              </Link>
+            )}
           </nav>
-
-          <article className="grid max-w-[780px] gap-14">
-            <section aria-labelledby="objectives-title" className="rounded-[28px] bg-card p-6 sm:p-8">
-              <h2 id="objectives-title" className="text-lg font-semibold tracking-[-0.02em]">
-                Learning objectives
-              </h2>
-              <ul className="mt-4 grid gap-2.5">
-                {lesson.objectives.map((o) => (
-                  <li key={o} className="flex gap-3 text-[16px] leading-snug">
-                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-lime text-ink">
-                      <Check className="size-3" strokeWidth={3} aria-hidden />
-                    </span>
-                    {o}
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section aria-labelledby="notes">
-              <Heading id="notes">Notes</Heading>
-              <p className="mt-4 text-[17px] leading-[1.75] text-ink-2">{lesson.notes}</p>
-            </section>
-
-            <section aria-labelledby="example" className="rounded-[28px] bg-[#e8f6f2] p-6 sm:p-8">
-              <h2 id="example" className="flex scroll-mt-28 items-center gap-2 text-lg font-semibold tracking-[-0.02em]">
-                <Lightbulb className="size-5 text-[#0f9b8a]" aria-hidden /> Worked example
-              </h2>
-              <p className="mt-3 text-[16.5px] leading-[1.7] text-ink-2">{lesson.example}</p>
-            </section>
-
-            <section aria-labelledby="illustration">
-              <h2 id="illustration" className="sr-only">
-                Illustration
-              </h2>
-              <LessonDiagram diagram={lesson.diagram} />
-            </section>
-
-            <section aria-labelledby="video">
-              <Heading id="video">Watch</Heading>
-              <div className="mt-5">
-                <InlineYouTube videoId={lesson.video.id} title={lesson.video.title} summary={lesson.video.summary} />
-              </div>
-            </section>
-
-            <section aria-labelledby="lab">
-              <Heading id="lab">Interactive lab</Heading>
-              <div className="mt-5">
-                <LessonLab
-                  levelN={level.n}
-                  lessonSlug={lesson.slug}
-                  lab={labView}
-                  signedIn={!!user}
-                  initialReflection={status?.reflection ?? ""}
-                  initialDone={status?.labDone ?? false}
-                />
-              </div>
-            </section>
-
-            <section aria-labelledby="quiz">
-              <Heading id="quiz">Five-question knowledge check</Heading>
-              <p className="mt-2 text-[15px] text-muted">Answer all five, submit, then see your score, the correct answers and why. You can retry for mastery.</p>
-              <div className="mt-6">
-                <LessonQuiz levelN={level.n} lessonSlug={lesson.slug} questions={questions} previousBest={status?.bestScore ?? null} />
-              </div>
-            </section>
-
-            <section aria-labelledby="recap" className="rounded-[28px] border border-line p-6 sm:p-8">
-              <Heading id="recap">Recap</Heading>
-              <ul className="mt-4 grid gap-2.5 text-[16px] leading-snug">
-                <li className="flex gap-3">
-                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                  Explain &quot;{lesson.title}&quot; without reading the notes.
-                </li>
-                <li className="flex gap-3">
-                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                  Name one failure or misconception this lesson helps prevent.
-                </li>
-                <li className="flex gap-3">
-                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                  Describe the evidence you would collect on a real project.
-                </li>
-              </ul>
-            </section>
-
-            <nav aria-label="Lesson navigation" className="grid gap-3 sm:grid-cols-2">
-              {prev ? (
-                <Link href={`/learn/levels/${prev.levelN}/${prev.lesson.slug}`} className="group rounded-3xl bg-card p-5 transition-colors hover:bg-chip">
-                  <span className="flex items-center gap-1.5 text-sm text-muted">
-                    <ArrowLeft className="size-4" aria-hidden /> Previous
-                  </span>
-                  <span className="mt-1 block font-medium leading-snug">
-                    {prev.lesson.n} {prev.lesson.title}
-                  </span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link href={`/learn/levels/${next.levelN}/${next.lesson.slug}`} className="group rounded-3xl bg-brand p-5 text-white transition-colors hover:bg-brand-dark sm:text-right">
-                  <span className="flex items-center gap-1.5 text-sm text-white/75 sm:justify-end">
-                    Next <ArrowRight className="size-4" aria-hidden />
-                  </span>
-                  <span className="mt-1 block font-medium leading-snug">
-                    {next.lesson.n} {next.lesson.title}
-                  </span>
-                </Link>
-              ) : (
-                <Link href="/practice-lab" className="rounded-3xl bg-brand p-5 text-white hover:bg-brand-dark sm:text-right">
-                  <span className="text-sm text-white/75">You reached the end of the roadmap</span>
-                  <span className="mt-1 block font-medium">Go to the Practice Lab</span>
-                </Link>
-              )}
-            </nav>
-          </article>
         </div>
       </div>
     </PageTop>

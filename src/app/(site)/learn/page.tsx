@@ -73,7 +73,7 @@ export default async function LearnPage() {
             </div>
             <Reveal delay={120}>
               <p className="lead lg:ml-auto lg:max-w-[520px]">
-                Eight progressive levels, {TOTAL_LESSONS} lessons. Each one has notes, a worked example, a video, an interactive lab and a five-question knowledge check.
+                Eight progressive levels, {TOTAL_LESSONS} lessons. Each one is a short guided path: learn it, try it, then a five-question quiz.
                 {user ? ` You have passed ${passedCount} of ${TOTAL_LESSONS} quizzes.` : ""}
               </p>
             </Reveal>
