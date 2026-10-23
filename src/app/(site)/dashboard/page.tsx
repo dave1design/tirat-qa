@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, Lock } from "lucide-react";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { isStaff, requireUser } from "@/lib/auth";
@@ -10,10 +9,11 @@ import { formatDate } from "@/lib/utils";
 import { PageTop } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/Button";
 import { Pill, StatusBadge } from "@/components/ui/StatusBadge";
-import { getLocale, getT } from "@/lib/i18n/server";
-import { isLessonPassed, isLevelUnlocked, loadProgress } from "@/lib/learn-progress";
-import { hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
-import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
+import { getT } from "@/lib/i18n/server";
+import { loadProgress } from "@/lib/learn-progress";
+import { ADVANCED_PRODUCT, hasAdvancedAccess } from "@/lib/learn-access";
+import { loadLearningStats } from "@/lib/learn-dashboard";
+import { LearningDashboard } from "@/components/dashboard/LearningDashboard";
 
 export const metadata: Metadata = { title: "My Dashboard", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -39,80 +39,25 @@ export default async function DashboardPage() {
   const sites = levels.flatMap((l) => l.sites.map((s) => ({ ...s, levelSlug: l.slug })));
   const next = sites.find((s) => s.unlocked && s.status === "NOT_STARTED");
 
-  // learning progress: which lesson to continue with, and how far along each level is
   const progress = await loadProgress(user.id);
   const advanced = await hasAdvancedAccess(user);
-  const roadmap = levelsFor(await getLocale()).map((lv) => ({ ...lv, done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length, open: isLevelUnlocked(lv.n, progress), paywalled: isPaidLevel(lv.n) && !advanced }));
-  const lessonsDone = roadmap.reduce((n, lv) => n + lv.done, 0);
-  const resume = roadmap.flatMap((lv) => lv.lessons.map((l) => ({ levelN: lv.n, lesson: l }))).find((x) => !isLessonPassed(progress.get(`${x.levelN}/${x.lesson.slug}`)));
+  const stats = await loadLearningStats(user.id, progress);
+  const practicePending = payments.filter((p) => !p.product).length;
 
   return (
     <PageTop className="pb-24">
       <div className="container-x">
-        <p className="eyebrow text-muted">{t("My dashboard")}</p>
-        <h1 className="h-section mt-3 text-balance">{t("Welcome back, {name}.", { name: user.name.split(" ")[0] })}</h1>
+        <LearningDashboard
+          name={user.name.split(" ")[0]}
+          progress={progress}
+          stats={stats}
+          advanced={advanced}
+          pendingPayment={payments.some((p) => p.product === ADVANCED_PRODUCT)}
+          activeAttempt={active ? { label: t(active.website.name), href: `/practice-lab/${active.website.level.slug}/${active.website.slug}` } : null}
+        />
 
-        <section aria-labelledby="learning-title" className="mt-10">
-          <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-            <div className="flex flex-col rounded-[36px] bg-brand p-8 text-white sm:p-10">
-              <p className="eyebrow text-white/70">{t("Your learning")}</p>
-              <h2 id="learning-title" className="mb-10 mt-3 text-3xl font-semibold tracking-[-0.04em] text-balance">
-                {resume ? `${resume.lesson.n} ${resume.lesson.title}` : t("You finished every lesson.")}
-              </h2>
-              <div className="mt-auto h-2 overflow-hidden rounded-full bg-white/25" role="progressbar" aria-valuenow={lessonsDone} aria-valuemin={0} aria-valuemax={TOTAL_LESSONS}>
-                <div className="h-full rounded-full bg-lime" style={{ width: `${(lessonsDone / TOTAL_LESSONS) * 100}%` }} />
-              </div>
-              <p className="mt-2 text-sm text-white/75">{t("{done} of {total} lessons passed", { done: lessonsDone, total: TOTAL_LESSONS })}</p>
-              <Link
-                href={resume ? `/learn/levels/${resume.levelN}/${resume.lesson.slug}` : "/learn"}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-medium text-ink hover:bg-card"
-              >
-                {lessonsDone === 0 ? t("Start learning") : t("Continue learning")} <ArrowRight className="size-4" aria-hidden />
-              </Link>
-            </div>
-            <ul className="grid grid-cols-2 gap-3">
-              {roadmap.map((lv) => (
-                <li key={lv.n}>
-                  {lv.paywalled ? (
-                    <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
-                      <span className="text-[13px] font-medium leading-snug opacity-70">
-                        {t("Level")} {lv.n}: {lv.title}
-                      </span>
-                      <span className="mt-3 flex items-center gap-1.5 text-sm font-medium text-brand">
-                        <Lock className="size-4" aria-hidden /> {t("Paid · Unlock")}
-                      </span>
-                    </Link>
-                  ) : lv.open ? (
-                    <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
-                      <span className="text-[13px] font-medium leading-snug">
-                        {t("Level")} {lv.n}: {lv.title}
-                      </span>
-                      <span className="mt-3 flex items-center gap-1.5 text-sm text-muted">
-                        {lv.done === lv.lessons.length && <Check className="size-4 text-ok" strokeWidth={3} aria-hidden />} {lv.done} / {lv.lessons.length}
-                      </span>
-                    </Link>
-                  ) : (
-                    <div aria-disabled="true" className="flex h-full cursor-not-allowed flex-col justify-between rounded-3xl bg-card p-4">
-                      <span className="text-[13px] font-medium leading-snug opacity-55">
-                        {t("Level")} {lv.n}: {lv.title}
-                      </span>
-                      <span className="mt-3 flex items-center gap-1.5 text-sm text-muted">
-                        <Lock className="size-4" aria-hidden /> {t("Locked")}
-                      </span>
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <p className="mt-3 text-sm">
-            <Link href="/learn" className="font-medium text-brand underline underline-offset-4">
-              {t("Open the full learning roadmap")}
-            </Link>
-          </p>
-        </section>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <h2 className="mt-20 text-[1.9rem] font-semibold tracking-[-0.04em]">{t("Practice Lab")}</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
           <div className="rounded-[32px] bg-card p-7">
             <p className="text-sm text-muted">{t("Attempts")}</p>
             <p className="mt-2 text-5xl font-semibold tracking-[-0.05em]">{attempts.length}</p>
@@ -151,9 +96,9 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        {payments.length > 0 && (
+        {practicePending > 0 && (
           <div className="mt-6 rounded-3xl bg-[#e6efff] p-5 text-[15px] text-brand" role="status">
-            {t(payments.length === 1 ? "{n} payment is pending confirmation. Access is unlocked once it's verified." : "{n} payments are pending confirmation. Access is unlocked once it's verified.", { n: payments.length })}
+            {t(practicePending === 1 ? "{n} payment is pending confirmation. Access is unlocked once it's verified." : "{n} payments are pending confirmation. Access is unlocked once it's verified.", { n: practicePending })}
           </div>
         )}
 
