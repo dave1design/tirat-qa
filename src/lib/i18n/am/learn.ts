@@ -307,4 +307,8 @@ export const learn: Dict = {
   "1. Pay using the method shared by our team.": "1. ቡድናችን በሚያጋራው መንገድ ክፈል።",
   "2. Enter the payment reference from your receipt below.": "2. ከደረሰኝህ የክፍያ ማጣቀሻ ቁጥር ከታች አስገባ።",
   "3. We confirm it and unlock Levels 5 to 8.": "3. እናረጋግጠዋለን፣ ደረጃ 5 እስከ 8ንም እንከፍታለን።",
+  "Levels 5 to 8 · one payment": "ደረጃ 5 እስከ 8 · አንድ ክፍያ",
+  "Pay once and all four advanced levels are yours. No subscription.": "አንድ ጊዜ ክፈል፣ አራቱም የላቁ ደረጃዎች ያንተ ናቸው። ወርሃዊ ክፍያ የለም።",
+  "Unlock Levels 5 to 8": "ደረጃ 5 እስከ 8ን ክፈት",
+  Unlocked: "ተከፍቷል",
 };
