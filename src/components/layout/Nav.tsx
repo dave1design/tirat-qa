@@ -40,8 +40,8 @@ function Collapse({ hidden, className, children }: { hidden: boolean; className?
 
 export function Nav({ user }: { user: NavUser | null }) {
   const t = useT();
-  // signed in, the Learn item is the learner's dashboard
-  const links = user ? baseLinks.map((l) => (l.href === "/learn" ? { href: "/dashboard", label: "Dashboard" } : l)) : baseLinks;
+  // signed in, the Learn item opens the learner's dashboard
+  const links = user ? baseLinks.map((l) => (l.href === "/learn" ? { href: "/dashboard", label: "Learn" } : l)) : baseLinks;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false); // desktop: collapses to logo + button while scrolling down
