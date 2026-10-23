@@ -16,8 +16,8 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
     db.level.findMany({ orderBy: { number: "asc" }, select: { id: true, name: true, number: true } }),
     db.practiceWebsite.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, levelId: true } }),
   ]);
-  const targetName = (p: { levelId: string | null; websiteId: string | null }) =>
-    p.websiteId ? sites.find((s) => s.id === p.websiteId)?.name : levels.find((l) => l.id === p.levelId) ? `Level ${levels.find((l) => l.id === p.levelId)!.number}` : "—";
+  const targetName = (p: { levelId: string | null; websiteId: string | null; product: string | null }) =>
+    p.product ? "Learning: Levels 5–8 (one payment)" : p.websiteId ? sites.find((s) => s.id === p.websiteId)?.name : levels.find((l) => l.id === p.levelId) ? `Level ${levels.find((l) => l.id === p.levelId)!.number}` : "—";
   const pending = payments.filter((p) => p.status === "PENDING");
   const rest = payments.filter((p) => p.status !== "PENDING");
 
@@ -64,6 +64,7 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
             <label className={labelCls}>
               Access to
               <select name="target" required className={input}>
+                <option value="product:learn-advanced">Learning: Levels 5–8 (advanced)</option>
                 {levels.map((l) => <option key={l.id} value={`level:${l.id}`}>Level {l.number} — {l.name} (all websites)</option>)}
                 {sites.map((s) => <option key={s.id} value={`website:${s.id}`}>{s.name}</option>)}
               </select>

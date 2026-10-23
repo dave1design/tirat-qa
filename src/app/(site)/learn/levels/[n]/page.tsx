@@ -6,6 +6,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { isLessonPassed, isLevelUnlocked, LEARN_LOGIN, loadProgress } from "@/lib/learn-progress";
 import { getLevel, levelsFor } from "@/content/curriculum";
 import { InterviewPrep } from "@/components/learn/InterviewPrep";
+import { AdvancedPaywall } from "@/components/learn/AdvancedPaywall";
+import { advancedPriceEtb, canOpenLevel, isPaidLevel, pendingAdvancedPayment } from "@/lib/learn-access";
 import { examSummary } from "@/lib/exam";
 import { EXAM_PASS_POINTS } from "@/content/exam";
 import { getLocale, getT } from "@/lib/i18n/server";
@@ -35,6 +37,10 @@ export default async function LevelPage({ params }: { params: Params }) {
 
   const user = await getCurrentUser();
   if (!user) redirect(LEARN_LOGIN);
+  if (isPaidLevel(level.n) && !(await canOpenLevel(user, level.n))) {
+    const paid = levelsFor(locale).filter((l) => isPaidLevel(l.n));
+    return <AdvancedPaywall levels={paid} priceEtb={advancedPriceEtb()} pendingRef={(await pendingAdvancedPayment(user.id))?.reference ?? null} />;
+  }
   const progress = await loadProgress(user.id);
   if (!isLevelUnlocked(level.n, progress)) redirect("/learn#roadmap");
   const exam_ = user ? await examSummary(user.id, level.n) : null;

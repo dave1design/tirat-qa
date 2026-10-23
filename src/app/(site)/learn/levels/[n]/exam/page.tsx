@@ -9,6 +9,7 @@ import { getLocale, getT } from "@/lib/i18n/server";
 import { EXAM_MINUTES, EXAM_PASS_POINTS, examQuestions } from "@/content/exam";
 import { examSummary, finalizeAttempt, type ExamOrder } from "@/lib/exam";
 import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { canOpenLevel } from "@/lib/learn-access";
 import { startExamAction } from "@/actions/exam";
 import { PageTop } from "@/components/layout/SiteShell";
 import { ExamRunner, type RunnerQuestion } from "@/components/learn/ExamRunner";
@@ -31,6 +32,7 @@ export default async function ExamPage({ params }: { params: Params }) {
   const bank = examQuestions(levelN, locale);
   if (!level || !bank) notFound();
   const user = await requireUser(`/learn/levels/${levelN}/exam`);
+  if (!(await canOpenLevel(user, levelN))) redirect(`/learn/levels/${levelN}`);
 
   const summary = await examSummary(user.id, levelN);
   const progress = await loadProgress(user.id);

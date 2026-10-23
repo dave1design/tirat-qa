@@ -79,7 +79,7 @@ export async function confirmPaymentAction(paymentId: string) {
   if (!p || p.status !== "PENDING") back("/admin/payments", "That payment is not pending.", "error");
   await db.$transaction([
     db.payment.update({ where: { id: paymentId }, data: { status: "CONFIRMED", confirmedById: staff.id, confirmedAt: new Date() } }),
-    db.entitlement.create({ data: { userId: p!.userId, levelId: p!.levelId, websiteId: p!.websiteId, source: "PAYMENT", paymentId } }),
+    db.entitlement.create({ data: { userId: p!.userId, levelId: p!.levelId, websiteId: p!.websiteId, product: p!.product, source: "PAYMENT", paymentId } }),
   ]);
   await audit(staff.id, "payment_confirmed", "Payment", paymentId, { amountEtb: p!.amountEtb, reference: p!.reference });
   back("/admin/payments", "Payment confirmed and access granted.");
@@ -109,13 +109,13 @@ export async function refundPaymentAction(paymentId: string) {
 export async function grantAccessAction(fd: FormData) {
   const staff = await requireCapability("payments");
   const email = s(fd, "email").toLowerCase();
-  const target = s(fd, "target"); // "level:<id>" | "website:<id>"
+  const target = s(fd, "target"); // "level:<id>" | "website:<id>" | "product:<name>"
   const user = await db.user.findUnique({ where: { email } });
   if (!user) back("/admin/payments", "No user with that email address.", "error");
   const [kind, id] = target.split(":");
-  if (!id || (kind !== "level" && kind !== "website")) back("/admin/payments", "Choose what to grant access to.", "error");
+  if (!id || (kind !== "level" && kind !== "website" && kind !== "product")) back("/admin/payments", "Choose what to grant access to.", "error");
   await db.entitlement.create({
-    data: { userId: user!.id, source: "GRANT", ...(kind === "level" ? { levelId: id } : { websiteId: id }) },
+    data: { userId: user!.id, source: "GRANT", ...(kind === "level" ? { levelId: id } : kind === "website" ? { websiteId: id } : { product: id }) },
   });
   await audit(staff.id, "access_granted", "User", user!.id, { target });
   back("/admin/payments", `Access granted to ${email}.`);

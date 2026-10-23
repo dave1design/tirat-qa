@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Pill, StatusBadge } from "@/components/ui/StatusBadge";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { isLessonPassed, isLevelUnlocked, loadProgress } from "@/lib/learn-progress";
+import { hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
 
 export const metadata: Metadata = { title: "My Dashboard", robots: { index: false } };
@@ -40,7 +41,8 @@ export default async function DashboardPage() {
 
   // learning progress: which lesson to continue with, and how far along each level is
   const progress = await loadProgress(user.id);
-  const roadmap = levelsFor(await getLocale()).map((lv) => ({ ...lv, done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length, open: isLevelUnlocked(lv.n, progress) }));
+  const advanced = await hasAdvancedAccess(user);
+  const roadmap = levelsFor(await getLocale()).map((lv) => ({ ...lv, done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length, open: isLevelUnlocked(lv.n, progress), paywalled: isPaidLevel(lv.n) && !advanced }));
   const lessonsDone = roadmap.reduce((n, lv) => n + lv.done, 0);
   const resume = roadmap.flatMap((lv) => lv.lessons.map((l) => ({ levelN: lv.n, lesson: l }))).find((x) => !isLessonPassed(progress.get(`${x.levelN}/${x.lesson.slug}`)));
 
@@ -71,7 +73,16 @@ export default async function DashboardPage() {
             <ul className="grid grid-cols-2 gap-3">
               {roadmap.map((lv) => (
                 <li key={lv.n}>
-                  {lv.open ? (
+                  {lv.paywalled ? (
+                    <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
+                      <span className="text-[13px] font-medium leading-snug opacity-70">
+                        {t("Level")} {lv.n}: {lv.title}
+                      </span>
+                      <span className="mt-3 flex items-center gap-1.5 text-sm font-medium text-brand">
+                        <Lock className="size-4" aria-hidden /> {t("Paid · Unlock")}
+                      </span>
+                    </Link>
+                  ) : lv.open ? (
                     <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
                       <span className="text-[13px] font-medium leading-snug">
                         {t("Level")} {lv.n}: {lv.title}

@@ -7,11 +7,13 @@ import { EXAM_BLUEPRINT_VERSION, examQuestions } from "@/content/exam";
 import { buildOrder, finalizeAttempt, newExpiry } from "@/lib/exam";
 import { getLevel } from "@/content/curriculum";
 import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { canOpenLevel } from "@/lib/learn-access";
 
 export async function startExamAction(levelN: number) {
   const user = await requireUser(`/learn/levels/${levelN}/exam`);
   const level = getLevel(levelN);
   if (!level || !examQuestions(levelN)) redirect("/learn");
+  if (!(await canOpenLevel(user, levelN))) redirect(`/learn/levels/${levelN}`);
 
   // the level exam opens once every lesson quiz of the level has been passed
   const progress = await loadProgress(user.id);

@@ -180,6 +180,7 @@ model Payment {
   userId        String
   levelId       String?
   websiteId     String?
+  product       String? // set for learning purchases, e.g. "learn-advanced" (Levels 5-8)
   amountEtb     Int
   currency      String        @default("ETB")
   method        String        @default("MANUAL")
@@ -201,6 +202,7 @@ model Entitlement {
   userId    String
   levelId   String?
   websiteId String?
+  product   String? // e.g. "learn-advanced"
   source    String           @default("GRANT") // PAYMENT | GRANT
   paymentId String?
   status    String           @default("ACTIVE") // ACTIVE | REVOKED

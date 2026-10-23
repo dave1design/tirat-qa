@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { findLesson } from "@/content/curriculum";
 import { getLocale } from "@/lib/i18n/server";
+import { canOpenLevel } from "@/lib/learn-access";
 
 /** Pass mark for a subsection quiz: 4 out of 5 (80%). */
 const QUIZ_PASS = 4;
@@ -22,6 +23,7 @@ export async function submitQuizAction(levelN: number, lessonSlug: string, answe
   const found = findLesson(levelN, lessonSlug, await getLocale());
   if (!found || !Array.isArray(answers)) return null;
   const { lesson } = found;
+  if (!(await canOpenLevel(await getCurrentUser(), levelN))) return null; // advanced levels need the one-time payment
 
   const results = lesson.quiz.map((question, i) => ({
     correct: answers[i] === question.a,
@@ -68,6 +70,7 @@ export async function saveReflectionAction(levelN: number, lessonSlug: string, t
   if (!found) return { ok: false, message: "Lesson not found." };
   const user = await getCurrentUser();
   if (!user) return { ok: false, message: "Sign in to save your lab result and reflection." };
+  if (!(await canOpenLevel(user, levelN))) return { ok: false, message: "Levels 5 to 8 need the one-time payment." };
   const reflection = String(text ?? "").trim().slice(0, 2000);
   if (reflection.length < 10) return { ok: false, message: "Write a short reflection (at least a sentence) to complete the lab." };
   const lessonKey = `${levelN}/${lessonSlug}`;

@@ -8,6 +8,7 @@ import { FinalCta } from "@/components/home/FinalCta";
 import { getCurrentUser } from "@/lib/auth";
 import { isLessonPassed, isLevelUnlocked, LEARN_LOGIN, loadProgress } from "@/lib/learn-progress";
 import { cn } from "@/lib/utils";
+import { hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
 import { getLocale, getT } from "@/lib/i18n/server";
 
@@ -22,6 +23,7 @@ export default async function LearnPage() {
   const LEVELS = levelsFor(await getLocale());
   const user = await getCurrentUser();
   const progress = await loadProgress(user?.id ?? null);
+  const advanced = await hasAdvancedAccess(user);
   const passedCount = LEVELS.flatMap((l) => l.lessons.map((x) => progress.get(`${l.n}/${x.slug}`))).filter(isLessonPassed).length;
 
   return (
@@ -69,13 +71,18 @@ export default async function LearnPage() {
             {LEVELS.map((l, i) => {
               const done = l.lessons.filter((x) => isLessonPassed(progress.get(`${l.n}/${x.slug}`))).length;
               // everyone starts at Level 1; the rest open one by one as the level before is passed
-              const locked = !(user ? isLevelUnlocked(l.n, progress) : l.n === 1);
+              // Levels 5 to 8 need one payment; a signed-in learner without it can still open the card to pay
+              const paywalled = isPaidLevel(l.n) && !!user && !advanced;
+              const locked = !paywalled && !(user ? isLevelUnlocked(l.n, progress) : l.n === 1);
               const href = !user ? LEARN_LOGIN : `/learn/levels/${l.n}`;
               const body = (
                 <>
                       <div className={cn("flex items-center justify-between gap-3", locked && "opacity-60")}>
                         <span className="rounded-lg bg-brand px-2.5 py-1.5 text-sm font-medium text-white">{t("Level")} {l.n}</span>
-                        <span className="rounded-lg border border-line bg-white px-2.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.06em]">{t(l.track)}</span>
+                        <span className="flex items-center gap-2">
+                          {isPaidLevel(l.n) && <span className="rounded-lg bg-ink px-2.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.06em] text-white">{t("Paid")}</span>}
+                          <span className="rounded-lg border border-line bg-white px-2.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.06em]">{t(l.track)}</span>
+                        </span>
                       </div>
                       <h3 className={cn("mt-6 text-[1.55rem] font-semibold leading-tight tracking-[-0.035em] text-balance", locked && "opacity-60")}>{t(l.title)}</h3>
                       <p className={cn("mt-3 text-[15.5px] leading-relaxed text-ink-2", locked && "opacity-60")}>{t(l.goal)}</p>
@@ -88,9 +95,13 @@ export default async function LearnPage() {
                       </ul>
                       <div className="mt-auto flex items-center justify-between pt-6 text-sm">
                         <span className="text-muted">
-                          {locked ? t("Pass Level {n} to unlock it.", { n: l.n - 1 }) : user ? t("{done} of {total} quizzes passed", { done, total: l.lessons.length }) : t("{n} lessons · timed exam · interview prep", { n: l.lessons.length })}
+                          {paywalled ? t("One payment unlocks Levels 5 to 8") : locked ? t("Pass Level {n} to unlock it.", { n: l.n - 1 }) : user ? t("{done} of {total} quizzes passed", { done, total: l.lessons.length }) : t("{n} lessons · timed exam · interview prep", { n: l.lessons.length })}
                         </span>
-                        {locked ? (
+                        {paywalled ? (
+                          <span className="inline-flex items-center gap-1.5 font-medium text-brand">
+                            <Lock className="size-4" aria-hidden /> {t("Unlock")}
+                          </span>
+                        ) : locked ? (
                           <span className="inline-flex size-9 items-center justify-center rounded-full bg-white text-muted shadow-soft">
                             <Lock className="size-4" aria-label={t("Locked")} />
                           </span>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowUpRight, Check, Clock, Lightbulb, Lock } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
+import { canOpenLevel, hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { isLessonPassed, LEARN_LOGIN, loadProgress, passedExamLevels } from "@/lib/learn-progress";
 import { findLesson, levelsFor, neighbours, TOTAL_LESSONS } from "@/content/curriculum";
 import { LESSON_GUIDES } from "@/content/curriculum/guides";
@@ -63,6 +64,8 @@ export default async function LessonPage({ params }: { params: Params }) {
 
   const user = await getCurrentUser();
   if (!user) redirect(LEARN_LOGIN);
+  if (!(await canOpenLevel(user, levelN))) redirect(`/learn/levels/${levelN}`); // advanced levels: one-time payment first
+  const advanced = await hasAdvancedAccess(user);
   const progress = await loadProgress(user.id);
   const examLevels = await passedExamLevels(user?.id ?? null);
   const status = progress.get(`${levelN}/${slug}`);
@@ -84,7 +87,7 @@ export default async function LessonPage({ params }: { params: Params }) {
       const key = `${lv.n}/${l.slug}`;
       const p = isLessonPassed(progress.get(key));
       if (p) passedCount++;
-      const locked = !!user && !!before && !isLessonPassed(progress.get(before));
+      const locked = (isPaidLevel(lv.n) && !advanced) || (!!before && !isLessonPassed(progress.get(before)));
       before = key;
       return { slug: l.slug, n: l.n, title: l.title, minutes: l.minutes, passed: p, locked };
     }),
