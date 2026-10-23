@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import { LanguageSwitch } from "@/components/layout/LanguageSwitch";
 import { getT } from "@/lib/i18n/server";
 
 /** Slim dark bar at the top of the course player: logo, which level you are in, overall progress and language. */
@@ -33,7 +32,6 @@ export async function PlayerTopBar({ levelN, levelTitle, passed, total }: { leve
             </span>
           </span>
         </div>
-        <LanguageSwitch className="hidden sm:inline-flex" />
         <Link href="/learn" className="rounded-full border border-white/35 px-4 py-1.5 text-[13.5px] font-medium hover:bg-white/10">
           {t("Exit")}
         </Link>
