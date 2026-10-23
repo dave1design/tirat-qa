@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { logoutAction } from "@/actions/auth";
 import { useT } from "@/lib/i18n/client";
-import { LanguageSwitch } from "./LanguageSwitch";
 
 const links = [
   { href: "/", label: "Home" },
@@ -82,7 +81,7 @@ export function Nav({ user }: { user: NavUser | null }) {
           compact ? "lg:max-w-[330px]" : "max-w-[860px]",
         )}
       >
-        <Logo className="[&>span:last-child]:text-xl [&>span:first-child]:!size-10" />
+        <Logo className="shrink-0 whitespace-nowrap [&>span:last-child]:text-xl [&>span:first-child]:!size-10" />
 
         <Collapse hidden={compact} className="hidden lg:grid">
         <ul className="flex items-center gap-0.5">
@@ -105,9 +104,6 @@ export function Nav({ user }: { user: NavUser | null }) {
         </Collapse>
 
         <div className="flex items-center gap-1.5">
-          <Collapse hidden={compact} className="hidden md:grid">
-            <LanguageSwitch />
-          </Collapse>
           {user ? (
             <>
               <Button href={user.isStaff ? "/admin" : "/dashboard"} variant={compact ? "dark" : "ghost"} size="sm" className="hidden sm:inline-flex">
@@ -162,10 +158,6 @@ export function Nav({ user }: { user: NavUser | null }) {
               </li>
             ))}
           </ul>
-          <div className="mt-2 flex items-center justify-between border-t border-line pt-3">
-            <span className="text-sm text-muted">{t("Language")}</span>
-            <LanguageSwitch />
-          </div>
           <div className="mt-2 flex gap-2 border-t border-line pt-3">
             {user ? (
               <>
