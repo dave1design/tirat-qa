@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
+import { Fragment, createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
@@ -75,7 +75,7 @@ export function LessonFlow({
 
   return (
     <PassCtx.Provider value={markPassed}>
-      <div className="bg-black">{video}</div>
+      <div className="bg-black"><Fragment key="video">{video}</Fragment></div>
 
       <div className="flex flex-wrap items-start justify-between gap-4 px-5 pt-6 sm:px-8">
         <div className="min-w-0 max-w-[760px]">{heading}</div>
@@ -128,7 +128,7 @@ export function LessonFlow({
         <div className={cn(tab === "content" ? "max-w-[560px]" : "max-w-[800px]")}>
           {tab === "overview" && (
             <div>
-              {overview}
+              <Fragment key="overview">{overview}</Fragment>
               <div className="mt-12 rounded-2xl bg-ink p-6 text-white sm:p-8">
                 <p className="text-xl font-semibold tracking-[-0.03em]">{passed ? t("Quiz passed") : t("Finished the video and the summary?")}</p>
                 <p className="mt-2 max-w-[560px] text-[15px] text-white/70">
@@ -143,7 +143,7 @@ export function LessonFlow({
 
           {tab === "quiz" && (
             <div>
-              {quiz}
+              <Fragment key="quiz">{quiz}</Fragment>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <button type="button" onClick={() => go("overview")} className="rounded-full bg-chip px-5 py-3 font-medium hover:bg-[#e5e5e5]">
                   {t("Review the lesson")}
@@ -160,12 +160,12 @@ export function LessonFlow({
           {tab === "practice" && (
             <div>
               <p className="mb-5 rounded-2xl bg-card px-4 py-3 text-sm text-muted">{t("This lab is optional practice. Your quiz result already counts.")}</p>
-              {practice}
+              <Fragment key="practice">{practice}</Fragment>
             </div>
           )}
 
-          {tab === "resources" && resources}
-          {tab === "content" && <div className="-mx-5 sm:-mx-8">{sidebar}</div>}
+          {tab === "resources" && <Fragment key="resources">{resources}</Fragment>}
+          {tab === "content" && <div className="-mx-5 sm:-mx-8"><Fragment key="sidebar">{sidebar}</Fragment></div>}
         </div>
       </div>
     </PassCtx.Provider>
