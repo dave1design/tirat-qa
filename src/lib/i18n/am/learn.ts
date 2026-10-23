@@ -291,4 +291,6 @@ export const learn: Dict = {
   "You finished every lesson.": "ሁሉንም ትምህርቶች ጨርሰሃል።",
   "{done} of {total} lessons passed": "ከ{total} ትምህርቶች {done} አልፈሃል",
   "Open the full learning roadmap": "ሙሉውን የመማሪያ ካርታ ክፈት",
+  "Pass Level {n} to unlock it.": "ለመክፈት ደረጃ {n}ን እለፍ።",
+  "Log in to start": "ለመጀመር ግባ",
 };

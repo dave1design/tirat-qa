@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { FinalCta } from "@/components/home/FinalCta";
 import { getCurrentUser } from "@/lib/auth";
-import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { isLessonPassed, isLevelUnlocked, LEARN_LOGIN, loadProgress } from "@/lib/learn-progress";
+import { cn } from "@/lib/utils";
 import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
 import { getLocale, getT } from "@/lib/i18n/server";
 
@@ -67,17 +68,18 @@ export default async function LearnPage() {
           <ol className="mt-12 grid gap-4 md:grid-cols-2">
             {LEVELS.map((l, i) => {
               const done = l.lessons.filter((x) => isLessonPassed(progress.get(`${l.n}/${x.slug}`))).length;
-              return (
-                <li key={l.n} className="list-none">
-                  <Reveal delay={(i % 2) * 80} className="h-full">
-                    <Link href={`/learn/levels/${l.n}`} className="group flex h-full flex-col rounded-[32px] bg-card p-7 transition-colors hover:bg-chip sm:p-8">
-                      <div className="flex items-center justify-between gap-3">
+              // everyone starts at Level 1; the rest open one by one as the level before is passed
+              const locked = !(user ? isLevelUnlocked(l.n, progress) : l.n === 1);
+              const href = !user ? LEARN_LOGIN : `/learn/levels/${l.n}`;
+              const body = (
+                <>
+                      <div className={cn("flex items-center justify-between gap-3", locked && "opacity-60")}>
                         <span className="rounded-lg bg-brand px-2.5 py-1.5 text-sm font-medium text-white">{t("Level")} {l.n}</span>
                         <span className="rounded-lg border border-line bg-white px-2.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.06em]">{t(l.track)}</span>
                       </div>
-                      <h3 className="mt-6 text-[1.55rem] font-semibold leading-tight tracking-[-0.035em] text-balance">{t(l.title)}</h3>
-                      <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">{t(l.goal)}</p>
-                      <ul className="mt-5 grid gap-1.5 text-[14.5px] text-ink-2">
+                      <h3 className={cn("mt-6 text-[1.55rem] font-semibold leading-tight tracking-[-0.035em] text-balance", locked && "opacity-60")}>{t(l.title)}</h3>
+                      <p className={cn("mt-3 text-[15.5px] leading-relaxed text-ink-2", locked && "opacity-60")}>{t(l.goal)}</p>
+                      <ul className={cn("mt-5 grid gap-1.5 text-[14.5px] text-ink-2", locked && "opacity-60")}>
                         {l.lessons.map((x) => (
                           <li key={x.slug} className="flex gap-2">
                             <span className="font-medium text-muted">{x.n}</span> {t(x.title)}
@@ -85,12 +87,34 @@ export default async function LearnPage() {
                         ))}
                       </ul>
                       <div className="mt-auto flex items-center justify-between pt-6 text-sm">
-                        <span className="text-muted">{user ? t("{done} of {total} quizzes passed", { done, total: l.lessons.length }) : t("{n} lessons · timed exam · interview prep", { n: l.lessons.length })}</span>
-                        <span className="inline-flex items-center gap-1 font-medium text-brand">
-                          {t("Open level")} <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                        <span className="text-muted">
+                          {locked ? t("Pass Level {n} to unlock it.", { n: l.n - 1 }) : user ? t("{done} of {total} quizzes passed", { done, total: l.lessons.length }) : t("{n} lessons · timed exam · interview prep", { n: l.lessons.length })}
                         </span>
+                        {locked ? (
+                          <span className="inline-flex size-9 items-center justify-center rounded-full bg-white text-muted shadow-soft">
+                            <Lock className="size-4" aria-label={t("Locked")} />
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 font-medium text-brand">
+                            {user ? t("Open level") : t("Log in to start")} <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                          </span>
+                        )}
                       </div>
-                    </Link>
+                </>
+              );
+              const cls = cn("group flex h-full flex-col rounded-[32px] bg-card p-7 sm:p-8", locked ? "cursor-not-allowed" : "transition-colors hover:bg-chip");
+              return (
+                <li key={l.n} className="list-none">
+                  <Reveal delay={(i % 2) * 80} className="h-full">
+                    {locked ? (
+                      <div aria-disabled="true" className={cls}>
+                        {body}
+                      </div>
+                    ) : (
+                      <Link href={href} className={cls}>
+                        {body}
+                      </Link>
+                    )}
                   </Reveal>
                 </li>
               );

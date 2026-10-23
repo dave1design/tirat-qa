@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowRight, BookOpenCheck, Check, ChevronRight, Clock, FileCheck2, FlaskConical, Lock, MessagesSquare, PlayCircle, Timer, Video } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { isLessonPassed, isLevelUnlocked, LEARN_LOGIN, loadProgress } from "@/lib/learn-progress";
 import { getLevel, levelsFor } from "@/content/curriculum";
 import { InterviewPrep } from "@/components/learn/InterviewPrep";
 import { examSummary } from "@/lib/exam";
@@ -34,7 +34,9 @@ export default async function LevelPage({ params }: { params: Params }) {
   if (!level) notFound();
 
   const user = await getCurrentUser();
-  const progress = await loadProgress(user?.id ?? null);
+  if (!user) redirect(LEARN_LOGIN);
+  const progress = await loadProgress(user.id);
+  if (!isLevelUnlocked(level.n, progress)) redirect("/learn#roadmap");
   const exam_ = user ? await examSummary(user.id, level.n) : null;
   const prev = levelsFor(locale).find((l) => l.n === level.n - 1);
   const next = levelsFor(locale).find((l) => l.n === level.n + 1);

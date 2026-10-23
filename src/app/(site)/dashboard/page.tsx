@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Lock } from "lucide-react";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { isStaff, requireUser } from "@/lib/auth";
@@ -11,7 +11,7 @@ import { PageTop } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/Button";
 import { Pill, StatusBadge } from "@/components/ui/StatusBadge";
 import { getLocale, getT } from "@/lib/i18n/server";
-import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { isLessonPassed, isLevelUnlocked, loadProgress } from "@/lib/learn-progress";
 import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
 
 export const metadata: Metadata = { title: "My Dashboard", robots: { index: false } };
@@ -40,7 +40,7 @@ export default async function DashboardPage() {
 
   // learning progress: which lesson to continue with, and how far along each level is
   const progress = await loadProgress(user.id);
-  const roadmap = levelsFor(await getLocale()).map((lv) => ({ ...lv, done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length }));
+  const roadmap = levelsFor(await getLocale()).map((lv) => ({ ...lv, done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length, open: isLevelUnlocked(lv.n, progress) }));
   const lessonsDone = roadmap.reduce((n, lv) => n + lv.done, 0);
   const resume = roadmap.flatMap((lv) => lv.lessons.map((l) => ({ levelN: lv.n, lesson: l }))).find((x) => !isLessonPassed(progress.get(`${x.levelN}/${x.lesson.slug}`)));
 
@@ -71,14 +71,25 @@ export default async function DashboardPage() {
             <ul className="grid grid-cols-2 gap-3">
               {roadmap.map((lv) => (
                 <li key={lv.n}>
-                  <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
-                    <span className="text-[13px] font-medium leading-snug">
-                      {t("Level")} {lv.n}: {lv.title}
-                    </span>
-                    <span className="mt-3 flex items-center gap-1.5 text-sm text-muted">
-                      {lv.done === lv.lessons.length && <Check className="size-4 text-ok" strokeWidth={3} aria-hidden />} {lv.done} / {lv.lessons.length}
-                    </span>
-                  </Link>
+                  {lv.open ? (
+                    <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
+                      <span className="text-[13px] font-medium leading-snug">
+                        {t("Level")} {lv.n}: {lv.title}
+                      </span>
+                      <span className="mt-3 flex items-center gap-1.5 text-sm text-muted">
+                        {lv.done === lv.lessons.length && <Check className="size-4 text-ok" strokeWidth={3} aria-hidden />} {lv.done} / {lv.lessons.length}
+                      </span>
+                    </Link>
+                  ) : (
+                    <div aria-disabled="true" className="flex h-full cursor-not-allowed flex-col justify-between rounded-3xl bg-card p-4">
+                      <span className="text-[13px] font-medium leading-snug opacity-55">
+                        {t("Level")} {lv.n}: {lv.title}
+                      </span>
+                      <span className="mt-3 flex items-center gap-1.5 text-sm text-muted">
+                        <Lock className="size-4" aria-hidden /> {t("Locked")}
+                      </span>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowUpRight, Check, Clock, Lightbulb, Lock } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { isLessonPassed, loadProgress, passedExamLevels } from "@/lib/learn-progress";
+import { isLessonPassed, LEARN_LOGIN, loadProgress, passedExamLevels } from "@/lib/learn-progress";
 import { findLesson, levelsFor, neighbours, TOTAL_LESSONS } from "@/content/curriculum";
 import { LESSON_GUIDES } from "@/content/curriculum/guides";
 import { db } from "@/lib/db";
@@ -62,7 +62,8 @@ export default async function LessonPage({ params }: { params: Params }) {
   const { level, lesson } = found;
 
   const user = await getCurrentUser();
-  const progress = await loadProgress(user?.id ?? null);
+  if (!user) redirect(LEARN_LOGIN);
+  const progress = await loadProgress(user.id);
   const examLevels = await passedExamLevels(user?.id ?? null);
   const status = progress.get(`${levelN}/${slug}`);
   const { prev, next } = neighbours(levelN, slug, locale);
