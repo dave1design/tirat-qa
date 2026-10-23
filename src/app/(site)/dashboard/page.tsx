@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight, Check } from "lucide-react";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { isStaff, requireUser } from "@/lib/auth";
@@ -9,7 +10,9 @@ import { formatDate } from "@/lib/utils";
 import { PageTop } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/Button";
 import { Pill, StatusBadge } from "@/components/ui/StatusBadge";
-import { getT } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
+import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
 
 export const metadata: Metadata = { title: "My Dashboard", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -35,11 +38,57 @@ export default async function DashboardPage() {
   const sites = levels.flatMap((l) => l.sites.map((s) => ({ ...s, levelSlug: l.slug })));
   const next = sites.find((s) => s.unlocked && s.status === "NOT_STARTED");
 
+  // learning progress: which lesson to continue with, and how far along each level is
+  const progress = await loadProgress(user.id);
+  const roadmap = levelsFor(await getLocale()).map((lv) => ({ ...lv, done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length }));
+  const lessonsDone = roadmap.reduce((n, lv) => n + lv.done, 0);
+  const resume = roadmap.flatMap((lv) => lv.lessons.map((l) => ({ levelN: lv.n, lesson: l }))).find((x) => !isLessonPassed(progress.get(`${x.levelN}/${x.lesson.slug}`)));
+
   return (
     <PageTop className="pb-24">
       <div className="container-x">
         <p className="eyebrow text-muted">{t("My dashboard")}</p>
         <h1 className="h-section mt-3 text-balance">{t("Welcome back, {name}.", { name: user.name.split(" ")[0] })}</h1>
+
+        <section aria-labelledby="learning-title" className="mt-10">
+          <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+            <div className="flex flex-col rounded-[36px] bg-brand p-8 text-white sm:p-10">
+              <p className="eyebrow text-white/70">{t("Your learning")}</p>
+              <h2 id="learning-title" className="mb-10 mt-3 text-3xl font-semibold tracking-[-0.04em] text-balance">
+                {resume ? `${resume.lesson.n} ${resume.lesson.title}` : t("You finished every lesson.")}
+              </h2>
+              <div className="mt-auto h-2 overflow-hidden rounded-full bg-white/25" role="progressbar" aria-valuenow={lessonsDone} aria-valuemin={0} aria-valuemax={TOTAL_LESSONS}>
+                <div className="h-full rounded-full bg-lime" style={{ width: `${(lessonsDone / TOTAL_LESSONS) * 100}%` }} />
+              </div>
+              <p className="mt-2 text-sm text-white/75">{t("{done} of {total} lessons passed", { done: lessonsDone, total: TOTAL_LESSONS })}</p>
+              <Link
+                href={resume ? `/learn/levels/${resume.levelN}/${resume.lesson.slug}` : "/learn"}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-medium text-ink hover:bg-card"
+              >
+                {lessonsDone === 0 ? t("Start learning") : t("Continue learning")} <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
+            <ul className="grid grid-cols-2 gap-3">
+              {roadmap.map((lv) => (
+                <li key={lv.n}>
+                  <Link href={`/learn/levels/${lv.n}`} className="flex h-full flex-col justify-between rounded-3xl bg-card p-4 transition-colors hover:bg-chip">
+                    <span className="text-[13px] font-medium leading-snug">
+                      {t("Level")} {lv.n}: {lv.title}
+                    </span>
+                    <span className="mt-3 flex items-center gap-1.5 text-sm text-muted">
+                      {lv.done === lv.lessons.length && <Check className="size-4 text-ok" strokeWidth={3} aria-hidden />} {lv.done} / {lv.lessons.length}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="mt-3 text-sm">
+            <Link href="/learn" className="font-medium text-brand underline underline-offset-4">
+              {t("Open the full learning roadmap")}
+            </Link>
+          </p>
+        </section>
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           <div className="rounded-[32px] bg-card p-7">

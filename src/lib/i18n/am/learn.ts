@@ -286,4 +286,9 @@ export const learn: Dict = {
   Requirements: "መስፈርቶች",
   "Review lesson": "ትምህርቱን ከልስ",
   "Start lesson": "ትምህርቱን ጀምር",
+  "Account menu": "የመለያ ምናሌ",
+  "Your learning": "የመማር ሂደትህ",
+  "You finished every lesson.": "ሁሉንም ትምህርቶች ጨርሰሃል።",
+  "{done} of {total} lessons passed": "ከ{total} ትምህርቶች {done} አልፈሃል",
+  "Open the full learning roadmap": "ሙሉውን የመማሪያ ካርታ ክፈት",
 };

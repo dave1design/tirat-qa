@@ -14,7 +14,7 @@ export async function SiteShell({ children }: { children: ReactNode }) {
         {t("Skip to content")}
       </a>
       <NavProgress />
-      <Nav user={user ? { name: user.name, isStaff: isStaff(user.role) } : null} />
+      <Nav user={user ? { name: user.name, email: user.email, isStaff: isStaff(user.role) } : null} />
       <main id="main">{children}</main>
       <Footer />
     </>

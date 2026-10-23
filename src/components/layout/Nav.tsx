@@ -8,9 +8,10 @@ import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { logoutAction } from "@/actions/auth";
+import { ProfileMenu } from "./ProfileMenu";
 import { useT } from "@/lib/i18n/client";
 
-const links = [
+const baseLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/learn", label: "Learn" },
@@ -20,6 +21,7 @@ const links = [
 
 export interface NavUser {
   name: string;
+  email: string;
   isStaff: boolean;
 }
 
@@ -38,6 +40,8 @@ function Collapse({ hidden, className, children }: { hidden: boolean; className?
 
 export function Nav({ user }: { user: NavUser | null }) {
   const t = useT();
+  // signed in, the Learn item is the learner's dashboard
+  const links = user ? baseLinks.map((l) => (l.href === "/learn" ? { href: "/dashboard", label: "Dashboard" } : l)) : baseLinks;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false); // desktop: collapses to logo + button while scrolling down
@@ -69,6 +73,7 @@ export function Nav({ user }: { user: NavUser | null }) {
 
   const isActive = (href: string) => {
     const p = pending ?? pathname;
+    if (href === "/dashboard") return p.startsWith("/dashboard") || p.startsWith("/learn");
     return href === "/" ? p === "/" : p.startsWith(href);
   };
 
@@ -105,18 +110,7 @@ export function Nav({ user }: { user: NavUser | null }) {
 
         <div className="flex items-center gap-1.5">
           {user ? (
-            <>
-              <Button href={user.isStaff ? "/admin" : "/dashboard"} variant={compact ? "dark" : "ghost"} size="sm" className="hidden sm:inline-flex">
-                {user.isStaff ? t("Admin") : t("Dashboard")}
-              </Button>
-              <Collapse hidden={compact} className="hidden sm:grid">
-                <form action={logoutAction}>
-                  <Button type="submit" size="sm" variant="dark">
-                    {t("Log Out")}
-                  </Button>
-                </form>
-              </Collapse>
-            </>
+            <ProfileMenu user={user} />
           ) : (
             <>
               <Collapse hidden={compact} className="hidden sm:grid">
@@ -161,9 +155,11 @@ export function Nav({ user }: { user: NavUser | null }) {
           <div className="mt-2 flex gap-2 border-t border-line pt-3">
             {user ? (
               <>
-                <Button href={user.isStaff ? "/admin" : "/dashboard"} variant="light" className="flex-1">
-                  {user.isStaff ? t("Admin") : t("Dashboard")}
-                </Button>
+                {user.isStaff && (
+                  <Button href="/admin" variant="light" className="flex-1">
+                    {t("Admin")}
+                  </Button>
+                )}
                 <form action={logoutAction} className="flex-1">
                   <Button type="submit" className="w-full">
                     {t("Log Out")}
