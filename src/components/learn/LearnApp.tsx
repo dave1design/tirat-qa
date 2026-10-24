@@ -50,7 +50,7 @@ export async function LearnApp({ active, advanced, passed, total, children }: { 
         </div>
 
         {!advanced && (
-          <Link href="/learn/levels/5" className="mt-4 hidden rounded-3xl border-2 border-ink bg-[#6c5cff] p-4 text-white lg:block">
+          <Link href="/learn/levels/5" className="mt-4 hidden rounded-3xl bg-brand p-4 text-white transition-colors hover:bg-brand-dark lg:block">
             <span className="flex items-center gap-2 text-sm text-white/80">
               <Lock className="size-3.5" aria-hidden /> {t("Paid levels")}
             </span>
