@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { getT } from "@/lib/i18n/server";
-import { LanguageSwitch } from "./LanguageSwitch";
 
 const columns = [
   {
@@ -64,10 +63,7 @@ export async function Footer() {
       </div>
       <div className="mx-auto mt-14 flex max-w-[1136px] flex-col gap-2 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
         <p>{t("© 2026 Tirat QA. All rights reserved.")}</p>
-        <div className="flex flex-wrap items-center gap-3">
-          <LanguageSwitch />
-          <p>Tirat QA — {t("Practice. Find bugs. Improve.")}</p>
-        </div>
+        <p>Tirat QA — {t("Practice. Find bugs. Improve.")}</p>
       </div>
     </footer>
   );
