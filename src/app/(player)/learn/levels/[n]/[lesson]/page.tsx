@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowUpRight, Check, Clock, Lightbulb, Lock } from "lucide-react";
+import { ArrowUpRight, BookOpen, Check, ChevronDown, ChevronRight, Clock, Lightbulb, ListChecks, Lock, ShieldCheck } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import { canOpenLevel, hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { isLessonPassed, LEARN_LOGIN, loadProgress, passedExamLevels } from "@/lib/learn-progress";
@@ -10,6 +10,7 @@ import { LESSON_GUIDES } from "@/content/curriculum/guides";
 import { db } from "@/lib/db";
 import { CourseSidebar, type SidebarLevel } from "@/components/learn/CourseSidebar";
 import { PlayerTopBar } from "@/components/learn/PlayerTopBar";
+import { LessonCover } from "@/components/learn/LessonCover";
 import { LessonFlow } from "@/components/learn/LessonFlow";
 import { InlineYouTube } from "@/components/learn/InlineYouTube";
 import { LessonDiagram } from "@/components/learn/LessonDiagram";
@@ -32,6 +33,19 @@ function Heading({ id, children }: { id: string; children: React.ReactNode }) {
     <h2 id={id} className="scroll-mt-28 text-[1.6rem] font-semibold tracking-[-0.035em]">
       {children}
     </h2>
+  );
+}
+
+/** A question-style panel that opens and closes, like the FAQ rows of a course page. */
+function Fold({ title, open, children }: { title: string; open?: boolean; children: React.ReactNode }) {
+  return (
+    <details open={open} className="group rounded-2xl border border-line bg-white [&_summary::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 text-[17px] font-semibold tracking-[-0.015em] hover:bg-card">
+        {title}
+        <ChevronDown className="size-5 shrink-0 text-muted transition-transform group-open:rotate-180" aria-hidden />
+      </summary>
+      <div className="border-t border-line px-5 py-5">{children}</div>
+    </details>
   );
 }
 
@@ -103,20 +117,78 @@ export default async function LessonPage({ params }: { params: Params }) {
   const questions = lesson.quiz.map((qu) => ({ q: qu.q, o: [...qu.o] }));
   const labView = { title: lesson.lab.title, task: lesson.lab.task, categories: lesson.lab.categories, items: lesson.lab.items.map((i) => i.t), reflection: lesson.lab.reflection };
 
+  const breadcrumbNode = (
+    <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[15px]">
+      <Link href="/learn" className="font-medium text-brand hover:underline">
+        {t("Lessons")}
+      </Link>
+      <ChevronRight className="size-4 text-faint" aria-hidden />
+      <Link href={`/learn/levels/${level.n}`} className="text-muted hover:text-ink">
+        {t("Level")} {level.n}
+      </Link>
+      <ChevronRight className="size-4 text-faint" aria-hidden />
+      <span className="text-muted">{lesson.title}</span>
+    </nav>
+  );
+  const chipsNode = (
+    <>
+      {[
+        [ShieldCheck, `${t("Level")} ${level.n}`],
+        [BookOpen, t(level.track)],
+        [Clock, t("About {n} min", { n: lesson.minutes })],
+        [ListChecks, t("Quiz: {n} questions", { n: lesson.quiz.length })],
+      ].map(([I, label]) => {
+        const Icon = I as typeof Clock;
+        return (
+          <span key={label as string} className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-3.5 py-2 text-[14px] font-medium shadow-sm">
+            <Icon className="size-4 text-brand" aria-hidden /> {label as string}
+          </span>
+        );
+      })}
+      {passed && (
+        <span className="inline-flex items-center gap-2 rounded-xl bg-ok-soft px-3.5 py-2 text-[14px] font-medium text-ok">
+          <Check className="size-4" strokeWidth={3} aria-hidden /> {t("Quiz passed")}
+        </span>
+      )}
+    </>
+  );
+
   return (
     <>
-      <PlayerTopBar levelN={level.n} levelTitle={level.title} passed={passedCount} total={TOTAL_LESSONS} />
+      <PlayerTopBar levelN={level.n} lessonN={lesson.n} lessonTitle={lesson.title} passed={passedCount} total={TOTAL_LESSONS} />
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="min-w-0">
           {!prevPassed && prev ? (
-            <div className="px-5 py-16 sm:px-8">
-              <div className="mx-auto max-w-[560px] rounded-3xl border border-dashed border-line bg-card p-8 text-center">
-                <Lock className="mx-auto size-6 text-muted" aria-hidden />
-                <p className="mt-3 text-xl font-semibold tracking-[-0.03em]">{t("This lesson is locked")}</p>
-                <p className="mx-auto mt-2 max-w-[460px] text-[15px] text-muted">{t("Pass the quiz of the previous lesson (4 of 5) to unlock it.")}</p>
-                <Link href={`/learn/levels/${prev.levelN}/${prev.lesson.slug}`} className="mt-5 inline-flex rounded-full bg-brand px-6 py-3.5 font-medium text-white hover:bg-brand-dark">
-                  {prev.lesson.n} {prev.lesson.title}
-                </Link>
+            <div className="px-5 pb-16 pt-5 sm:px-8">
+              {breadcrumbNode}
+              <div className="relative mt-4 aspect-video overflow-hidden rounded-2xl bg-ink shadow-soft">
+                <LessonCover n={lesson.n} track={level.track} className="absolute inset-0 h-full w-full" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-ink/60 p-6 text-center text-white backdrop-blur-[2px]">
+                  <span className="flex size-14 items-center justify-center rounded-full bg-white/15">
+                    <Lock className="size-6" aria-hidden />
+                  </span>
+                  <p className="text-[clamp(1.3rem,2.6vw,1.9rem)] font-semibold tracking-[-0.03em]">{t("This lesson is locked")}</p>
+                  <p className="max-w-[460px] text-[15px] text-white/80">{t("Pass the quiz of the previous lesson (4 of 5) to unlock it.")}</p>
+                  <Link href={`/learn/levels/${prev.levelN}/${prev.lesson.slug}`} className="mt-1 inline-flex rounded-full bg-white px-6 py-3 font-semibold text-ink hover:bg-card">
+                    {prev.lesson.n} {prev.lesson.title}
+                  </Link>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">{chipsNode}</div>
+              <h1 className="mt-8 text-[clamp(1.7rem,3vw,2.3rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-balance">
+                {lesson.n} {lesson.title}
+              </h1>
+              <p className="mt-3 max-w-[800px] text-[17px] leading-[1.75] text-ink-2">{lesson.video.summary}</p>
+              <div className="mt-6 max-w-[800px] rounded-2xl border border-line bg-white p-5 sm:p-6">
+                <h2 className="text-[17px] font-semibold tracking-[-0.015em]">{t("By the end of this lesson you can")}</h2>
+                <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                  {lesson.objectives.map((o) => (
+                    <li key={o} className="flex gap-3 text-[15.5px] leading-snug">
+                      <Check className="mt-0.5 size-4 shrink-0 text-brand" strokeWidth={2.5} aria-hidden />
+                      {o}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="mt-10 lg:hidden">{sidebar}</div>
             </div>
@@ -128,84 +200,60 @@ export default async function LessonPage({ params }: { params: Params }) {
               next={isLastInLevel || !next ? { href: `/learn/levels/${level.n}/exam`, label: t("Level {n} exam", { n: level.n }) } : { href: `/learn/levels/${next.levelN}/${next.lesson.slug}`, label: `${next.lesson.n} ${next.lesson.title}` }}
               sidebar={sidebar}
               video={<InlineYouTube variant="player" videoId={lesson.video.id} title={lesson.video.title} summary={lesson.video.summary} />}
+              breadcrumb={breadcrumbNode}
+              chips={chipsNode}
               heading={
-                <>
-                  <h1 className="text-[clamp(1.5rem,2.6vw,2.1rem)] font-semibold leading-[1.15] tracking-[-0.035em] text-balance">
-                    {lesson.n} {lesson.title}
-                  </h1>
-                  <p className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Clock className="size-3.5" aria-hidden /> {t("About {n} min", { n: lesson.minutes })}
-                    </span>
-                    <span>
-                      {t("Level")} {level.n}: {level.title}
-                    </span>
-                    {passed && (
-                      <span className="inline-flex items-center gap-1.5 rounded-md bg-ok-soft px-2 py-0.5 font-medium text-ok">
-                        <Check className="size-3.5" strokeWidth={3} aria-hidden /> {t("Quiz passed")}
-                      </span>
-                    )}
-                  </p>
-                </>
+                <h1 className="text-[clamp(1.7rem,3vw,2.3rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-balance">
+                  {lesson.n} {lesson.title}
+                </h1>
               }
               overview={
-                <div className="grid gap-12">
-                  <section aria-labelledby="about">
-                    <Heading id="about">{t("About this lesson")}</Heading>
-                    <p className="mt-3 text-[17px] leading-[1.7] text-ink-2">{lesson.video.summary}</p>
-                    <p className="mt-4 text-[15px] text-muted">
-                      <span className="font-medium text-ink">{t("Prerequisites")}:</span> {level.prerequisites}
-                    </p>
-                  </section>
+                <div>
+                  <p className="text-[17px] leading-[1.75] text-ink-2">{lesson.video.summary}</p>
+                  <p className="mt-3 text-[15px] text-muted">
+                    <span className="font-medium text-ink">{t("Prerequisites")}:</span> {level.prerequisites}
+                  </p>
 
-                  <section aria-labelledby="objectives-title" className="rounded-2xl border border-line p-6 sm:p-7">
-                    <h2 id="objectives-title" className="text-xl font-semibold tracking-[-0.025em]">
-                      {t("By the end of this lesson you can")}
-                    </h2>
-                    <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-                      {lesson.objectives.map((o) => (
-                        <li key={o} className="flex gap-3 text-[15.5px] leading-snug">
-                          <Check className="mt-0.5 size-4 shrink-0 text-ink" strokeWidth={2.5} aria-hidden />
-                          {o}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-
-                  <section aria-labelledby="concepts">
-                    <Heading id="concepts">{t("Core concepts")}</Heading>
-                    <div className="mt-4 grid gap-4 text-[17px] leading-[1.75] text-ink-2">
-                      <Paragraphs items={paragraphs(lesson.notes)} />
-                    </div>
-                  </section>
-
-                  <section aria-labelledby="example" className="rounded-2xl bg-[#e8f6f2] p-6 sm:p-8">
-                    <h2 id="example" className="flex scroll-mt-28 items-center gap-2 text-lg font-semibold tracking-[-0.02em]">
-                      <Lightbulb className="size-5 text-[#0f9b8a]" aria-hidden /> {t("Worked example")}
-                    </h2>
-                    <p className="mt-3 text-[16.5px] leading-[1.7] text-ink-2">{lesson.example}</p>
-                  </section>
-
-                  <section aria-label={t("Illustration")}>
-                    <LessonDiagram diagram={lesson.diagram} />
-                  </section>
-
-                  <section aria-labelledby="recap" className="rounded-2xl border border-line p-6 sm:p-8">
-                    <Heading id="recap">{t("Before you move on")}</Heading>
-                    <p className="mt-2 text-[15px] text-muted">{t("Can you do these without looking back at the lesson?")}</p>
-                    <ul className="mt-4 grid gap-2.5 text-[16px] leading-snug">
-                      {[
-                        t("Explain \"{title}\" in your own words.", { title: lesson.title }),
-                        t("Name one failure or misconception this lesson helps prevent."),
-                        t("Describe the evidence you would collect on a real project."),
-                      ].map((line) => (
-                        <li key={line} className="flex gap-3">
-                          <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                          {line}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
+                  <div className="mt-8 grid gap-3">
+                    <Fold title={t("By the end of this lesson you can")} open>
+                      <ul className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                        {lesson.objectives.map((o) => (
+                          <li key={o} className="flex gap-3 text-[15.5px] leading-snug">
+                            <Check className="mt-0.5 size-4 shrink-0 text-brand" strokeWidth={2.5} aria-hidden />
+                            {o}
+                          </li>
+                        ))}
+                      </ul>
+                    </Fold>
+                    <Fold title={t("Core concepts")} open>
+                      <div className="grid gap-4 text-[16.5px] leading-[1.75] text-ink-2">
+                        <Paragraphs items={paragraphs(lesson.notes)} />
+                      </div>
+                    </Fold>
+                    <Fold title={t("Worked example")}>
+                      <p className="flex gap-3 text-[16.5px] leading-[1.7] text-ink-2">
+                        <Lightbulb className="mt-1 size-5 shrink-0 text-brand" aria-hidden /> {lesson.example}
+                      </p>
+                    </Fold>
+                    <Fold title={t("Illustration")}>
+                      <LessonDiagram diagram={lesson.diagram} />
+                    </Fold>
+                    <Fold title={t("Before you move on")}>
+                      <p className="text-[15px] text-muted">{t("Can you do these without looking back at the lesson?")}</p>
+                      <ul className="mt-3 grid gap-2.5 text-[16px] leading-snug">
+                        {[
+                          t("Explain \"{title}\" in your own words.", { title: lesson.title }),
+                          t("Name one failure or misconception this lesson helps prevent."),
+                          t("Describe the evidence you would collect on a real project."),
+                        ].map((line) => (
+                          <li key={line} className="flex gap-3">
+                            <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                            {line}
+                          </li>
+                        ))}
+                      </ul>
+                    </Fold>
+                  </div>
                 </div>
               }
               quiz={
@@ -249,7 +297,7 @@ export default async function LessonPage({ params }: { params: Params }) {
             />
           )}
         </div>
-        <aside className="hidden border-l border-line bg-white lg:sticky lg:top-14 lg:block lg:h-[calc(100dvh-3.5rem)] lg:overflow-y-auto">{sidebar}</aside>
+        <aside className="hidden border-l border-line bg-white lg:sticky lg:top-16 lg:block lg:h-[calc(100dvh-4rem)] lg:overflow-y-auto">{sidebar}</aside>
       </div>
     </>
   );

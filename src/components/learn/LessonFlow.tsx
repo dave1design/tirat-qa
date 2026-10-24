@@ -26,6 +26,8 @@ type Tab = "overview" | "quiz" | "practice" | "resources" | "content";
  */
 export function LessonFlow({
   video,
+  breadcrumb,
+  chips,
   heading,
   overview,
   quiz,
@@ -38,6 +40,8 @@ export function LessonFlow({
   next,
 }: {
   video: ReactNode;
+  breadcrumb: ReactNode;
+  chips: ReactNode;
   heading: ReactNode;
   overview: ReactNode;
   quiz: ReactNode;
@@ -66,7 +70,7 @@ export function LessonFlow({
   };
 
   const items: { id: Tab; label: string; locked?: boolean; mobileOnly?: boolean }[] = [
-    { id: "overview", label: t("Overview") },
+    { id: "overview", label: t("Description") },
     { id: "quiz", label: t("Quiz") },
     { id: "practice", label: t("Practice lab"), locked: !passed },
     ...(resources ? [{ id: "resources" as const, label: t("Resources") }] : []),
@@ -75,30 +79,36 @@ export function LessonFlow({
 
   return (
     <PassCtx.Provider value={markPassed}>
-      <div className="bg-black"><Fragment key="video">{video}</Fragment></div>
-
-      <div className="flex flex-wrap items-start justify-between gap-4 px-5 pt-6 sm:px-8">
-        <div className="min-w-0 max-w-[760px]">{heading}</div>
-        <div className="flex shrink-0 gap-2">
-          {prev && (
-            <Link href={prev.href} title={prev.label} className="inline-flex items-center gap-2 rounded-full border border-ink/80 px-4 py-2.5 text-[14px] font-semibold hover:bg-chip">
-              <ArrowLeft className="size-4" aria-hidden /> {t("Previous lesson")}
-            </Link>
-          )}
-          {next &&
-            (passed ? (
-              <Link href={next.href} title={next.label} className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
-                {t("Next lesson")} <ArrowRight className="size-4" aria-hidden />
+      <div className="px-5 pt-5 sm:px-8">
+        <Fragment key="breadcrumb">{breadcrumb}</Fragment>
+        <div className="mt-4 overflow-hidden rounded-2xl bg-black shadow-soft">
+          <Fragment key="video">{video}</Fragment>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <Fragment key="chips">{chips}</Fragment>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            {prev && (
+              <Link href={prev.href} title={prev.label} className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-[14px] font-medium shadow-sm hover:bg-card">
+                <ArrowLeft className="size-4" aria-hidden /> {t("Previous lesson")}
               </Link>
-            ) : (
-              <button type="button" onClick={() => go("quiz")} title={t("Pass the quiz (4 of 5) to unlock it.")} className="inline-flex items-center gap-2 rounded-full bg-chip px-4 py-2.5 text-[14px] font-semibold text-muted">
-                <Lock className="size-4" aria-hidden /> {t("Next lesson")}
-              </button>
-            ))}
+            )}
+            {next &&
+              (passed ? (
+                <Link href={next.href} title={next.label} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
+                  {t("Next lesson")} <ArrowRight className="size-4" aria-hidden />
+                </Link>
+              ) : (
+                <button type="button" onClick={() => go("quiz")} title={t("Pass the quiz (4 of 5) to unlock it.")} className="inline-flex items-center gap-2 rounded-xl bg-chip px-4 py-2.5 text-[14px] font-semibold text-muted">
+                  <Lock className="size-4" aria-hidden /> {t("Next lesson")}
+                </button>
+              ))}
+          </div>
         </div>
       </div>
 
-      <div ref={tabs} className="mt-5 scroll-mt-14 border-b border-line px-5 sm:px-8">
+      <div ref={tabs} className="mt-6 scroll-mt-20 border-b border-line px-5 sm:px-8">
         <div role="tablist" aria-label={t("Lesson steps")} className="-mb-px -ml-3.5 flex gap-1 overflow-x-auto">
           {items.map((it) => (
             <button
@@ -113,7 +123,7 @@ export function LessonFlow({
               className={cn(
                 "inline-flex shrink-0 items-center gap-1.5 border-b-2 px-3.5 py-3.5 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand",
                 it.mobileOnly && "lg:hidden",
-                tab === it.id ? "border-ink text-ink" : "border-transparent text-muted hover:text-ink",
+                tab === it.id ? "border-brand text-brand" : "border-transparent text-muted hover:text-ink",
                 it.locked && "cursor-not-allowed opacity-50 hover:text-muted",
               )}
             >
@@ -128,10 +138,13 @@ export function LessonFlow({
         <div className={cn(tab === "content" ? "max-w-[560px]" : "max-w-[800px]")}>
           {tab === "overview" && (
             <div>
+              <div className="mb-5">
+                <Fragment key="heading">{heading}</Fragment>
+              </div>
               <Fragment key="overview">{overview}</Fragment>
-              <div className="mt-12 rounded-2xl bg-ink p-6 text-white sm:p-8">
+              <div className="mt-8 rounded-2xl bg-brand p-6 text-white sm:p-8">
                 <p className="text-xl font-semibold tracking-[-0.03em]">{passed ? t("Quiz passed") : t("Finished the video and the summary?")}</p>
-                <p className="mt-2 max-w-[560px] text-[15px] text-white/70">
+                <p className="mt-2 max-w-[560px] text-[15px] text-white/80">
                   {passed ? t("Your quiz result already counts. You can retake it or move to the next lesson.") : t("Now test what you learned. The quiz is required: pass it with 4 of 5 to unlock the next lesson.")}
                 </p>
                 <button type="button" onClick={() => go("quiz")} className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-ink hover:bg-card">

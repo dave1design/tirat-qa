@@ -364,4 +364,8 @@ export const learn: Dict = {
   "Learner": "ተማሪ",
   "Lessons in progress": "በሂደት ላይ ያሉ ትምህርቶች",
   "Lessons completed": "የተጠናቀቁ ትምህርቶች",
+  "Lesson details": "የትምህርት ዝርዝር",
+  "Start the lesson": "ትምህርቱን ጀምር",
+  "This level": "ይህ ደረጃ",
+  "Quiz: {n} questions": "ፈተና፦ {n} ጥያቄዎች",
 };
