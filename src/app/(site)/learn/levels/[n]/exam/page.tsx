@@ -74,9 +74,9 @@ export default async function ExamPage({ params }: { params: Params }) {
   }
 
   const rules = [
-    [t("50 questions"), t("Part A has 25 knowledge questions on the lessons and videos (one best answer). Part B has 25 harder interview-style scenarios (select all that apply).")],
+    [t("30 questions"), t("Part A has 17 knowledge questions on the lessons and videos (one best answer). Part B has 13 harder interview-style scenarios (select all that apply).")],
     [t("{n} minutes", { n: EXAM_MINUTES }), t("A visible countdown, with warnings at 10 and 2 minutes. The exam submits itself when time runs out.")],
-    [t("100 points"), t("Each question is worth 2 points. You need {n} to pass. In Part B you earn the 2 points only when your selection exactly matches.", { n: EXAM_PASS_POINTS })],
+    [t("Out of 100"), t("Your score is the share of correct answers, out of 100. You need {n} to pass (24 of 30). In Part B a question counts only when your selection exactly matches.", { n: EXAM_PASS_POINTS })],
     [t("Autosave"), t("Every answer is saved as you go, and you can pick the exam up again if your connection drops.")],
     [t("Results"), t("You see your total, your Part A and Part B scores, which lessons to revisit, and an explanation for each question you missed.")],
   ];

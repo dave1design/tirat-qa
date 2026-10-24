@@ -31,8 +31,8 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
   if (attempt.status !== "SUBMITTED") redirect(`/learn/levels/${levelN}/exam`);
 
   const responses = JSON.parse(attempt.responses) as Record<string, number[]>;
-  const result = scoreResponses(levelN, responses);
   const order = JSON.parse(attempt.order) as ExamOrder;
+  const result = scoreResponses(levelN, responses, order.qs);
   const byId = new Map(bank.map((q) => [q.id, q]));
   // only the questions that were missed are reviewed, so the full bank is not handed out
   const review = order.qs.filter((qid) => result.missed.includes(qid)).map((qid) => ({ id: qid, q: byId.get(qid)!, chosen: responses[qid] ?? [] }));
@@ -61,11 +61,11 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
           <dl className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl bg-white/[0.08] p-4">
               <dt className="text-sm text-white/60">{t("Part A · knowledge")}</dt>
-              <dd className="mt-1 text-2xl font-semibold">{result.partA}/50</dd>
+              <dd className="mt-1 text-2xl font-semibold">{result.partA}/{result.totalA}</dd>
             </div>
             <div className="rounded-2xl bg-white/[0.08] p-4">
               <dt className="text-sm text-white/60">{t("Part B · interview scenarios")}</dt>
-              <dd className="mt-1 text-2xl font-semibold">{result.partB}/50</dd>
+              <dd className="mt-1 text-2xl font-semibold">{result.partB}/{result.totalB}</dd>
             </div>
           </dl>
         </div>

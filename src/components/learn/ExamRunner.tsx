@@ -175,7 +175,7 @@ export function ExamRunner({
               );
             })}
           </ol>
-          <p className="mt-3 text-xs text-muted">{t("Part A: 1 to 25. Part B: 26 to 50.")}</p>
+          <p className="mt-3 text-xs text-muted">{t("Part A: 1 to {a}. Part B: {b} to {total}.", { a: questions.filter((x) => x.part === "A").length, b: questions.filter((x) => x.part === "A").length + 1, total: questions.length })}</p>
           <button type="button" onClick={() => setConfirm(true)} className="mt-4 w-full rounded-full bg-ink py-3 text-sm font-medium text-white hover:bg-black">
             {t("Submit exam")}
           </button>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { examQuestions } from "./index";
+import { EXAM_PART_A, EXAM_PART_B, EXAM_PASS_POINTS, EXAM_TOTAL, examPoints, examQuestions } from "./index";
 
 describe("level exams", () => {
   for (let n = 1; n <= 8; n++) {
@@ -29,3 +29,20 @@ describe("level exams", () => {
     });
   }
 });
+
+describe("exam attempt size and scoring", () => {
+  it("draws 17 knowledge and 13 interview questions, 30 in all", () => {
+    expect(EXAM_PART_A).toBe(17);
+    expect(EXAM_PART_B).toBe(13);
+    expect(EXAM_TOTAL).toBe(30);
+  });
+
+  it("scores out of 100 and passes at 24 of 30", () => {
+    expect(examPoints(24, EXAM_TOTAL)).toBe(80);
+    expect(examPoints(24, EXAM_TOTAL)).toBeGreaterThanOrEqual(EXAM_PASS_POINTS);
+    expect(examPoints(23, EXAM_TOTAL)).toBeLessThan(EXAM_PASS_POINTS);
+    expect(examPoints(30, EXAM_TOTAL)).toBe(100);
+    expect(examPoints(0, 0)).toBe(0);
+  });
+});
+

@@ -22,11 +22,11 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 const exam = [
-  ["Questions", "Exactly 50"],
-  ["Part A", "25 common single-best-answer questions"],
-  ["Part B", "25 interview-style multi-select scenarios"],
+  ["Questions", "Exactly 30"],
+  ["Part A", "17 common single-best-answer questions"],
+  ["Part B", "13 interview-style multi-select scenarios"],
   ["Duration", "60 minutes, visible timer, autosave"],
-  ["Scoring", "100 points, 2 per question, 80 to pass"],
+  ["Scoring", "Out of 100, 80 to pass (24 of 30 correct)"],
 ];
 
 export default async function LevelPage({ params }: { params: Params }) {
@@ -57,7 +57,7 @@ export default async function LevelPage({ params }: { params: Params }) {
     [Video, t("{n} video lessons with summaries", { n: level.lessons.length })],
     [BookOpenCheck, t("A required quiz after every lesson")],
     [FlaskConical, t("Optional practice labs")],
-    [Timer, t("A 50-question timed level exam")],
+    [Timer, t("A 30-question timed level exam")],
     [MessagesSquare, t("Interview preparation")],
   ];
 

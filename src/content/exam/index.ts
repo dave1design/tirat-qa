@@ -18,10 +18,15 @@ const EXAMS: Record<number, LevelExam> = { 1: exam1, 2: exam2, 3: exam3, 4: exam
 
 export const EXAM_MINUTES = 60;
 export const EXAM_PASS_POINTS = 80;
-export const POINTS_PER_QUESTION = 2;
-export const EXAM_BLUEPRINT_VERSION = "v1";
+/** Each attempt draws 17 knowledge questions (Part A) and 13 interview questions (Part B) from the level's bank of 25 + 25. */
+export const EXAM_PART_A = 17;
+export const EXAM_PART_B = 13;
+export const EXAM_TOTAL = EXAM_PART_A + EXAM_PART_B;
+/** The score is shown out of 100 (share of correct answers); 80 passes, which is 24 of 30. */
+export const examPoints = (correct: number, total: number) => (total ? Math.round((correct / total) * 100) : 0);
+export const EXAM_BLUEPRINT_VERSION = "v2";
 
-/** The 50 questions of a level exam, each with a stable id (`A1`..`A25`, `B1`..`B25`). */
+/** The whole question bank of a level (25 + 25), each with a stable id (`A1`..`A25`, `B1`..`B25`). */
 export function examQuestions(levelN: number, locale: Locale = "en"): (ExamQuestion & { id: string })[] | null {
   const e = EXAMS[levelN];
   if (!e) return null;

@@ -181,7 +181,7 @@ export async function LearningDashboard({
                 </span>
                 <span className="mb-3 mt-2 line-clamp-2 text-[15px] font-semibold leading-snug tracking-[-0.015em]">{t("Level {n} exam", { n: current.n })}</span>
                 <span className="mt-auto flex items-center justify-between gap-2 border-t border-line pt-3 text-[12.5px]">
-                  <span className="text-muted">{examBest != null ? `${examBest}/100` : t("50 questions")}</span>
+                  <span className="text-muted">{examBest != null ? `${examBest}/100` : t("30 questions")}</span>
                   <span className="font-medium text-brand">{t("Take the level exam")}</span>
                 </span>
               </Link>
@@ -283,7 +283,7 @@ export async function LearningDashboard({
           <div className="min-w-0 text-[14px] leading-snug">
             <p className="font-semibold">{t("Level {n} exam", { n: current.n })}</p>
             <p className="text-muted">
-              {examBest != null ? t("Your best score: {n}/100", { n: examBest }) : examReady && !current.paywalled ? t("You can take it now: 50 questions, 60 minutes.") : t("Pass every lesson quiz to unlock this exam")}
+              {examBest != null ? t("Your best score: {n}/100", { n: examBest }) : examReady && !current.paywalled ? t("You can take it now: 30 questions, 60 minutes.") : t("Pass every lesson quiz to unlock this exam")}
             </p>
           </div>
           {examReady && !current.paywalled && (

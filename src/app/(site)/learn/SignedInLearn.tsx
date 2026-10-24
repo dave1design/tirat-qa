@@ -29,7 +29,7 @@ export async function SignedInLearn({ user, view, query }: { user: LearnUser; vi
     <LearnApp active={view === "exams" ? "exams" : "lessons"} advanced={advanced} passed={passedCount} total={TOTAL_LESSONS}>
       <h1 className="text-[clamp(1.8rem,3vw,2.4rem)] font-semibold tracking-[-0.04em]">{view === "exams" ? t("Level exams") : t("Lessons")}</h1>
       <p className="mt-1 text-[15.5px] text-muted">
-        {view === "exams" ? t("Each exam has 50 questions in 60 minutes. Pass every lesson quiz of a level to unlock its exam.") : t("Eight levels, {n} lessons. Pass each quiz (4 of 5) to open the next lesson.", { n: TOTAL_LESSONS })}
+        {view === "exams" ? t("Each exam has 30 questions in 60 minutes. Pass every lesson quiz of a level to unlock its exam.") : t("Eight levels, {n} lessons. Pass each quiz (4 of 5) to open the next lesson.", { n: TOTAL_LESSONS })}
       </p>
       <div className="mt-7">{view === "exams" ? await Exams({ user, progress }) : <LessonCatalog lessons={lessons} initialQuery={query} />}</div>
     </LearnApp>
