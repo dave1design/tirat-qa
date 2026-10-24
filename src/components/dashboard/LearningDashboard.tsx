@@ -113,8 +113,8 @@ export async function LearningDashboard({
         <section aria-labelledby="streak-title" className="rounded-2xl border border-line bg-white p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className="flex size-12 items-center justify-center rounded-2xl bg-[#fff0c9]">
-                <Flame className="size-6 text-[#f5a524]" fill="currentColor" aria-hidden />
+              <span className="flex size-12 items-center justify-center rounded-2xl bg-[#e6efff]">
+                <Flame className="size-6 text-brand" fill="currentColor" aria-hidden />
               </span>
               <div>
                 <h2 id="streak-title" className="text-[1.25rem] font-semibold leading-tight tracking-[-0.03em]">
