@@ -128,16 +128,18 @@ export async function LearningDashboard({
           <ol className="mt-5 grid grid-cols-7 gap-1.5" aria-label={t("This week")}>
             {DAY_NAMES.map((day, i) => {
               const on = stats.week[i];
+              const today = i === stats.today;
+              const filled = on || today; // active days and today share the blue stroke and fill
               return (
                 <li
                   key={day}
                   aria-label={`${day} ${stats.weekDates[i]}${on ? ` – ${t("Done")}` : ""}`}
-                  className={cn("flex flex-col items-center rounded-xl border py-2.5", on ? "border-brand bg-brand text-white" : i === stats.today ? "border-brand text-ink" : "border-line text-ink")}
+                  className={cn("flex flex-col items-center rounded-xl border py-2.5", filled ? "border-brand bg-brand text-white" : "border-line text-ink")}
                 >
-                  <span className={cn("text-[11px]", on ? "text-white/80" : "text-muted")}>{day}</span>
+                  <span className={cn("text-[11px]", filled ? "text-white/80" : "text-muted")}>{day}</span>
                   <span className="mt-0.5 text-[1.2rem] font-semibold tabular-nums">{stats.weekDates[i]}</span>
                   <span className="mt-1 flex h-4 items-center">
-                    {on ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : <span className="size-1.5 rounded-full bg-line" />}
+                    {on ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : <span className={cn("size-1.5 rounded-full", today ? "bg-white/70" : "bg-line")} />}
                   </span>
                 </li>
               );
