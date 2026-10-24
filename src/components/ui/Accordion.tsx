@@ -12,14 +12,14 @@ export function Accordion({ items }: { items: { q: string; a: string }[] }) {
       {items.map((it, i) => {
         const isOpen = open === i;
         return (
-          <div key={it.q} className="rounded-[20px] border border-line bg-card/70">
+          <div key={it.q} className="rounded-[24px] border border-line bg-card/70">
             <h3>
               <button
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={`${base}-${i}`}
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-4 rounded-[20px] px-6 py-6 text-left text-base font-medium tracking-[-0.01em]"
+                className="flex w-full items-center justify-between gap-4 rounded-[24px] px-6 py-6 text-left text-base font-medium tracking-[-0.01em]"
               >
                 {it.q}
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-soft">

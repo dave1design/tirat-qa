@@ -10,10 +10,10 @@ const ethiopic = Noto_Sans_Ethiopic({ subsets: ["ethiopic"], variable: "--font-e
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
-  title: { default: "Tirat QA — Practice. Find bugs. Improve.", template: "%s · Tirat QA" },
+  title: { default: "Tirat — Practice. Find bugs. Improve.", template: "%s · Tirat" },
   description:
-    "Tirat QA is a hands-on software QA practice platform. Test practice websites, find bugs, submit structured bug reports and learn from your results.",
-  openGraph: { title: "Tirat QA", description: "Practice. Find bugs. Improve.", type: "website" },
+    "Tirat is a hands-on software QA practice platform. Test practice websites, find bugs, submit structured bug reports and learn from your results.",
+  openGraph: { title: "Tirat", description: "Practice. Find bugs. Improve.", type: "website" },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };

@@ -1,4 +1,4 @@
-# Tirat QA — Practice. Find bugs. Improve.
+# Tirat — Practice. Find bugs. Improve.
 
 Hands-on software QA practice platform: **Practice Lab → Level → Practice Website → Attempt → Bug Report → Results**.
 Next.js 15 (App Router, Server Actions) · TypeScript · Tailwind v4 · Prisma + SQLite · Zod · Vitest.

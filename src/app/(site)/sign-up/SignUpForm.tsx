@@ -18,7 +18,7 @@ export function SignUpForm({ signedInAs, providers }: { signedInAs: string | nul
   if (state.ok) {
     return (
       <div className="py-4 text-center" role="status">
-        <h2 className="text-3xl font-semibold tracking-[-0.04em]">{t("Welcome to Tirat QA!")}</h2>
+        <h2 className="text-3xl font-semibold tracking-[-0.04em]">{t("Welcome to Tirat!")}</h2>
         <p className="mt-3 text-muted">{t("Your account is ready. Let's personalize your experience and get you started with practice.")}</p>
         <div className="mt-8 flex justify-center">
           <Button href="/onboarding" arrow>

@@ -100,12 +100,12 @@ export default async function LevelPage({ params }: { params: Params }) {
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
               {chips.map(([Icon, label]) => (
-                <span key={label} className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-3.5 py-2 text-[14px] font-medium shadow-sm">
+                <span key={label} className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2 text-[14px] font-medium shadow-sm">
                   <Icon className="size-4 text-brand" aria-hidden /> {label}
                 </span>
               ))}
             </div>
-            <Link href={startHref} className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
+            <Link href={startHref} className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
               {startLabel} <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
@@ -153,7 +153,7 @@ export default async function LevelPage({ params }: { params: Params }) {
                 {t("Part A tests what you learned from the lessons and videos. Part B is harder and mostly interview questions.")}
                 {exam_?.best != null ? ` ${t("Your best score: {n}/100", { n: exam_.best })}${exam_.passed ? ` ${t("(passed)")}` : ` ${t("(pass mark {n})", { n: EXAM_PASS_POINTS })}`}.` : ""}
               </p>
-              <Link href={`/learn/levels/${level.n}/exam`} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
+              <Link href={`/learn/levels/${level.n}/exam`} className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
                 {exam_?.active ? t("Continue your exam") : exam_?.attempts.length ? t("Take the exam again") : t("Take the level exam")} <ArrowRight className="size-4" aria-hidden />
               </Link>
             </Fold>
@@ -178,14 +178,14 @@ export default async function LevelPage({ params }: { params: Params }) {
 
           <nav aria-label={t("Level navigation")} className="mt-10 flex flex-wrap justify-between gap-3">
             {prev ? (
-              <Link href={`/learn/levels/${prev.n}`} className="rounded-xl border border-line bg-white px-4 py-2.5 text-[14px] font-medium shadow-sm hover:bg-card">
+              <Link href={`/learn/levels/${prev.n}`} className="rounded-full border border-line bg-white px-4 py-2.5 text-[14px] font-medium shadow-sm hover:bg-card">
                 {t("Level")} {prev.n}: {prev.title}
               </Link>
             ) : (
               <span />
             )}
             {next && (
-              <Link href={`/learn/levels/${next.n}`} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
+              <Link href={`/learn/levels/${next.n}`} className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
                 {t("Level")} {next.n}: {next.title} <ArrowRight className="size-4" aria-hidden />
               </Link>
             )}

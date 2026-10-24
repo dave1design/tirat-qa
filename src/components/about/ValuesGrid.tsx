@@ -29,7 +29,7 @@ export async function ValuesGrid() {
           </p>
         </Reveal>
 
-        <div className="mt-14 rounded-[40px] border border-line/70 bg-card p-2">
+        <div className="mt-14 rounded-[48px] border border-line/70 bg-card p-2">
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {items.map((it, i) => (
               <li key={it.n}>

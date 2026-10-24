@@ -92,7 +92,7 @@ export default async function ExamPage({ params }: { params: Params }) {
 
         <ul className="mt-8 grid gap-3">
           {rules.map(([k, v]) => (
-            <li key={k} className="rounded-3xl bg-card p-5">
+            <li key={k} className="rounded-2xl bg-card p-5">
               <p className="font-semibold">{k}</p>
               <p className="mt-1 text-[15px] text-ink-2">{v}</p>
             </li>
@@ -107,7 +107,7 @@ export default async function ExamPage({ params }: { params: Params }) {
             </button>
           </form>
         ) : (
-          <div className="mt-8 rounded-[28px] border border-dashed border-line bg-card p-6">
+          <div className="mt-8 rounded-[32px] border border-dashed border-line bg-card p-6">
             <p className="flex items-center gap-2 font-semibold">
               <Lock className="size-4" aria-hidden /> {t("Pass every lesson quiz to unlock this exam")}
             </p>

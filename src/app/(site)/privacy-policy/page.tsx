@@ -7,13 +7,13 @@ const TBC = <em className="text-muted"> Details to be confirmed before launch.</
 
 export default function PrivacyPage() {
   return (
-    <LegalPage eyebrow="Legal" title="Privacy Policy" intro="Tirat QA respects your privacy and aims to handle your personal information responsibly.">
+    <LegalPage eyebrow="Legal" title="Privacy Policy" intro="Tirat respects your privacy and aims to handle your personal information responsibly.">
       <p>
         This page explains what information the platform collects, why it is collected, how it is used, and how users can exercise their privacy
         rights.
       </p>
       <LegalSection title="Information We Collect">
-        <p>Depending on the features you use, Tirat QA may collect:</p>
+        <p>Depending on the features you use, Tirat may collect:</p>
         <ul>
           <li>Account information, such as your name and email address.</li>
           <li>Practice activity, including submitted bug reports and challenge results.</li>

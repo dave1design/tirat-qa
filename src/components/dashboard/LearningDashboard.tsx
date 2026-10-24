@@ -25,8 +25,8 @@ export interface PracticeSummary {
 function Stat({ icon: Icon, tile, value, label }: { icon: LucideIcon; tile: string; value: string | number; label: string }) {
   return (
     <li className="flex items-center gap-3 rounded-2xl border border-line bg-white p-3.5">
-      <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", tile)}>
-        <Icon className="size-5" aria-hidden />
+      <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-2xl", tile)}>
+        <Icon className="size-5 text-brand" aria-hidden />
       </span>
       <span className="min-w-0">
         <span className="block text-[1.35rem] font-semibold leading-none tracking-[-0.03em]">{value}</span>
@@ -105,7 +105,7 @@ export async function LearningDashboard({
         <form action="/learn" role="search" className="relative w-full sm:w-72">
           <label className="sr-only" htmlFor="dash-search">{t("Search lessons")}</label>
           <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-faint" aria-hidden />
-          <input id="dash-search" name="q" placeholder={t("Search lessons")} className="w-full rounded-xl border border-line bg-white py-2.5 pl-10 pr-3 text-[14px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
+          <input id="dash-search" name="q" placeholder={t("Search lessons")} className="w-full rounded-full border border-line bg-white py-2.5 pl-10 pr-3 text-[14px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
         </form>
       </div>
 
@@ -135,7 +135,7 @@ export async function LearningDashboard({
                 <li
                   key={day}
                   aria-label={`${day} ${stats.weekDates[i]}${on ? ` – ${t("Done")}` : ""}`}
-                  className={cn("flex flex-col items-center rounded-xl border py-2.5", filled ? "border-brand bg-brand text-white" : "border-line text-ink")}
+                  className={cn("flex flex-col items-center rounded-2xl border py-2.5", filled ? "border-brand bg-brand text-white" : "border-line text-ink")}
                 >
                   <span className={cn("text-[11px]", filled ? "text-white/80" : "text-muted")}>{day}</span>
                   <span className="mt-0.5 text-[1.2rem] font-semibold tabular-nums">{stats.weekDates[i]}</span>
@@ -149,10 +149,10 @@ export async function LearningDashboard({
         </section>
 
         <ul className="grid grid-cols-2 gap-3 self-stretch">
-          <Stat icon={Medal} tile="bg-[#fff0c9]" value={stats.points.toLocaleString("en-US")} label={t("Points")} />
-          <Stat icon={BookOpen} tile="bg-[#ece8fb]" value={`${lessonsDone}/${TOTAL_LESSONS}`} label={t("Lessons passed")} />
-          <Stat icon={Trophy} tile="bg-[#e1f2ea]" value={`${stats.examsPassed}/${levels.length}`} label={t("Exams passed")} />
-          <Stat icon={FlaskConical} tile="bg-[#f1f6dc]" value={stats.labsDone} label={t("Labs done")} />
+          <Stat icon={Medal} tile="bg-[#e6efff]" value={stats.points.toLocaleString("en-US")} label={t("Points")} />
+          <Stat icon={BookOpen} tile="bg-[#e6efff]" value={`${lessonsDone}/${TOTAL_LESSONS}`} label={t("Lessons passed")} />
+          <Stat icon={Trophy} tile="bg-[#e6efff]" value={`${stats.examsPassed}/${levels.length}`} label={t("Exams passed")} />
+          <Stat icon={FlaskConical} tile="bg-[#e6efff]" value={stats.labsDone} label={t("Labs done")} />
         </ul>
       </div>
 
@@ -170,7 +170,7 @@ export async function LearningDashboard({
           {resumeIdx < 0 && (
             <li>
               <Link href={`/learn/levels/${current.n}/exam`} className="flex h-full flex-col rounded-2xl border border-line bg-white p-2.5 transition-shadow hover:shadow-soft">
-                <span className="relative block aspect-[16/10] overflow-hidden rounded-xl">
+                <span className="relative block aspect-[16/10] overflow-hidden rounded-lg">
                   <LessonCover n="8.3" track="Automation QA" className="absolute inset-0 h-full w-full" />
                   <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-medium text-ink-2 shadow-sm">
                     <Clock className="size-3" aria-hidden /> {t("{n} min", { n: 60 })}
@@ -189,7 +189,7 @@ export async function LearningDashboard({
           )}
           <li>
             <Link href={practice?.href ?? "/practice-lab"} className="flex h-full flex-col rounded-2xl border border-line bg-white p-2.5 transition-shadow hover:shadow-soft">
-              <span className="relative block aspect-[16/10] overflow-hidden rounded-xl">
+              <span className="relative block aspect-[16/10] overflow-hidden rounded-lg">
                 <LessonCover n="lab" track="Professional QA" className="absolute inset-0 h-full w-full" />
                 <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-medium text-ink-2 shadow-sm">
                   <Clock className="size-3" aria-hidden /> {t("Practice Lab")}
@@ -241,7 +241,7 @@ export async function LearningDashboard({
             const cls = cn("flex items-center gap-3 rounded-2xl border border-line bg-white p-3", locked ? "opacity-60" : "transition-shadow hover:shadow-soft");
             const body = (
               <>
-                <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-xl", tr.bg)}>
+                <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-2xl", tr.bg)}>
                   {complete ? <Check className="size-5 text-ok" strokeWidth={3} aria-hidden /> : locked || lv.paywalled ? <Lock className="size-4" aria-hidden /> : <tr.icon className="size-5" aria-hidden />}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -277,7 +277,7 @@ export async function LearningDashboard({
       {/* exam + payment notes */}
       <div className="mt-6 grid gap-3 md:grid-cols-2">
         <section className="flex items-center gap-3 rounded-2xl border border-line bg-white p-4">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#ece8fb]">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#e6efff]">
             <FileCheck2 className="size-5" aria-hidden />
           </span>
           <div className="min-w-0 text-[14px] leading-snug">
@@ -299,7 +299,7 @@ export async function LearningDashboard({
         ) : (
           !advanced && (
             <section className="flex items-center gap-3 rounded-2xl border border-line bg-white p-4 lg:hidden">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#e6efff]">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#e6efff]">
                 <Lock className="size-5 text-brand" aria-hidden />
               </span>
               <div className="min-w-0 text-[14px] leading-snug">

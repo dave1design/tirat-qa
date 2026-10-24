@@ -106,7 +106,7 @@ export function ExamRunner({
       )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_260px]">
-        <section aria-labelledby="exam-q" className="rounded-[28px] bg-card p-6 sm:p-8">
+        <section aria-labelledby="exam-q" className="rounded-[32px] bg-card p-6 sm:p-8">
           <p className="text-sm font-medium text-muted">
             {q.part === "A" ? t("Part A · single best answer") : t("Part B · interview scenarios, select all that apply")}
           </p>
@@ -144,14 +144,14 @@ export function ExamRunner({
                 {t("Next")} <ChevronRight className="size-4" aria-hidden />
               </button>
             ) : (
-              <button type="button" onClick={() => setConfirm(true)} className="rounded-full bg-ink px-5 py-3 font-medium text-white hover:bg-black">
+              <button type="button" onClick={() => setConfirm(true)} className="rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark">
                 {t("Review and submit")}
               </button>
             )}
           </div>
         </section>
 
-        <aside aria-label={t("Question navigator")} className="rounded-[28px] border border-line p-5">
+        <aside aria-label={t("Question navigator")} className="rounded-[32px] border border-line p-5">
           <p className="text-sm font-semibold">{t("Questions")}</p>
           <ol className="mt-3 grid grid-cols-5 gap-1.5">
             {questions.map((x, i) => {
@@ -164,7 +164,7 @@ export function ExamRunner({
                     aria-label={done ? t("Question {n}, answered", { n: i + 1 }) : t("Question {n}, not answered", { n: i + 1 })}
                     aria-current={i === idx ? "true" : undefined}
                     className={cn(
-                      "h-9 w-full rounded-lg text-[13px] font-medium",
+                      "h-9 w-full rounded-full text-[13px] font-medium",
                       i === idx ? "bg-brand text-white" : done ? "bg-ok-soft text-ok" : "bg-chip text-ink-2 hover:bg-[#e5e5e5]",
                       x.part === "B" && i !== idx && "ring-1 ring-inset ring-line",
                     )}
@@ -176,7 +176,7 @@ export function ExamRunner({
             })}
           </ol>
           <p className="mt-3 text-xs text-muted">{t("Part A: 1 to {a}. Part B: {b} to {total}.", { a: questions.filter((x) => x.part === "A").length, b: questions.filter((x) => x.part === "A").length + 1, total: questions.length })}</p>
-          <button type="button" onClick={() => setConfirm(true)} className="mt-4 w-full rounded-full bg-ink py-3 text-sm font-medium text-white hover:bg-black">
+          <button type="button" onClick={() => setConfirm(true)} className="mt-4 w-full rounded-full bg-brand py-3 text-sm font-medium text-white hover:bg-brand-dark">
             {t("Submit exam")}
           </button>
         </aside>
@@ -184,7 +184,7 @@ export function ExamRunner({
 
       {confirm && (
         <div role="dialog" aria-modal="true" aria-labelledby="confirm-title" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-[440px] rounded-[28px] bg-white p-7 shadow-float">
+          <div className="w-full max-w-[440px] rounded-[32px] bg-white p-7 shadow-float">
             <h2 id="confirm-title" className="text-xl font-semibold tracking-[-0.03em]">
               {t("Submit your exam?")}
             </h2>

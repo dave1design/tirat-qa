@@ -27,9 +27,9 @@ export async function AboutHero() {
             <Reveal>
               <div className="inline-flex items-center gap-1.5 text-sm font-medium">
                 <span className="inline-flex h-[34px] items-center gap-2 rounded-lg bg-brand pl-2.5 pr-2 text-white">
-                  Tirat QA <Users className="size-[18px] text-lime" fill="currentColor" strokeWidth={1.5} aria-hidden />
+                  Tirat <Users className="size-[18px] text-lime" fill="currentColor" strokeWidth={1.5} aria-hidden />
                 </span>
-                <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">{t("About Tirat QA")}</span>
+                <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">{t("About Tirat")}</span>
               </div>
             </Reveal>
             <SplitText
@@ -41,7 +41,7 @@ export async function AboutHero() {
           </div>
           <Reveal delay={150}>
             <p className="lead">
-              {t("Tirat QA is a hands-on software quality assurance practice platform designed to help aspiring and junior QA testers develop practical testing skills.")}
+              {t("Tirat is a hands-on software quality assurance practice platform designed to help aspiring and junior QA testers develop practical testing skills.")}
             </p>
             <p className="lead mt-3">{t("We believe testing is a skill you develop by doing, observing, investigating, and learning from your results.")}</p>
             <div className="mt-7 flex flex-wrap gap-2.5">
@@ -54,7 +54,7 @@ export async function AboutHero() {
         </div>
 
         <Reveal delay={200} className="mt-14">
-          <div className="rounded-[40px] border border-line/80 bg-white/60 p-2">
+          <div className="rounded-[48px] border border-line/80 bg-white/60 p-2">
             <div className="relative h-[340px] overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0a2fb8] via-brand to-[#7a6cff] sm:h-[520px]">
               <span className="absolute -left-24 -top-24 size-[420px] rounded-full bg-white/15 blur-3xl" />
               <span className="absolute -bottom-32 right-0 size-[460px] rounded-full bg-lime/25 blur-3xl" />

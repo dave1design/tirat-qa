@@ -156,7 +156,7 @@ export function NoteCards() {
             onPointerMove={move(i)}
             onPointerUp={up(i)}
             onPointerCancel={up(i)}
-            className="flex cursor-grab touch-none select-none items-center gap-3 rounded-[20px] border border-black/[0.04] bg-white p-2.5 pr-5 shadow-[0_14px_34px_-12px_rgba(0,0,0,0.25)] transition-shadow active:cursor-grabbing active:shadow-[0_24px_44px_-12px_rgba(0,0,0,0.35)]"
+            className="flex cursor-grab touch-none select-none items-center gap-3 rounded-[24px] border border-black/[0.04] bg-white p-2.5 pr-5 shadow-[0_14px_34px_-12px_rgba(0,0,0,0.25)] transition-shadow active:cursor-grabbing active:shadow-[0_24px_44px_-12px_rgba(0,0,0,0.35)]"
             style={{ width: c.w * 0.6 }}
           >
             <AppTile icon={c.icon} tone={c.tone} size={34} />

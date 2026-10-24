@@ -190,7 +190,7 @@ export function Benefits() {
     <section className="py-16 sm:py-24" aria-labelledby="benefits-title">
       <div className="container-x">
         <Reveal className="flex flex-col items-center text-center">
-          <SectionTag index="1" icon={Layers} label={t("Why Tirat QA")} />
+          <SectionTag index="1" icon={Layers} label={t("Why Tirat")} />
         </Reveal>
         <SplitText id="benefits-title" className="h-section mx-auto mt-6 max-w-[760px] text-balance text-center" parts={[{ text: t("Build Skills That Go Beyond Theory.") }]} />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

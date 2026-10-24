@@ -29,7 +29,7 @@ export function Onboarding({ firstName }: { firstName: string }) {
               {t("Step {n} of 3", { n: step })}
             </p>
           )}
-          <div className="rounded-[36px] border border-line bg-white p-7 shadow-soft sm:p-10">
+          <div className="rounded-[32px] border border-line bg-white p-7 shadow-soft sm:p-10">
             {done ? (
               <div className="text-center" role="status">
                 <h1 className="h-section !text-[clamp(2rem,4vw,2.75rem)] text-balance">{t("You're Ready to Practice!")}</h1>
@@ -49,7 +49,7 @@ export function Onboarding({ firstName }: { firstName: string }) {
 
                 {step === 1 && (
                   <div className="text-center">
-                    <h1 className="h-section !text-[clamp(2rem,4vw,2.75rem)]">{t("Welcome to Tirat QA")}{firstName ? `, ${firstName}` : ""}!</h1>
+                    <h1 className="h-section !text-[clamp(2rem,4vw,2.75rem)]">{t("Welcome to Tirat")}{firstName ? `, ${firstName}` : ""}!</h1>
                     <p className="lead mt-4">{t("You're here to build practical QA skills. We'll help you get started with hands-on website testing.")}</p>
                     <p className="lead mt-2">{t("Explore challenges, discover bugs, submit reports, and learn from your results.")}</p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
@@ -122,7 +122,7 @@ function Choice({ selected, onSelect, title, text }: { selected: boolean; onSele
         selected ? "border-ink bg-card" : "border-line hover:bg-card/70",
       )}
     >
-      <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full border", selected ? "border-ink bg-ink text-white" : "border-faint")}>
+      <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full border", selected ? "border-brand bg-brand text-white" : "border-faint")}>
         {selected && <Check className="size-3.5" strokeWidth={3} aria-hidden />}
       </span>
       <span>

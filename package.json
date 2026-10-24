@@ -2,7 +2,7 @@
   "name": "tirat-qa",
   "version": "1.0.0",
   "private": true,
-  "description": "Tirat QA — hands-on software QA practice platform",
+  "description": "Tirat — hands-on software QA practice platform",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",

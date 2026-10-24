@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-6 rounded-[36px] bg-[#141414] p-8 text-white sm:p-10">
+        <div className="mt-6 rounded-[32px] bg-brand p-8 text-white sm:p-10">
           {active ? (
             <>
               <p className="eyebrow text-white/60">{t("Continue where you left off")}</p>
@@ -105,18 +105,18 @@ export default async function DashboardPage() {
         </div>
 
         {practicePending > 0 && (
-          <div className="mt-6 rounded-3xl bg-[#e6efff] p-5 text-[15px] text-brand" role="status">
+          <div className="mt-6 rounded-2xl bg-[#e6efff] p-5 text-[15px] text-brand" role="status">
             {t(practicePending === 1 ? "{n} payment is pending confirmation. Access is unlocked once it's verified." : "{n} payments are pending confirmation. Access is unlocked once it's verified.", { n: practicePending })}
           </div>
         )}
 
         <h2 className="mt-14 text-2xl font-semibold tracking-[-0.03em]">{t("Practice websites")}</h2>
         {sites.length === 0 ? (
-          <p className="mt-4 rounded-3xl bg-card p-6 text-muted">{t("There are no practice websites available yet. Check back soon for new challenges.")}</p>
+          <p className="mt-4 rounded-2xl bg-card p-6 text-muted">{t("There are no practice websites available yet. Check back soon for new challenges.")}</p>
         ) : (
           <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {sites.map((s) => (
-              <li key={s.id} className="flex flex-col rounded-[28px] border border-line bg-white p-6">
+              <li key={s.id} className="flex flex-col rounded-[32px] border border-line bg-white p-6">
                 <div className="flex items-center justify-between gap-2">
                   <StatusBadge status={s.status} />
                   <Pill>{s.accessRule === "FREE" ? t("Free") : `${s.priceEtb} ETB`}</Pill>
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
 
         <h2 className="mt-14 text-2xl font-semibold tracking-[-0.03em]">{t("Recent attempts")}</h2>
         {attempts.length === 0 ? (
-          <div className="mt-5 rounded-3xl bg-card p-8 text-center">
+          <div className="mt-5 rounded-2xl bg-card p-8 text-center">
             <p className="text-2xl font-semibold tracking-[-0.03em]">{t("No Results Yet.")}</p>
             <p className="mt-2 text-muted">{t("Complete a practice challenge to see your results and feedback here.")}</p>
             <div className="mt-5 flex justify-center"><Button href="/practice-lab" arrow>{t("Explore Practice Lab")}</Button></div>

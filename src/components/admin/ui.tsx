@@ -21,7 +21,7 @@ export function AdminHeading({ title, children }: { title: string; children?: Re
 
 export function Panel({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <section className={cn("rounded-[28px] border border-line bg-white p-6", className)}>
+    <section className={cn("rounded-[32px] border border-line bg-white p-6", className)}>
       {title && <h2 className="mb-4 text-lg font-semibold tracking-[-0.02em]">{title}</h2>}
       {children}
     </section>
@@ -30,7 +30,7 @@ export function Panel({ title, children, className }: { title?: string; children
 
 export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
-    <div className="rounded-[28px] bg-card p-6">
+    <div className="rounded-[32px] bg-card p-6">
       <p className="text-sm text-muted">{label}</p>
       <p className="mt-1 text-4xl font-semibold tracking-[-0.05em]">{value}</p>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}

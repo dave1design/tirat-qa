@@ -37,7 +37,7 @@ export async function VisionBand() {
 
         <div className="mt-14 border-t border-white/10 pt-8">
           <p className="font-mono text-[12px] uppercase tracking-wider text-white/50">{t("Who we serve")}</p>
-          <p className="mt-2 text-[15px] text-white/60">{t("Tirat QA is designed for:")}</p>
+          <p className="mt-2 text-[15px] text-white/60">{t("Tirat is designed for:")}</p>
           <ul className="mt-5 flex flex-wrap gap-2.5">
             {serve.map((s, i) => (
               <li key={s.t}>

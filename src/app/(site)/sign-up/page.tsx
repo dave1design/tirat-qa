@@ -14,7 +14,7 @@ export default async function SignUpPage() {
   return (
     <AuthShell
       backdrop
-      title={t("Welcome to Tirat QA")}
+      title={t("Welcome to Tirat")}
       intro={<p>{t("Find bugs. Build real testing skills.")}</p>}
     >
       <SignUpForm signedInAs={user?.name ?? null} providers={socialProviders()} />

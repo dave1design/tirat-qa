@@ -12,7 +12,7 @@ export async function Intro() {
     <section className="py-28 sm:py-44" aria-labelledby="intro-eyebrow">
       <div className="container-x">
         <p id="intro-eyebrow" className="eyebrow mb-8 text-center text-muted">
-          {t("Welcome to Tirat QA")}
+          {t("Welcome to Tirat")}
         </p>
         <WordReveal
           text={t("Learn QA by Doing, Not Just Watching. Reading about software testing is a good start. But becoming a better tester takes practice.")}
@@ -22,7 +22,7 @@ export async function Intro() {
         />
         <Reveal className="mx-auto mt-12 max-w-[640px] text-center">
           <p className="lead">
-            {t("Tirat QA gives you a dedicated environment to explore websites, investigate unexpected behavior, identify bugs, and write structured bug reports.")}
+            {t("Tirat gives you a dedicated environment to explore websites, investigate unexpected behavior, identify bugs, and write structured bug reports.")}
           </p>
           <p className="lead mt-4">
             {t("Whether you're starting your QA journey or sharpening your existing skills, every challenge gives you an opportunity to improve.")}

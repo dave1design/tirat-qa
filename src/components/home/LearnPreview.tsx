@@ -10,7 +10,7 @@ import { getT } from "@/lib/i18n/server";
 
 const tints = [
   "from-[#4d8dff] via-[#6aa0ff] to-[#9fc0ff]",
-  "from-[#7b6cff] via-[#6a5cf5] to-[#9d90ff]",
+  "from-[#2f7bff] via-[#1a6bff] to-[#6aa6ff]",
   "from-[#d4ff1a] via-[#c6f000] to-[#e5ff6b]",
   "from-[#ff8a3d] via-[#ff7a22] to-[#ffb27a]",
 ];
@@ -40,7 +40,7 @@ export async function LearnPreview({ counts }: { counts: Record<string, number> 
           {LEARN_CATEGORIES.map((c, i) => (
             <Reveal key={c.slug} delay={i * 80}>
               <Link href="/learn#roadmap" className="group block">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]"><div className={`absolute inset-0 bg-gradient-to-br transition-transform duration-700 ease-out group-hover:scale-110 ${tints[i]}`} />
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[32px]"><div className={`absolute inset-0 bg-gradient-to-br transition-transform duration-700 ease-out group-hover:scale-110 ${tints[i]}`} />
                   <span className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_20%_20%,rgba(255,255,255,.7),transparent_40%),repeating-linear-gradient(45deg,rgba(255,255,255,.18)_0_2px,transparent_2px_14px)]" />
                   <span className={`absolute left-5 top-5 font-mono text-[11px] uppercase tracking-wider ${inks[i]}`}>{t(c.name).split(" ").slice(-1)[0]}</span>
                   <span className={`absolute right-5 top-5 text-sm font-semibold tracking-[-0.03em] ${inks[i]}`}>tirat</span>

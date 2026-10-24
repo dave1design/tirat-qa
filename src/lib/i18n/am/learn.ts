@@ -126,7 +126,7 @@ export const learn: Dict = {
   "Mention trade-offs, risks and what remains untested.": "ልውውጦችን፣ አደጋዎችን እና ያልተሞከረውን ጥቀስ።",
   "Self-rating": "ራስን መገምገም",
   "How well did you answer?": "ምን ያህል በደንብ መለስክ?",
-  "A practice tool only. Tirat QA does not score interview answers unless a human mock interviewer reviews them.": "የልምምድ መሣሪያ ብቻ ነው። ሰው አስመሳይ ቃለ መጠይቅ አድራጊ ካልገመገማቸው በስተቀር Tirat QA የቃለ መጠይቅ መልሶችን አይመዝንም።",
+  "A practice tool only. Tirat does not score interview answers unless a human mock interviewer reviews them.": "የልምምድ መሣሪያ ብቻ ነው። ሰው አስመሳይ ቃለ መጠይቅ አድራጊ ካልገመገማቸው በስተቀር Tirat የቃለ መጠይቅ መልሶችን አይመዝንም።",
   "Level {n} exam": "የደረጃ {n} ፈተና",
   "Level": "ደረጃ",
   "Lesson": "ትምህርት",

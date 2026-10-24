@@ -58,7 +58,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {related.map((r) => (
                   <li key={r.slug}>
-                    <Link href={`/learn/${r.slug}`} className="block h-full rounded-3xl bg-card p-5 transition-colors hover:bg-chip">
+                    <Link href={`/learn/${r.slug}`} className="block h-full rounded-2xl bg-card p-5 transition-colors hover:bg-chip">
                       <p className="font-medium tracking-[-0.02em]">{r.title}</p>
                       <p className="mt-1 line-clamp-2 text-sm text-muted">{r.summary}</p>
                     </Link>

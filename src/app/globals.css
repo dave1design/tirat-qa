@@ -49,7 +49,7 @@
   --color-bad: #dc2626;
   --color-bad-soft: #fdecec;
   --color-orange: #ff6b1a;
-  --color-violet: #6c5cff;
+  --color-violet: #0066ff;
   --color-green: #12c957;
 
   --radius-card: 32px;
@@ -143,7 +143,7 @@ body {
 
   .surface { background: var(--color-card); border-radius: var(--radius-card); }
   .field {
-    width: 100%; background: #fff; border: 1px solid var(--color-line); border-radius: 14px;
+    width: 100%; background: #fff; border: 1px solid var(--color-line); border-radius: 16px;
     padding: 14px 16px; font: inherit; color: var(--color-ink); transition: border-color .15s, box-shadow .15s;
   }
   .field::placeholder { color: var(--color-faint); }
@@ -161,7 +161,7 @@ body {
 .prose-tirat ul { list-style: disc; } .prose-tirat ol { list-style: decimal; }
 .prose-tirat li { margin: .25rem 0; padding-left: .2rem; }
 .prose-tirat strong { color: var(--color-ink); font-weight: 600; }
-.prose-tirat blockquote { background: var(--color-card); border-radius: 20px; padding: 18px 22px; margin: 1.5rem 0; }
+.prose-tirat blockquote { background: var(--color-card); border-radius: 24px; padding: 18px 22px; margin: 1.5rem 0; }
 .prose-tirat blockquote p { margin: .3rem 0; font-size: 1rem; }
 .prose-tirat em { color: var(--color-muted); }
 .prose-tirat a { color: var(--color-brand); text-decoration: underline; text-underline-offset: 3px; }

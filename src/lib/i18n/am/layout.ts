@@ -24,5 +24,5 @@ export const layout: Dict = {
   "Terms of Service": "የአገልግሎት ውሎች",
   "Practice. Find bugs. Improve.": "ተለማመድ። ስህተቶችን አግኝ። ተሻሻል።",
   "Build practical software testing skills through hands-on website challenges.": "በተግባራዊ የድረ-ገጽ ፈተናዎች አማካኝነት ተግባራዊ የሶፍትዌር ሙከራ ክህሎቶችን ገንባ።",
-  "© 2026 Tirat QA. All rights reserved.": "© 2026 Tirat QA። መብቱ በሕግ የተጠበቀ ነው።",
+  "© 2026 Tirat. All rights reserved.": "© 2026 Tirat። መብቱ በሕግ የተጠበቀ ነው።",
 };

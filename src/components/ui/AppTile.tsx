@@ -5,7 +5,7 @@ const tones = {
   blue: "from-[#3b82ff] to-[#0050e6]",
   green: "from-[#2ee06f] to-[#0bb84a]",
   orange: "from-[#ff8a3d] to-[#ff5a0a]",
-  violet: "from-[#8b7bff] to-[#5a46f0]",
+  violet: "from-[#4d94ff] to-[#0050cc]",
   lime: "from-[#d9ff1f] to-[#b8f000]",
   black: "from-[#2b2b2b] to-[#0e0e0e]",
   gray: "from-[#8a8a8a] to-[#5c5c5c]",

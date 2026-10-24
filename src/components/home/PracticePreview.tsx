@@ -19,7 +19,7 @@ export interface PreviewLevel {
   websites: { name: string; locked: boolean }[];
 }
 
-const gradients = ["from-[#3b82ff] to-[#0b2a8a]", "from-[#d9ff1f] to-[#6b8f00]", "from-[#8b7bff] to-[#2c1d8a]"];
+const gradients = ["from-[#3b82ff] to-[#0b2a8a]", "from-[#d9ff1f] to-[#6b8f00]", "from-[#4d94ff] to-[#0a2a8a]"];
 
 export async function PracticePreview({ levels }: { levels: PreviewLevel[] }) {
   const t = await getT();
@@ -41,11 +41,11 @@ export async function PracticePreview({ levels }: { levels: PreviewLevel[] }) {
         </Reveal>
 
         <ScrollTilt className="lg:-mr-24">
-          <div className="grid overflow-hidden rounded-[36px] bg-[#141414] text-white shadow-[0_40px_80px_-20px_rgba(0,0,0,0.35)] sm:grid-cols-[210px_1fr]">
+          <div className="grid overflow-hidden rounded-[32px] bg-[#141414] text-white shadow-[0_40px_80px_-20px_rgba(0,0,0,0.35)] sm:grid-cols-[210px_1fr]">
             <aside className="hidden flex-col border-r border-white/10 p-4 sm:flex">
               <div className="flex items-center gap-2.5 p-2">
-                <LogoMark size={40} className="!bg-white !text-ink" />
-                <span className="text-lg font-semibold tracking-[-0.03em]">Tirat QA</span>
+                <LogoMark size={40} />
+                <span className="text-lg font-semibold tracking-[-0.03em]">Tirat</span>
               </div>
               <p className="mt-6 px-2 text-xs text-white/50">{t("Platform")}</p>
               <ul className="mt-2 grid gap-1 text-[15px]">

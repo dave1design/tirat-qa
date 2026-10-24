@@ -85,7 +85,7 @@ export function LessonQuiz({
 
       <ol className="mt-6 grid gap-5">
         {questions.map((qu, qi) => (
-          <li key={qi} className="rounded-3xl bg-card p-5 sm:p-6">
+          <li key={qi} className="rounded-2xl bg-card p-5 sm:p-6">
             <fieldset disabled={!!result}>
               <legend className="text-[17px] font-semibold leading-snug tracking-[-0.02em]">
                 <span className="mr-2 text-muted">{qi + 1}.</span>
@@ -152,15 +152,15 @@ export function LessonQuiz({
           {previousBest !== null && <span className="text-sm text-muted">{t("Best so far: {best}/{total}", { best: previousBest, total: questions.length })}</span>}
         </div>
       ) : (
-        <div className="mt-6 rounded-3xl bg-[#141414] p-6 text-white" role="status">
-          <p className="text-sm text-white/60">{t("Your score")}</p>
+        <div className="mt-6 rounded-2xl bg-brand p-6 text-white" role="status">
+          <p className="text-sm text-white/80">{t("Your score")}</p>
           <p className="mt-1 text-4xl font-semibold tracking-[-0.04em]">
             {result.score}/{result.total}
           </p>
           <p className="mt-2 text-[15px] text-white/75">
             {result.passed ? t("You passed the knowledge check (4 of 5 needed).") : t("You need 4 of 5 to pass. Review the explanations and try again.")}
           </p>
-          <p className="mt-1 text-sm text-white/55">
+          <p className="mt-1 text-sm text-white/75">
             {result.saved ? t("Saved to your progress. Best score: {best}/{total}.", { best: result.best ?? 0, total: result.total }) : t("Sign in to save your score and progress.")}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">

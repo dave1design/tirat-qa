@@ -7,7 +7,7 @@ const TBC = <em className="text-muted"> Details to be confirmed before launch.</
 
 export default function TermsPage() {
   return (
-    <LegalPage eyebrow="Legal" title="Terms of Service" intro="These terms explain the conditions for accessing and using Tirat QA.">
+    <LegalPage eyebrow="Legal" title="Terms of Service" intro="These terms explain the conditions for accessing and using Tirat.">
       <LegalSection title="Acceptable Use">
         <p>Users must use the platform responsibly and comply with the instructions provided for each practice challenge.</p>
       </LegalSection>
@@ -24,7 +24,7 @@ export default function TermsPage() {
         </p>
       </LegalSection>
       <LegalSection title="Platform Availability">
-        <p>Tirat QA may update, maintain, or modify features as the platform develops. Service availability may occasionally be interrupted.</p>
+        <p>Tirat may update, maintain, or modify features as the platform develops. Service availability may occasionally be interrupted.</p>
       </LegalSection>
       <LegalSection title="Intellectual Property">
         <p>Ownership and permitted use of the platform, its content, practice websites, and learning materials.{TBC}</p>

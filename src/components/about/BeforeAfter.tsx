@@ -17,10 +17,10 @@ export async function BeforeAfter() {
         </Reveal>
 
         <Reveal delay={120} className="mt-12">
-          <div className="relative rounded-[44px] border border-line/70 bg-[#f6f6f6] p-2">
+          <div className="relative rounded-[48px] border border-line/70 bg-[#f6f6f6] p-2">
             <div className="grid gap-2 md:grid-cols-2">
               {/* ───── before ───── */}
-              <div className="relative h-[500px] overflow-hidden rounded-[36px] bg-white">
+              <div className="relative h-[500px] overflow-hidden rounded-[32px] bg-white">
                 <div className="flex items-center justify-between p-6">
                   <span className="font-mono text-[12px] uppercase tracking-wider text-muted">{t("Learning testing")}</span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-[13px] font-medium text-muted">
@@ -32,7 +32,7 @@ export async function BeforeAfter() {
               </div>
 
               {/* ───── after ───── */}
-              <div className="relative h-[500px] overflow-hidden rounded-[36px] bg-[#141414] text-white">
+              <div className="relative h-[500px] overflow-hidden rounded-[32px] bg-[#141414] text-white">
                 <div className="flex items-center justify-between p-6">
                   <span className="font-mono text-[12px] uppercase tracking-wider text-white/55">{t("Practicing testing")}</span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[13px] font-medium">

@@ -138,10 +138,10 @@ async function RoadmapPage() {
 
           <ol className="mt-12 grid gap-4 md:grid-cols-2">{LEVELS.filter((l) => !isPaidLevel(l.n)).map(renderCard)}</ol>
 
-          <section aria-labelledby="paid-title" className="mt-8 rounded-[44px] border-2 border-ink p-4 sm:p-6">
+          <section aria-labelledby="paid-title" className="mt-8 rounded-[48px] border-2 border-brand p-4 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-5 px-2 pb-5 pt-1 sm:px-3">
               <div>
-                <p className="inline-flex items-center gap-2 rounded-full bg-ink px-3.5 py-1.5 text-sm font-medium text-white">
+                <p className="inline-flex items-center gap-2 rounded-full bg-brand px-3.5 py-1.5 text-sm font-medium text-white">
                   <Lock className="size-3.5" aria-hidden /> {t("Paid levels")}
                 </p>
                 <h3 id="paid-title" className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em]">

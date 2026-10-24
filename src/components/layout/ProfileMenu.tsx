@@ -35,7 +35,7 @@ export function ProfileMenu({ user }: { user: NavUser }) {
     };
   }, [open]);
 
-  const item = "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium hover:bg-chip";
+  const item = "flex items-center gap-3 rounded-full px-3 py-2.5 text-[15px] font-medium hover:bg-chip";
 
   return (
     <div ref={box} className="relative">
@@ -50,7 +50,7 @@ export function ProfileMenu({ user }: { user: NavUser }) {
         {initials(user.name)}
       </button>
       {open && (
-        <div role="menu" className="absolute right-0 top-[calc(100%+12px)] z-50 w-64 rounded-3xl border border-black/5 bg-white p-2 shadow-float">
+        <div role="menu" className="absolute right-0 top-[calc(100%+12px)] z-50 w-64 rounded-2xl border border-black/5 bg-white p-2 shadow-float">
           <div className="flex items-center gap-3 px-3 pb-3 pt-2">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand text-[15px] font-semibold text-white">{initials(user.name)}</span>
             <span className="min-w-0">

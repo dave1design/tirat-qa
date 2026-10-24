@@ -77,7 +77,7 @@ async function Exams({ user, progress }: { user: LearnUser; progress: Awaited<Re
         const body = (
           <>
             <span className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-2xl bg-[#ece8fb]">
+              <span className="flex size-11 items-center justify-center rounded-2xl bg-[#e6efff]">
                 {passed ? <Trophy className="size-5" aria-hidden /> : <FileCheck2 className="size-5" aria-hidden />}
               </span>
               <span className="inline-flex items-center gap-1 text-xs text-muted">

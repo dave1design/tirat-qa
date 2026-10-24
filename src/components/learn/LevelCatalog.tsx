@@ -49,7 +49,7 @@ function LevelCard({ l }: { l: CatalogLevel }) {
 
   const body = (
     <>
-      <div className="relative aspect-[16/10] overflow-hidden rounded-xl">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-lg">
         <LessonCover n={l.coverN} track={l.track} className="absolute inset-0 h-full w-full" />
         <span className="absolute left-2 top-2 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-semibold text-ink-2 shadow-sm">
           {t("Level")} {l.n}
@@ -113,7 +113,7 @@ export function LevelCatalog({ levels }: { levels: CatalogLevel[] }) {
         <label className="relative">
           <span className="sr-only">{t("Search lessons")}</span>
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" aria-hidden />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("Search lessons")} className="w-56 rounded-xl border border-line bg-white py-2 pl-9 pr-3 text-[13.5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("Search lessons")} className="w-56 rounded-full border border-line bg-white py-2 pl-9 pr-3 text-[13.5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
         </label>
       </div>
 
@@ -132,7 +132,7 @@ export function LevelCatalog({ levels }: { levels: CatalogLevel[] }) {
       </div>
 
       {groups.length === 0 ? (
-        <p className="mt-6 rounded-3xl bg-card p-8 text-center text-muted">{t("No lessons match your filters.")}</p>
+        <p className="mt-6 rounded-2xl bg-card p-8 text-center text-muted">{t("No lessons match your filters.")}</p>
       ) : (
         groups.map((g) => (
           <div key={g.track} className="mt-8">

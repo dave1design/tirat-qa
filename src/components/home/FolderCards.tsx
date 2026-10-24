@@ -120,7 +120,7 @@ interface Folder {
 
 const folders: Folder[] = [
   { title: "Learn", pill: "Free guides and resources", href: "/learn", icon: BookOpen, tone: "blue", color: "#0066ff", back: <ChecklistPaper />, front: <LessonPaper /> },
-  { title: "Test", pill: "Practice websites", href: "/practice-lab", icon: Compass, tone: "violet", color: "#6c5cff", back: <ChecklistPaper />, front: <BrowserPaper /> },
+  { title: "Test", pill: "Practice websites", href: "/practice-lab", icon: Compass, tone: "violet", color: "#0066ff", back: <ChecklistPaper />, front: <BrowserPaper /> },
   { title: "Report", pill: "Structured bug reports", href: "/learn/how-to-write-a-bug-report", icon: FileText, tone: "orange", color: "#ff6b1a", back: <BrowserPaper />, front: <ReportPaper /> },
   { title: "Improve", pill: "Results and feedback", href: "/dashboard", icon: Rocket, tone: "green", color: "#12c957", back: <FeedbackPaper />, front: <ScorePaper /> },
 ];
@@ -137,7 +137,7 @@ export async function FolderCards() {
     <div className="mx-auto mt-24 grid max-w-[1136px] grid-cols-2 gap-x-4 gap-y-12 px-5 sm:mt-40 lg:grid-cols-4 lg:gap-x-6">
       {folders.map((f, i) => (
         <Reveal key={f.title} delay={i * 90}>
-          <Link href={f.href} className="group block rounded-[28px] text-center outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-4">
+          <Link href={f.href} className="group block rounded-[32px] text-center outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-4">
             <div className="relative h-[180px] sm:h-[200px]" style={{ perspective: "900px" }}>
               {/* back of the folder, with its tab */}
               <div className="absolute inset-x-0 bottom-0 h-[84%] rounded-[24px] rounded-tl-none bg-gradient-to-b from-[#e4e4e4] to-[#d9d9d9]">

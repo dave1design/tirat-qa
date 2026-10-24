@@ -136,7 +136,7 @@ export function Nav({ user }: { user: NavUser | null }) {
       </nav>
 
       {open && (
-        <div id="mobile-menu" className="pointer-events-auto fixed inset-x-3 top-[72px] rounded-[28px] border border-black/5 bg-white p-3 shadow-float lg:hidden">
+        <div id="mobile-menu" className="pointer-events-auto fixed inset-x-3 top-[72px] rounded-[32px] border border-black/5 bg-white p-3 shadow-float lg:hidden">
           <ul className="flex flex-col">
             {links.map((l) => (
               <li key={l.href}>

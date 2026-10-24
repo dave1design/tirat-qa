@@ -37,7 +37,7 @@ const columns = [
 export async function Footer() {
   const t = await getT();
   return (
-    <footer className="footer-frame mx-3 mb-3 rounded-[40px] bg-card px-6 pb-8 pt-12 sm:mx-4 sm:px-10 sm:pt-14 lg:rounded-[48px]">
+    <footer className="footer-frame mx-3 mb-3 rounded-[48px] bg-card px-6 pb-8 pt-12 sm:mx-4 sm:px-10 sm:pt-14 lg:rounded-[48px]">
       <div className="mx-auto grid max-w-[1136px] gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
         <div className="max-w-xs">
           <Logo />
@@ -62,8 +62,8 @@ export async function Footer() {
         ))}
       </div>
       <div className="mx-auto mt-14 flex max-w-[1136px] flex-col gap-2 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-        <p>{t("© 2026 Tirat QA. All rights reserved.")}</p>
-        <p>Tirat QA — {t("Practice. Find bugs. Improve.")}</p>
+        <p>{t("© 2026 Tirat. All rights reserved.")}</p>
+        <p>Tirat — {t("Practice. Find bugs. Improve.")}</p>
       </div>
     </footer>
   );

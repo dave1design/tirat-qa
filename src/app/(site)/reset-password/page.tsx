@@ -10,7 +10,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
   const t = await getT();
   const { token } = await searchParams;
   return (
-    <AuthShell title={t("Create a New Password.")} intro={<p>{t("Choose a new password to secure your Tirat QA account.")}</p>}>
+    <AuthShell title={t("Create a New Password.")} intro={<p>{t("Choose a new password to secure your Tirat account.")}</p>}>
       {token ? (
         <ResetForm token={token} />
       ) : (

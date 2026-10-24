@@ -23,7 +23,7 @@ export async function AdvancedPaywall({ levels, priceEtb, pendingRef, passed }: 
             <span className="text-muted">{t("Advanced levels")}</span>
           </nav>
 
-          <p className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand px-3.5 py-2 text-[14px] font-medium text-white">
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-3.5 py-2 text-[14px] font-medium text-white">
             <Lock className="size-4" aria-hidden /> {t("Paid levels")}
           </p>
           <h1 className="mt-4 text-[clamp(1.7rem,3vw,2.3rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-balance">{t("Unlock Levels 5 to 8 with one payment.")}</h1>

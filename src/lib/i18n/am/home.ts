@@ -33,13 +33,13 @@ export const home: Dict = {
   Valid: "ትክክለኛ",
   Missed: "ያመለጠ",
   // Intro
-  "Welcome to Tirat QA": "ወደ Tirat QA እንኳን ደህና መጡ",
+  "Welcome to Tirat": "ወደ Tirat እንኳን ደህና መጡ",
   "Learn QA by Doing, Not Just Watching. Reading about software testing is a good start. But becoming a better tester takes practice.": "QA ን በመመልከት ብቻ ሳይሆን በመስራት ተማር። ስለ ሶፍትዌር ሙከራ ማንበብ ጥሩ መጀመሪያ ነው። ነገር ግን የተሻለ ሞካሪ ለመሆን ልምምድ ያስፈልጋል።",
-  "Tirat QA gives you a dedicated environment to explore websites, investigate unexpected behavior, identify bugs, and write structured bug reports.": "Tirat QA ድረ-ገጾችን ለመቃኘት፣ ያልተጠበቀ ባህሪን ለመመርመር፣ ስህተቶችን ለመለየት እና የተደራጁ የስህተት ሪፖርቶችን ለመጻፍ የሚያስችል ልዩ አካባቢ ይሰጥሃል።",
+  "Tirat gives you a dedicated environment to explore websites, investigate unexpected behavior, identify bugs, and write structured bug reports.": "Tirat ድረ-ገጾችን ለመቃኘት፣ ያልተጠበቀ ባህሪን ለመመርመር፣ ስህተቶችን ለመለየት እና የተደራጁ የስህተት ሪፖርቶችን ለመጻፍ የሚያስችል ልዩ አካባቢ ይሰጥሃል።",
   "Whether you're starting your QA journey or sharpening your existing skills, every challenge gives you an opportunity to improve.": "የQA ጉዞህን እየጀመርህም ሆነ ያለህን ክህሎት እያሳደግህ፣ እያንዳንዱ ፈተና የመሻሻል እድል ይሰጥሃል።",
   "Explore the Practice Lab": "የልምምድ ቤተ-ሙከራን ተመልከት",
   // Benefits
-  "Why Tirat QA": "ለምን Tirat QA",
+  "Why Tirat": "ለምን Tirat",
   "Build Skills That Go Beyond Theory.": "ከንድፈ ሐሳብ የሚያልፍ ክህሎት ገንባ።",
   "Find bugs with": "ስህተቶችን አግኝ በ",
   Confidence: "በራስ መተማመን",

@@ -147,7 +147,7 @@ export function StepsTour() {
             id={`step-${p.n}`}
             ref={(el) => { refs.current[i] = el; }}
             style={{ zIndex: i + 1 }}
-            className="sticky top-24 mb-6 origin-top scroll-mt-28 rounded-[36px] border border-line bg-card p-6 shadow-soft sm:p-8 lg:mb-10"
+            className="sticky top-24 mb-6 origin-top scroll-mt-28 rounded-[32px] border border-line bg-card p-6 shadow-soft sm:p-8 lg:mb-10"
           >
             <div className="flex items-center gap-4">
               <AppTile icon={p.icon} tone={p.tone} size={48} />

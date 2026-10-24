@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { logoutAction } from "@/actions/auth";
 
-export const metadata: Metadata = { title: { default: "Admin", template: "%s · Tirat QA Admin" }, robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: { default: "Admin", template: "%s · Tirat Admin" }, robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -50,8 +50,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </div>
       </header>
-      <div className="mx-auto grid max-w-[1320px] gap-6 px-5 py-8 lg:grid-cols-[220px_1fr]">
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+      <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-6 px-5 py-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
           <AdminNav items={items} />
         </aside>
         <main id="main" className="min-w-0">{children}</main>

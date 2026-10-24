@@ -82,7 +82,7 @@ export default async function PracticeLabPage() {
             <Reveal>
               <div className="inline-flex items-center gap-1.5 text-sm font-medium">
                 <span className="inline-flex h-[34px] items-center gap-2 rounded-lg bg-brand pl-2.5 pr-2 text-white">
-                  Tirat QA <Puzzle className="size-[18px] text-lime" fill="currentColor" strokeWidth={1.5} aria-hidden />
+                  Tirat <Puzzle className="size-[18px] text-lime" fill="currentColor" strokeWidth={1.5} aria-hidden />
                 </span>
                 <span className="inline-flex h-[34px] items-center rounded-lg border border-line bg-white px-3 text-[12px] font-medium uppercase tracking-[0.06em]">{t("Hands-on QA training")}</span>
               </div>

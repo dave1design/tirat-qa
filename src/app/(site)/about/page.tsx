@@ -6,7 +6,7 @@ import { ValuesGrid } from "@/components/about/ValuesGrid";
 import { VisionBand } from "@/components/about/VisionBand";
 import { FinalCta } from "@/components/home/FinalCta";
 
-export const metadata: Metadata = { title: "About", description: "Tirat QA makes software testing skills practical." };
+export const metadata: Metadata = { title: "About", description: "Tirat makes software testing skills practical." };
 
 export default function AboutPage() {
   return (

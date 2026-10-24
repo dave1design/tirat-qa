@@ -1,10 +1,10 @@
 import type { Dict } from "../index";
 
 export const about: Dict = {
-  "About Tirat QA": "ስለ Tirat QA",
+  "About Tirat": "ስለ Tirat",
   "Making Software Testing": "የሶፍትዌር ሙከራ ክህሎትን",
   "Skills Practical.": "ተግባራዊ ማድረግ።",
-  "Tirat QA is a hands-on software quality assurance practice platform designed to help aspiring and junior QA testers develop practical testing skills.": "Tirat QA ተስፈኛ እና ጀማሪ የQA ሞካሪዎች ተግባራዊ የሙከራ ክህሎት እንዲያዳብሩ ለመርዳት የተነደፈ ተግባራዊ የሶፍትዌር ጥራት ማረጋገጫ የልምምድ መድረክ ነው።",
+  "Tirat is a hands-on software quality assurance practice platform designed to help aspiring and junior QA testers develop practical testing skills.": "Tirat ተስፈኛ እና ጀማሪ የQA ሞካሪዎች ተግባራዊ የሙከራ ክህሎት እንዲያዳብሩ ለመርዳት የተነደፈ ተግባራዊ የሶፍትዌር ጥራት ማረጋገጫ የልምምድ መድረክ ነው።",
   "We believe testing is a skill you develop by doing, observing, investigating, and learning from your results.": "ሙከራ በመስራት፣ በመታዘብ፣ በመመርመር እና ከውጤትህ በመማር የምታዳብረው ክህሎት ነው ብለን እናምናለን።",
   "Our Story": "ታሪካችን",
   "Registration form submits without a valid email": "የምዝገባ ቅጽ ትክክለኛ ኢሜይል ሳይኖር ይላካል",
@@ -16,7 +16,7 @@ export const about: Dict = {
   "Bridging the gap": "ክፍተቱን መሙላት",
   "Practical QA, accessible": "ተግባራዊ QA፣ ተደራሽ",
   "Learning software testing concepts is important, but understanding how to apply them can be challenging without practical experience.": "የሶፍትዌር ሙከራ ጽንሰ ሐሳቦችን መማር አስፈላጊ ነው፣ ነገር ግን ያለ ተግባራዊ ልምድ እንዴት እንደሚተገበሩ መረዳት ከባድ ሊሆን ይችላል።",
-  "Tirat QA provides practice websites where learners can investigate behavior, identify bugs, document their findings, and review feedback.": "Tirat QA ተማሪዎች ባህሪን የሚመረምሩበት፣ ስህተቶችን የሚለዩበት፣ ግኝቶቻቸውን የሚመዘግቡበት እና አስተያየት የሚገመግሙበት የልምምድ ድረ-ገጾችን ያቀርባል።",
+  "Tirat provides practice websites where learners can investigate behavior, identify bugs, document their findings, and review feedback.": "Tirat ተማሪዎች ባህሪን የሚመረምሩበት፣ ስህተቶችን የሚለዩበት፣ ግኝቶቻቸውን የሚመዘግቡበት እና አስተያየት የሚገመግሙበት የልምምድ ድረ-ገጾችን ያቀርባል።",
   "Our Mission": "ተልእኳችን",
   "Make Practical QA Learning Accessible.": "ተግባራዊ የQA ትምህርትን ተደራሽ አድርግ።",
   "Our mission is to help people develop useful software testing skills through accessible, structured, and hands-on learning experiences.": "ተልእኳችን ሰዎች ተደራሽ፣ የተደራጀ እና ተግባራዊ በሆኑ የመማር ልምዶች ጠቃሚ የሶፍትዌር ሙከራ ክህሎት እንዲያዳብሩ መርዳት ነው።",
@@ -32,7 +32,7 @@ export const about: Dict = {
   "A Future with More Confident Testers.": "በራስ የሚተማመኑ ሞካሪዎች የበዙበት የወደፊት።",
   "We envision a world where aspiring software testers can build practical skills, improve their problem-solving abilities, and prepare for real-world testing challenges.": "ተስፈኛ የሶፍትዌር ሞካሪዎች ተግባራዊ ክህሎት የሚገነቡበት፣ ችግር የመፍታት ችሎታቸውን የሚያሻሽሉበት እና ለእውነተኛ ዓለም የሙከራ ፈተናዎች የሚዘጋጁበት ዓለም እናልማለን።",
   "Who we serve": "ማንን እናገለግላለን",
-  "Tirat QA is designed for:": "Tirat QA የተነደፈው ለ፦",
+  "Tirat is designed for:": "Tirat የተነደፈው ለ፦",
   "People beginning their QA journey.": "የQA ጉዞአቸውን የሚጀምሩ ሰዎች።",
   "University and college students.": "የዩኒቨርሲቲ እና የኮሌጅ ተማሪዎች።",
   "Aspiring software testers.": "ተስፈኛ የሶፍትዌር ሞካሪዎች።",

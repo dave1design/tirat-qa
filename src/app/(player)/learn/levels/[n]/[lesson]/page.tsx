@@ -121,13 +121,13 @@ export default async function LessonPage({ params }: { params: Params }) {
       ].map(([I, label]) => {
         const Icon = I as typeof Clock;
         return (
-          <span key={label as string} className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-3.5 py-2 text-[14px] font-medium shadow-sm">
+          <span key={label as string} className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2 text-[14px] font-medium shadow-sm">
             <Icon className="size-4 text-brand" aria-hidden /> {label as string}
           </span>
         );
       })}
       {passed && (
-        <span className="inline-flex items-center gap-2 rounded-xl bg-ok-soft px-3.5 py-2 text-[14px] font-medium text-ok">
+        <span className="inline-flex items-center gap-2 rounded-full bg-ok-soft px-3.5 py-2 text-[14px] font-medium text-ok">
           <Check className="size-4" strokeWidth={3} aria-hidden /> {t("Quiz passed")}
         </span>
       )}

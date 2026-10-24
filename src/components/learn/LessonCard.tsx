@@ -55,7 +55,7 @@ export function LessonCard({ l, list }: { l: CatalogLesson; list: boolean }) {
 
   const body = (
     <>
-      <div className={cn("relative overflow-hidden rounded-xl", list ? "h-24 w-36 shrink-0" : "aspect-[16/10]")}>
+      <div className={cn("relative overflow-hidden rounded-lg", list ? "h-24 w-36 shrink-0" : "aspect-[16/10]")}>
         <LessonCover n={l.n} track={l.track} className="absolute inset-0 h-full w-full" />
         <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-medium text-ink-2 shadow-sm">
           <Clock className="size-3" aria-hidden /> {t("{n} min", { n: l.minutes })}

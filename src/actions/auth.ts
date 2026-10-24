@@ -89,7 +89,7 @@ export async function forgotPasswordAction(_: FormState, fd: FormData): Promise<
         data: { userId: user.id, tokenHash: sha256(token), expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
       });
       const base = process.env.SITE_URL ?? "http://localhost:3000";
-      await sendEmail(user.email, "Reset your Tirat QA password", `Use this link within one hour:\n${base}/reset-password?token=${token}`);
+      await sendEmail(user.email, "Reset your Tirat password", `Use this link within one hour:\n${base}/reset-password?token=${token}`);
       await audit(user.id, "password_reset_requested", "User", user.id);
     }
   }

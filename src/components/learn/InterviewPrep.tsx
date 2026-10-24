@@ -24,14 +24,14 @@ export function InterviewPrep({ prompts }: { prompts: string[] }) {
         const isOpen = open === i;
         const shown = revealed.has(i);
         return (
-          <li key={p} className="rounded-3xl bg-card">
+          <li key={p} className="rounded-2xl bg-card">
             <button
               type="button"
               aria-expanded={isOpen}
               onClick={() => setOpen(isOpen ? null : i)}
-              className="flex w-full items-start gap-3 rounded-3xl px-5 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+              className="flex w-full items-start gap-3 rounded-2xl px-5 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
             >
-              <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-ink text-[12px] font-semibold text-white">{i + 1}</span>
+              <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-brand text-[12px] font-semibold text-white">{i + 1}</span>
               <span className="flex-1 text-[16px] font-medium leading-snug">{p}</span>
               <span className="text-xl leading-none text-muted" aria-hidden>
                 {isOpen ? "−" : "+"}
@@ -74,7 +74,7 @@ export function InterviewPrep({ prompts }: { prompts: string[] }) {
                         </button>
                       ))}
                     </div>
-                    <p className="mt-2 text-xs text-muted">{t("A practice tool only. Tirat QA does not score interview answers unless a human mock interviewer reviews them.")}</p>
+                    <p className="mt-2 text-xs text-muted">{t("A practice tool only. Tirat does not score interview answers unless a human mock interviewer reviews them.")}</p>
                   </div>
                 )}
               </div>

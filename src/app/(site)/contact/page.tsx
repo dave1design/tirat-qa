@@ -6,7 +6,7 @@ import { SectionTag } from "@/components/ui/SectionTag";
 import { ContactForm } from "./ContactForm";
 import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: "Contact", description: "Questions about Tirat QA, your account, the Practice Lab or your results? Send us a message." };
+export const metadata: Metadata = { title: "Contact", description: "Questions about Tirat, your account, the Practice Lab or your results? Send us a message." };
 
 const categories = [
   { title: "Account Support", text: "Need help accessing your account or updating your details? Tell us what happened." },
@@ -21,11 +21,11 @@ export default async function ContactPage() {
   return (
     <section className="hero-bg pb-8 pt-32 sm:pt-40">
       <div className="container-x">
-        <div className="grid gap-10 rounded-[40px] bg-[#141414] p-7 text-white sm:p-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+        <div className="grid gap-10 rounded-[48px] bg-[#141414] p-7 text-white sm:p-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
           <Reveal>
             <SectionTag index="1" icon={MessageCircle} label={t("Contact Us")} />
             <h1 className="mt-6 text-balance text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.045em]">{t("We're Here to Help.")}</h1>
-            <p className="mt-5 max-w-[460px] text-lg text-white/65">{t("Have a question about Tirat QA, your account, the Practice Lab, or your results?")}</p>
+            <p className="mt-5 max-w-[460px] text-lg text-white/65">{t("Have a question about Tirat, your account, the Practice Lab, or your results?")}</p>
             <p className="mt-3 max-w-[460px] text-lg text-white/65">{t("Send us a message and tell us how we can help.")}</p>
             <ul className="mt-10 grid gap-5">
               {categories.map((c) => (
@@ -42,7 +42,7 @@ export default async function ContactPage() {
             </ul>
           </Reveal>
           <Reveal delay={120}>
-            <div className="rounded-[28px] bg-card p-6 text-ink sm:p-8">
+            <div className="rounded-[32px] bg-card p-6 text-ink sm:p-8">
               <ContactForm defaults={{ name: user?.name, email: user?.email }} />
             </div>
           </Reveal>
@@ -50,7 +50,7 @@ export default async function ContactPage() {
         <p className="mx-auto mt-10 max-w-[560px] text-center text-muted">
           {t("We're working to make QA practice more accessible, useful, and straightforward.")}
           <br />
-          {t("Thank you for being part of the Tirat QA journey.")}
+          {t("Thank you for being part of the Tirat journey.")}
         </p>
       </div>
     </section>

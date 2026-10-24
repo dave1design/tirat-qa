@@ -48,13 +48,13 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
           <ChevronLeft className="size-4" aria-hidden /> {t("Level {n} exam", { n: levelN })}
         </Link>
 
-        <div className="mt-6 rounded-[36px] bg-[#141414] p-8 text-white sm:p-10">
+        <div className="mt-6 rounded-[32px] bg-brand p-8 text-white sm:p-10">
           <p className="text-sm text-white/60">{t("Level {n} exam", { n: levelN })} · {formatDateTime(attempt.submittedAt)}</p>
           <p className="mt-3 text-[clamp(3rem,9vw,5rem)] font-semibold leading-none tracking-[-0.05em]">
             {result.score}
-            <span className="text-white/45">/100</span>
+            <span className="text-white/65">/100</span>
           </p>
-          <p className={`mt-3 text-xl font-medium ${result.passed ? "text-lime" : "text-[#ff8a7a]"}`}>
+          <p className={`mt-3 text-xl font-medium ${result.passed ? "text-lime" : "text-[#ffd0c8]"}`}>
             {result.passed ? t("Passed. Well done.") : t("Not passed yet. You need {n} to pass.", { n: EXAM_PASS_POINTS })}
           </p>
           {attempt.timedOut && <p className="mt-2 text-sm text-white/60">{t("Time ran out and your saved answers were submitted automatically.")}</p>}
@@ -76,7 +76,7 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
           </h2>
           <ul className="mt-5 grid gap-3">
             {gaps.map((g) => (
-              <li key={g.lesson.slug} className="rounded-3xl bg-card p-5">
+              <li key={g.lesson.slug} className="rounded-2xl bg-card p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-medium">
                     {g.lesson.n} {g.lesson.title}
@@ -103,11 +103,11 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
             {t("Questions to review")}
           </h2>
           {review.length === 0 ? (
-            <p className="mt-4 rounded-3xl bg-ok-soft p-6 text-ink-2">{t("You answered every question correctly.")}</p>
+            <p className="mt-4 rounded-2xl bg-ok-soft p-6 text-ink-2">{t("You answered every question correctly.")}</p>
           ) : (
             <ol className="mt-5 grid gap-4">
               {review.map(({ id: qid, q, chosen }) => (
-                <li key={qid} className="rounded-3xl bg-card p-5 sm:p-6">
+                <li key={qid} className="rounded-2xl bg-card p-5 sm:p-6">
                   <p className="text-xs font-medium uppercase tracking-wider text-muted">{q.part === "A" ? t("Part A") : t("Part B · select all that apply")}</p>
                   <p className="mt-2 text-[17px] font-semibold leading-snug">{q.q}</p>
                   <ul className="mt-4 grid gap-2 text-[15px]">
@@ -117,7 +117,7 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
                       return (
                         <li
                           key={i}
-                          className={`rounded-xl border px-4 py-2.5 ${isKey ? "border-ok bg-ok-soft" : picked ? "border-bad bg-bad-soft" : "border-line bg-white"}`}
+                          className={`rounded-2xl border px-4 py-2.5 ${isKey ? "border-ok bg-ok-soft" : picked ? "border-bad bg-bad-soft" : "border-line bg-white"}`}
                         >
                           {text}
                           {isKey && <span className="ml-2 text-xs font-semibold text-ok">{t("Correct answer")}</span>}
@@ -127,7 +127,7 @@ export default async function ExamResultsPage({ params }: { params: Params }) {
                       );
                     })}
                   </ul>
-                  <p className="mt-3 rounded-xl bg-white px-4 py-3 text-[14.5px] text-ink-2">{q.e}</p>
+                  <p className="mt-3 rounded-2xl bg-white px-4 py-3 text-[14.5px] text-ink-2">{q.e}</p>
                 </li>
               ))}
             </ol>

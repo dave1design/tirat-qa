@@ -16,7 +16,7 @@ export function ContactForm({ defaults }: { defaults?: { name?: string; email?: 
     return (
       <div className="flex min-h-[420px] flex-col items-center justify-center text-center" role="status">
         <h3 className="text-3xl font-semibold tracking-[-0.04em]">{t("Message Sent Successfully")}</h3>
-        <p className="mt-3 text-muted">{t("Thank you for contacting Tirat QA. Your message has been received.")}</p>
+        <p className="mt-3 text-muted">{t("Thank you for contacting Tirat. Your message has been received.")}</p>
         <div className="mt-8">
           <Button href="/">{t("Back to Home")}</Button>
         </div>

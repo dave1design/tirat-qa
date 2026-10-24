@@ -6,7 +6,7 @@ import { LessonCard, type CatalogLesson } from "./LessonCard";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
 
-const select = "max-w-[210px] appearance-none truncate rounded-xl border border-line bg-white py-2 pl-3 pr-9 text-[13.5px] font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand";
+const select = "max-w-[210px] appearance-none truncate rounded-full border border-line bg-white py-2 pl-3 pr-9 text-[13.5px] font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand";
 
 /** A dropdown with our own chevron, kept inside the box (the native arrow is hidden). */
 function Select({ children, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
@@ -105,7 +105,7 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
       </div>
 
       {slice.length === 0 ? (
-        <p className="mt-6 rounded-3xl bg-card p-8 text-center text-muted">{t("No lessons match your filters.")}</p>
+        <p className="mt-6 rounded-2xl bg-card p-8 text-center text-muted">{t("No lessons match your filters.")}</p>
       ) : (
         <ul className={cn("mt-5 grid gap-3", list ? "grid-cols-1" : "grid-cols-[repeat(auto-fill,minmax(210px,1fr))]")}>
           {slice.map((l) => (
@@ -130,15 +130,15 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
           </span>
         </div>
         <nav aria-label={t("Pages")} className="flex items-center gap-1">
-          <button type="button" disabled={cur <= 1} onClick={() => setPage(cur - 1)} className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-medium text-muted enabled:hover:text-ink disabled:opacity-40">
+          <button type="button" disabled={cur <= 1} onClick={() => setPage(cur - 1)} className="flex items-center gap-1 rounded-full px-2.5 py-1.5 font-medium text-muted enabled:hover:text-ink disabled:opacity-40">
             <ChevronLeft className="size-4" aria-hidden /> {t("Previous")}
           </button>
           {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-            <button key={p} type="button" aria-current={p === cur ? "page" : undefined} onClick={() => setPage(p)} className={cn("size-8 rounded-lg font-medium", p === cur ? "border border-ink" : "text-muted hover:text-ink")}>
+            <button key={p} type="button" aria-current={p === cur ? "page" : undefined} onClick={() => setPage(p)} className={cn("size-8 rounded-full font-medium", p === cur ? "border border-ink" : "text-muted hover:text-ink")}>
               {p}
             </button>
           ))}
-          <button type="button" disabled={cur >= pages} onClick={() => setPage(cur + 1)} className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-medium text-muted enabled:hover:text-ink disabled:opacity-40">
+          <button type="button" disabled={cur >= pages} onClick={() => setPage(cur + 1)} className="flex items-center gap-1 rounded-full px-2.5 py-1.5 font-medium text-muted enabled:hover:text-ink disabled:opacity-40">
             {t("Next")} <ChevronRight className="size-4" aria-hidden />
           </button>
         </nav>

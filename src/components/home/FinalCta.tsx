@@ -63,7 +63,7 @@ export async function FinalCta({
 } = {}) {
   const t = await getT();
   return (
-    <section className="cta-frame mx-3 mt-16 rounded-t-[40px] bg-card px-3 pb-3 pt-3 sm:mx-4 sm:mt-24 sm:px-4 sm:pt-4 lg:rounded-t-[48px]" aria-labelledby="cta-title">
+    <section className="cta-frame mx-3 mt-16 rounded-t-[48px] bg-card px-3 pb-3 pt-3 sm:mx-4 sm:mt-24 sm:px-4 sm:pt-4 lg:rounded-t-[48px]" aria-labelledby="cta-title">
       <div className="mx-auto grid max-w-[1136px] items-center gap-10 overflow-hidden rounded-[32px] bg-white px-7 py-12 shadow-soft sm:px-12 sm:py-16 md:grid-cols-[1.2fr_1fr]">
         <Reveal>
           <SectionTag index="6" icon={Rocket} label={t(label)} />

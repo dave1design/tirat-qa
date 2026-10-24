@@ -19,9 +19,9 @@ const steps: { n: string; title: string; text: string; icon: LucideIcon; grad: s
   {
     n: "02",
     title: "Bridging the gap",
-    text: "Tirat QA provides practice websites where learners can investigate behavior, identify bugs, document their findings, and review feedback.",
+    text: "Tirat provides practice websites where learners can investigate behavior, identify bugs, document their findings, and review feedback.",
     icon: Link2,
-    grad: "from-[#2a1fb8] to-[#8b7bff]",
+    grad: "from-[#0850e0] to-[#4d94ff]",
   },
   {
     n: "03",
@@ -104,7 +104,7 @@ export function StoryTimeline() {
                   <span className="size-2 rounded-full bg-brand" />
                 </span>
                 <Reveal delay={i * 80}>
-                  <article className="group flex flex-col gap-4 rounded-[28px] border border-line bg-card p-2 transition-colors hover:bg-white sm:flex-row sm:items-center">
+                  <article className="group flex flex-col gap-4 rounded-[32px] border border-line bg-card p-2 transition-colors hover:bg-white sm:flex-row sm:items-center">
                     <div className={`relative flex h-[140px] w-full shrink-0 items-center justify-center overflow-hidden rounded-[22px] bg-gradient-to-br sm:w-[190px] ${s.grad}`}>
                       <span className="absolute -right-8 -top-8 size-32 rounded-full bg-white/20 blur-2xl" />
                       <span className="absolute inset-0 opacity-[0.14] [background-image:repeating-linear-gradient(45deg,#fff_0_2px,transparent_2px_14px)]" />

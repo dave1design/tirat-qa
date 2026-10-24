@@ -11,13 +11,13 @@ const columns: Tile[][] = [
   ],
   [
     { h: 150, bg: "from-[#d6ff1a] to-[#bff000]", icon: Trophy, ink: "text-ink" },
-    { h: 240, bg: "from-[#7b6cff] to-[#5a46f0]", icon: Layers },
+    { h: 240, bg: "from-[#4d94ff] to-[#0050cc]", icon: Layers },
     { h: 160, bg: "from-[#dfe9ff] to-[#b9d3ff]", icon: FileText, ink: "text-brand" },
   ],
   [
     { h: 230, bg: "from-[#12c957] to-[#0a9d41]", icon: ClipboardCheck },
     { h: 160, bg: "from-[#ff8a3d] to-[#ff5a0a]", icon: Target },
-    { h: 200, bg: "from-[#e9e4ff] to-[#cdc3ff]", icon: ChartPie, ink: "text-[#5a46f0]" },
+    { h: 200, bg: "from-[#e6efff] to-[#c7dcff]", icon: ChartPie, ink: "text-brand" },
   ],
   [
     { h: 160, bg: "from-[#2ee6c3] to-[#14d3a8]", icon: Compass, ink: "text-ink" },
@@ -39,7 +39,7 @@ export function AuthBackdrop() {
         {columns.map((col, ci) => (
           <div key={ci} className="flex w-[220px] shrink-0 flex-col gap-4" style={{ marginTop: ci % 2 ? 56 : 0 }}>
             {[...col, ...col].map((t, ti) => (
-              <div key={ti} className={`relative flex items-center justify-center overflow-hidden rounded-[28px] bg-gradient-to-br ${t.bg}`} style={{ height: t.h }}>
+              <div key={ti} className={`relative flex items-center justify-center overflow-hidden rounded-[32px] bg-gradient-to-br ${t.bg}`} style={{ height: t.h }}>
                 <t.icon className={`size-14 ${t.ink ?? "text-white"} opacity-80`} strokeWidth={1.5} />
               </div>
             ))}

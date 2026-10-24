@@ -50,7 +50,7 @@ export function LessonLab({
     });
 
   return (
-    <div className="rounded-[28px] border border-line bg-white p-5 sm:p-7">
+    <div className="rounded-[32px] border border-line bg-white p-5 sm:p-7">
       <p className="text-xl font-semibold tracking-[-0.03em]">{lab.title}</p>
       <p className="mt-2 text-[15px] leading-relaxed text-ink-2">
         <span className="font-medium text-ink">{t("Task.")}</span> {lab.task}
@@ -106,7 +106,7 @@ export function LessonLab({
       </div>
 
       {result && (
-        <div className="mt-5 rounded-2xl bg-[#141414] p-5 text-white" role="status">
+        <div className="mt-5 rounded-2xl bg-brand p-5 text-white" role="status">
           <p className="text-2xl font-semibold tracking-[-0.03em]">
             {t("{score}/{total} correct", { score: result.score, total: result.total })}
           </p>
@@ -129,7 +129,7 @@ export function LessonLab({
           placeholder={t("Write a few sentences in your own words…")}
         />
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <button type="button" onClick={save} disabled={pending} className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-medium text-white hover:bg-black disabled:opacity-50">
+          <button type="button" onClick={save} disabled={pending} className="rounded-full bg-brand px-5 py-2.5 text-[15px] font-medium text-white hover:bg-brand-dark disabled:opacity-50">
             {t("Save reflection and complete lab")}
           </button>
           {saved && (

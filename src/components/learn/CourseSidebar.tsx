@@ -26,7 +26,7 @@ export interface SidebarLevel {
 function Mark({ passed, locked, current, exam }: { passed: boolean; locked: boolean; current: boolean; exam?: boolean }) {
   const t = useT();
   return (
-    <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", passed ? "bg-ok-soft text-ok" : current ? "bg-brand text-white" : "bg-chip text-ink")}>
+    <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-2xl", passed ? "bg-ok-soft text-ok" : current ? "bg-brand text-white" : "bg-chip text-ink")}>
       {passed ? <Check className="size-[18px]" strokeWidth={3} aria-label={t("Passed")} /> : locked ? <Lock className="size-4" aria-label={t("Locked")} /> : exam ? <FileCheck2 className="size-[18px]" aria-hidden /> : <Play className="size-4" fill="currentColor" aria-hidden />}
     </span>
   );

@@ -24,7 +24,7 @@ export async function LearnApp({ active, advanced, passed, total, children }: { 
   return (
     <div className="mx-auto flex w-full max-w-[1480px] flex-col gap-6 px-4 pb-24 pt-28 sm:pt-32 lg:flex-row lg:px-6">
       <aside className="lg:sticky lg:top-28 lg:w-[240px] lg:shrink-0 lg:self-start">
-        <nav aria-label={t("Learning")} className="flex gap-1 overflow-x-auto rounded-3xl border border-line bg-white p-2 lg:flex-col lg:overflow-visible lg:p-3">
+        <nav aria-label={t("Learning")} className="flex gap-1 overflow-x-auto rounded-2xl border border-line bg-white p-2 lg:flex-col lg:overflow-visible lg:p-3">
           <p className="hidden px-3 pb-2 pt-1 text-xs font-medium uppercase tracking-[0.08em] text-faint lg:block">{t("Learning")}</p>
           {NAV.map((n) => (
             <Link
@@ -41,7 +41,7 @@ export async function LearnApp({ active, advanced, passed, total, children }: { 
           ))}
         </nav>
 
-        <div className="mt-4 hidden rounded-3xl border border-line bg-white p-4 lg:block">
+        <div className="mt-4 hidden rounded-2xl border border-line bg-white p-4 lg:block">
           <p className="text-sm font-medium">{t("Your progress")}</p>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-chip" role="progressbar" aria-valuenow={passed} aria-valuemin={0} aria-valuemax={total}>
             <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
@@ -50,7 +50,7 @@ export async function LearnApp({ active, advanced, passed, total, children }: { 
         </div>
 
         {!advanced && (
-          <Link href="/learn/levels/5" className="mt-4 hidden rounded-3xl bg-brand p-4 text-white transition-colors hover:bg-brand-dark lg:block">
+          <Link href="/learn/levels/5" className="mt-4 hidden rounded-2xl bg-brand p-4 text-white transition-colors hover:bg-brand-dark lg:block">
             <span className="flex items-center gap-2 text-sm text-white/80">
               <Lock className="size-3.5" aria-hidden /> {t("Paid levels")}
             </span>
