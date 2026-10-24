@@ -24,7 +24,7 @@ export default async function LearnPage({ searchParams }: { searchParams: Promis
   const user = await getCurrentUser();
   if (user) {
     const sp = await searchParams;
-    return <SignedInLearn user={user} view={sp.view === "exams" ? "exams" : "lessons"} query={sp.q ?? ""} />;
+    return <SignedInLearn user={user} view={sp.view === "exams" ? "exams" : sp.view === "all" || sp.q ? "all" : "levels"} query={sp.q ?? ""} />;
   }
   return <RoadmapPage />;
 }

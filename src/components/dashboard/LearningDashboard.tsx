@@ -158,7 +158,7 @@ export async function LearningDashboard({
 
       {/* continue */}
       <section aria-labelledby="continue-title" className="mt-10">
-        <SectionTitle id="continue-title" href="/learn" linkLabel={t("All lessons")}>
+        <SectionTitle id="continue-title" href="/learn?view=all" linkLabel={t("All lessons")}>
           {resumeIdx >= 0 ? t("Continue learning") : t("All lessons complete")}
         </SectionTitle>
         <ul className={GRID}>

@@ -375,4 +375,9 @@ export const learn: Dict = {
   "Level exam": "የደረጃ ፈተና",
   "All lessons complete": "ሁሉም ትምህርቶች ተጠናቀዋል",
   "Start the level": "ደረጃውን ጀምር",
+  "By level": "በደረጃ",
+  "All": "ሁሉም",
+  "Track": "መስመር",
+  "{n} level": "{n} ደረጃ",
+  "{n} levels": "{n} ደረጃዎች",
 };

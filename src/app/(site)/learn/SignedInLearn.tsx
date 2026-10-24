@@ -9,12 +9,13 @@ import { hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { loadLearningStats } from "@/lib/learn-dashboard";
 import { LearnApp } from "@/components/learn/LearnApp";
 import { LessonCatalog } from "@/components/learn/LessonCatalog";
+import { LevelCatalog, type CatalogLevel } from "@/components/learn/LevelCatalog";
 import { buildCatalogLessons } from "@/lib/learn-catalog";
 
 type LearnUser = { id: string; role: string };
 
 /** What /learn shows once you are logged in: the sidebar app with every lesson as a card, or the level exams. */
-export async function SignedInLearn({ user, view, query }: { user: LearnUser; view: "lessons" | "exams"; query: string }) {
+export async function SignedInLearn({ user, view, query }: { user: LearnUser; view: "levels" | "all" | "exams"; query: string }) {
   const t = await getT();
   const levels = levelsFor(await getLocale());
   const progress = await loadProgress(user.id);
@@ -24,6 +25,19 @@ export async function SignedInLearn({ user, view, query }: { user: LearnUser; vi
   const passedCount = flat.filter(({ lv, l }) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length;
 
   const lessons = buildCatalogLessons(levels, progress, advanced);
+  const catalogLevels: CatalogLevel[] = levels.map((lv) => ({
+    n: lv.n,
+    title: lv.title,
+    goal: lv.goal,
+    track: lv.track,
+    lessons: lv.lessons.length,
+    minutes: lv.lessons.reduce((m, l) => m + l.minutes, 0),
+    done: lv.lessons.filter((l) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length,
+    coverN: lv.lessons[0].n,
+    href: `/learn/levels/${lv.n}`,
+    locked: !isLevelUnlocked(lv.n, progress),
+    paid: isPaidLevel(lv.n) && !advanced,
+  }));
 
   return (
     <LearnApp active={view === "exams" ? "exams" : "lessons"} advanced={advanced} passed={passedCount} total={TOTAL_LESSONS}>
@@ -31,7 +45,16 @@ export async function SignedInLearn({ user, view, query }: { user: LearnUser; vi
       <p className="mt-1 text-[15.5px] text-muted">
         {view === "exams" ? t("Each exam has 30 questions in 60 minutes. Pass every lesson quiz of a level to unlock its exam.") : t("Eight levels, {n} lessons. Pass each quiz (4 of 5) to open the next lesson.", { n: TOTAL_LESSONS })}
       </p>
-      <div className="mt-7">{view === "exams" ? await Exams({ user, progress }) : <LessonCatalog lessons={lessons} initialQuery={query} />}</div>
+      {view !== "exams" && (
+        <div className="mt-5 inline-flex rounded-xl border border-line bg-white p-1" role="tablist" aria-label={t("View")}>
+          {([["levels", "/learn", "By level"], ["all", "/learn?view=all", "All lessons"]] as const).map(([id, href, label]) => (
+            <Link key={id} href={href} role="tab" aria-selected={view === id} className={cn("rounded-lg px-4 py-2 text-[14px] font-medium transition-colors", view === id ? "bg-ink text-white" : "text-muted hover:text-ink")}>
+              {t(label)}
+            </Link>
+          ))}
+        </div>
+      )}
+      <div className="mt-6">{view === "exams" ? await Exams({ user, progress }) : view === "all" ? <LessonCatalog lessons={lessons} initialQuery={query} /> : <LevelCatalog levels={catalogLevels} />}</div>
     </LearnApp>
   );
 }
