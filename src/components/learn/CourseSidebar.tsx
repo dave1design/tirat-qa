@@ -108,6 +108,18 @@ export function CourseSidebar({ levels, currentLevel, currentSlug }: { levels: S
             {here.lessons.map((l) => row(here.n, l))}
             {exam(here)}
           </ol>
+          <div className="mt-4 rounded-2xl bg-card p-4">
+            <p className="flex items-center justify-between text-[14px] font-medium">
+              <span>{t("Level progress")}</span>
+              <span className="text-muted">
+                {here.lessons.filter((l) => l.passed).length}/{here.lessons.length}
+              </span>
+            </p>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+              <div className="h-full rounded-full bg-brand" style={{ width: `${(here.lessons.filter((l) => l.passed).length / here.lessons.length) * 100}%` }} />
+            </div>
+            <p className="mt-2 text-[12.5px] text-muted">{t("Pass each quiz (4 of 5) to open the next lesson.")}</p>
+          </div>
         </>
       ) : (
         <div className="mt-4 grid gap-2">

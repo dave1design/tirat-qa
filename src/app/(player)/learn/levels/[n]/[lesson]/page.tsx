@@ -178,8 +178,8 @@ export default async function LessonPage({ params }: { params: Params }) {
               <h1 className="mt-8 text-[clamp(1.7rem,3vw,2.3rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-balance">
                 {lesson.n} {lesson.title}
               </h1>
-              <p className="mt-3 max-w-[800px] text-[17px] leading-[1.75] text-ink-2">{lesson.video.summary}</p>
-              <div className="mt-6 max-w-[800px] rounded-2xl border border-line bg-white p-5 sm:p-6">
+              <p className="mt-3 text-[17px] leading-[1.75] text-ink-2">{lesson.video.summary}</p>
+              <div className="mt-6 rounded-2xl border border-line bg-white p-5 sm:p-6">
                 <h2 className="text-[17px] font-semibold tracking-[-0.015em]">{t("By the end of this lesson you can")}</h2>
                 <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
                   {lesson.objectives.map((o) => (

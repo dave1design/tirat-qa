@@ -135,7 +135,7 @@ export function LessonFlow({
       </div>
 
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="px-5 pb-16 pt-8 sm:px-8">
-        <div className={cn(tab === "content" ? "max-w-[560px]" : "max-w-[800px]")}>
+        <div className={cn(tab === "content" && "max-w-[560px]")}>
           {tab === "overview" && (
             <div>
               <div className="mb-5">
