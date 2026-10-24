@@ -139,7 +139,7 @@ export async function LearningDashboard({
                   <span className={cn("text-[11px]", filled ? "text-white/80" : "text-muted")}>{day}</span>
                   <span className="mt-0.5 text-[1.2rem] font-semibold tabular-nums">{stats.weekDates[i]}</span>
                   <span className="mt-1 flex h-4 items-center">
-                    {on ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : <span className={cn("size-1.5 rounded-full", today ? "bg-white/70" : "bg-line")} />}
+                    {on ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : <span className={cn("size-1.5 rounded-full", today ? "bg-[#ffd23f]" : "bg-line")} />}
                   </span>
                 </li>
               );
