@@ -84,7 +84,7 @@ export function CourseSidebar({ levels, currentLevel, currentSlug, title }: { le
   return (
     <nav aria-label={t("Course content")} className="p-4">
       <h2 className="px-1 pb-3 text-[1.15rem] font-semibold tracking-[-0.02em]">{title ?? t("Start the lesson")}</h2>
-      <div role="tablist" className="grid grid-cols-2 gap-1 rounded-xl bg-card p-1">
+      <div role="tablist" className="grid grid-cols-2 gap-1 rounded-full bg-card p-1">
         {(["level", "all"] as const).map((id) => (
           <button
             key={id}
@@ -92,7 +92,7 @@ export function CourseSidebar({ levels, currentLevel, currentSlug, title }: { le
             type="button"
             aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={cn("rounded-lg px-3 py-2 text-[14px] font-medium transition-colors", tab === id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink")}
+            className={cn("rounded-full px-3 py-2 text-[14px] font-medium transition-colors", tab === id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink")}
           >
             {id === "level" ? t("This level") : t("All levels")}
           </button>

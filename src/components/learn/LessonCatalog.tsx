@@ -87,7 +87,7 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
             <option value="progress">{t("Highest score")}</option>
             <option value="short">{t("Shortest first")}</option>
           </Select>
-          <div className="flex rounded-xl border border-line bg-white p-0.5" role="group" aria-label={t("View")}>
+          <div className="flex rounded-full border border-line bg-white p-0.5" role="group" aria-label={t("View")}>
             {([false, true] as const).map((isList) => (
               <button
                 key={String(isList)}
@@ -95,7 +95,7 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
                 aria-pressed={list === isList}
                 aria-label={isList ? t("List view") : t("Grid view")}
                 onClick={() => setList(isList)}
-                className={cn("rounded-lg p-2", list === isList ? "bg-ink text-white" : "text-muted hover:text-ink")}
+                className={cn("rounded-full p-2", list === isList ? "bg-ink text-white" : "text-muted hover:text-ink")}
               >
                 {isList ? <List className="size-4" aria-hidden /> : <LayoutGrid className="size-4" aria-hidden />}
               </button>
