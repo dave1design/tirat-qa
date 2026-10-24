@@ -87,7 +87,7 @@ export async function LearningDashboard({
         </ul>
       </div>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="min-w-0">
           <h2 className="text-xl font-semibold tracking-[-0.03em]">{t("Continue learning")}</h2>
           <div className="mt-4 flex flex-wrap items-center gap-6 rounded-3xl border-2 border-ink bg-white p-5 sm:p-6">

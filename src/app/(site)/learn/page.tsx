@@ -8,6 +8,7 @@ import { FinalCta } from "@/components/home/FinalCta";
 import { getCurrentUser } from "@/lib/auth";
 import { isLessonPassed, isLevelUnlocked, LEARN_LOGIN, loadProgress } from "@/lib/learn-progress";
 import { cn } from "@/lib/utils";
+import { SignedInLearn } from "./SignedInLearn";
 import { advancedPriceEtb, hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { levelsFor, TOTAL_LESSONS } from "@/content/curriculum";
 import { getLocale, getT } from "@/lib/i18n/server";
@@ -18,7 +19,14 @@ export const metadata: Metadata = {
 };
 export const dynamic = "force-dynamic";
 
-export default async function LearnPage() {
+/** Signed in, /learn is the learning app (sidebar + lesson cards); guests keep the public roadmap. */
+export default async function LearnPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+  const user = await getCurrentUser();
+  if (user) return <SignedInLearn user={user} view={(await searchParams).view === "exams" ? "exams" : "lessons"} />;
+  return <RoadmapPage />;
+}
+
+async function RoadmapPage() {
   const t = await getT();
   const LEVELS = levelsFor(await getLocale());
   const user = await getCurrentUser();

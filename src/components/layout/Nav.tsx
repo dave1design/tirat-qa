@@ -40,8 +40,7 @@ function Collapse({ hidden, className, children }: { hidden: boolean; className?
 
 export function Nav({ user }: { user: NavUser | null }) {
   const t = useT();
-  // signed in, the Learn item opens the learner's dashboard
-  const links = user ? baseLinks.map((l) => (l.href === "/learn" ? { href: "/dashboard", label: "Learn" } : l)) : baseLinks;
+  const links = baseLinks;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false); // desktop: collapses to logo + button while scrolling down
@@ -73,7 +72,7 @@ export function Nav({ user }: { user: NavUser | null }) {
 
   const isActive = (href: string) => {
     const p = pending ?? pathname;
-    if (href === "/dashboard") return p.startsWith("/dashboard") || p.startsWith("/learn");
+    if (href === "/learn" && user) return p.startsWith("/dashboard") || p.startsWith("/learn");
     return href === "/" ? p === "/" : p.startsWith(href);
   };
 

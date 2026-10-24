@@ -6,11 +6,12 @@ import { isStaff, requireUser } from "@/lib/auth";
 import { loadLab, SITE_CTA } from "@/lib/lab";
 import { ATTEMPT_STATUS_LABEL } from "@/lib/scoring/service";
 import { formatDate } from "@/lib/utils";
-import { PageTop } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/Button";
 import { Pill, StatusBadge } from "@/components/ui/StatusBadge";
 import { getT } from "@/lib/i18n/server";
-import { loadProgress } from "@/lib/learn-progress";
+import { isLessonPassed, loadProgress } from "@/lib/learn-progress";
+import { TOTAL_LESSONS } from "@/content/curriculum";
+import { LearnApp } from "@/components/learn/LearnApp";
 import { ADVANCED_PRODUCT, hasAdvancedAccess } from "@/lib/learn-access";
 import { loadLearningStats } from "@/lib/learn-dashboard";
 import { LearningDashboard } from "@/components/dashboard/LearningDashboard";
@@ -45,8 +46,8 @@ export default async function DashboardPage() {
   const practicePending = payments.filter((p) => !p.product).length;
 
   return (
-    <PageTop className="pb-24">
-      <div className="container-x">
+    <LearnApp active="dashboard" advanced={advanced} passed={[...progress.values()].filter(isLessonPassed).length} total={TOTAL_LESSONS}>
+      <div>
         <LearningDashboard
           name={user.name.split(" ")[0]}
           progress={progress}
@@ -157,6 +158,6 @@ export default async function DashboardPage() {
           </ul>
         )}
       </div>
-    </PageTop>
+    </LearnApp>
   );
 }
