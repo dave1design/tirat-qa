@@ -370,4 +370,8 @@ export const learn: Dict = {
   "Quiz: {n} questions": "ፈተና፦ {n} ጥያቄዎች",
   "Level progress": "የደረጃ ሂደት",
   "Pass each quiz (4 of 5) to open the next lesson.": "ቀጣዩን ትምህርት ለመክፈት እያንዳንዱን ፈተና (ከ5 4) እለፍ።",
+  "Take the Level {n} exam": "የደረጃ {n} ፈተናን ውሰድ",
+  "Continue to the next lesson": "ወደ ቀጣዩ ትምህርት ቀጥል",
+  "Level exam": "የደረጃ ፈተና",
+  "All lessons complete": "ሁሉም ትምህርቶች ተጠናቀዋል",
 };

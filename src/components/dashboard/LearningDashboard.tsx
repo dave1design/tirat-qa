@@ -159,7 +159,7 @@ export async function LearningDashboard({
       {/* continue */}
       <section aria-labelledby="continue-title" className="mt-10">
         <SectionTitle id="continue-title" href="/learn" linkLabel={t("All lessons")}>
-          {t("Continue learning")}
+          {resumeIdx >= 0 ? t("Continue learning") : t("All lessons complete")}
         </SectionTitle>
         <ul className={GRID}>
           {upNext.map((l) => (
@@ -167,6 +167,26 @@ export async function LearningDashboard({
               <LessonCard l={l} list={false} />
             </li>
           ))}
+          {resumeIdx < 0 && (
+            <li>
+              <Link href={`/learn/levels/${current.n}/exam`} className="flex h-full flex-col rounded-2xl border border-line bg-white p-2.5 transition-shadow hover:shadow-soft">
+                <span className="relative block aspect-[16/10] overflow-hidden rounded-xl">
+                  <LessonCover n="8.3" track="Automation QA" className="absolute inset-0 h-full w-full" />
+                  <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-medium text-ink-2 shadow-sm">
+                    <Clock className="size-3" aria-hidden /> {t("{n} min", { n: 60 })}
+                  </span>
+                </span>
+                <span className="mt-3 flex flex-wrap gap-1.5">
+                  <span className="rounded-md bg-chip px-1.5 py-0.5 text-[11px] text-ink-2">{t("Level")} {current.n}</span>
+                </span>
+                <span className="mb-3 mt-2 line-clamp-2 text-[15px] font-semibold leading-snug tracking-[-0.015em]">{t("Level {n} exam", { n: current.n })}</span>
+                <span className="mt-auto flex items-center justify-between gap-2 border-t border-line pt-3 text-[12.5px]">
+                  <span className="text-muted">{examBest != null ? `${examBest}/100` : t("50 questions")}</span>
+                  <span className="font-medium text-brand">{t("Take the level exam")}</span>
+                </span>
+              </Link>
+            </li>
+          )}
           <li>
             <Link href={practice?.href ?? "/practice-lab"} className="flex h-full flex-col rounded-2xl border border-line bg-white p-2.5 transition-shadow hover:shadow-soft">
               <span className="relative block aspect-[16/10] overflow-hidden rounded-xl">

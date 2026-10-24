@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { Check, RotateCcw, X } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Check, RotateCcw, X } from "lucide-react";
 import { submitQuizAction, type QuizResult } from "@/actions/learn";
 import { cn } from "@/lib/utils";
 import { useLessonPassed } from "./LessonFlow";
@@ -30,11 +31,14 @@ export function LessonQuiz({
   lessonSlug,
   questions,
   previousBest,
+  next,
 }: {
   levelN: number;
   lessonSlug: string;
   questions: QuizQuestion[];
   previousBest: number | null;
+  /** Where to go after passing: the next lesson, or the level exam when this was the last lesson of the level. */
+  next?: { href: string; kind: "lesson" | "exam" } | null;
 }) {
   const t = useT();
   const onPassed = useLessonPassed();
@@ -156,9 +160,16 @@ export function LessonQuiz({
           <p className="mt-1 text-sm text-white/55">
             {result.saved ? t("Saved to your progress. Best score: {best}/{total}.", { best: result.best ?? 0, total: result.total }) : t("Sign in to save your score and progress.")}
           </p>
-          <button type="button" onClick={retry} className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-medium text-ink hover:bg-card">
-            <RotateCcw className="size-4" aria-hidden /> {t("Try again with shuffled options")}
-          </button>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            {result.passed && next && (
+              <Link href={next.href} className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 font-semibold text-white hover:bg-brand-dark">
+                {next.kind === "exam" ? t("Take the Level {n} exam", { n: levelN }) : t("Continue to the next lesson")} <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            )}
+            <button type="button" onClick={retry} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-medium text-ink hover:bg-card">
+              <RotateCcw className="size-4" aria-hidden /> {t("Try again with shuffled options")}
+            </button>
+          </div>
         </div>
       )}
     </div>

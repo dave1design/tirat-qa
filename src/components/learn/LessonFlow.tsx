@@ -51,7 +51,7 @@ export function LessonFlow({
   startAtQuiz: boolean;
   alreadyPassed: boolean;
   prev: Nav | null;
-  next: Nav | null;
+  next: (Nav & { kind?: "lesson" | "exam" }) | null;
 }) {
   const t = useT();
   const router = useRouter();
@@ -97,11 +97,11 @@ export function LessonFlow({
             {next &&
               (passed ? (
                 <Link href={next.href} title={next.label} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-dark">
-                  {t("Next lesson")} <ArrowRight className="size-4" aria-hidden />
+                  {next.kind === "exam" ? t("Take the level exam") : t("Next lesson")} <ArrowRight className="size-4" aria-hidden />
                 </Link>
               ) : (
                 <button type="button" onClick={() => go("quiz")} title={t("Pass the quiz (4 of 5) to unlock it.")} className="inline-flex items-center gap-2 rounded-xl bg-chip px-4 py-2.5 text-[14px] font-semibold text-muted">
-                  <Lock className="size-4" aria-hidden /> {t("Next lesson")}
+                  <Lock className="size-4" aria-hidden /> {next.kind === "exam" ? t("Level exam") : t("Next lesson")}
                 </button>
               ))}
           </div>

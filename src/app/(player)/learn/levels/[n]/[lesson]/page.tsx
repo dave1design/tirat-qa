@@ -117,6 +117,12 @@ export default async function LessonPage({ params }: { params: Params }) {
   const questions = lesson.quiz.map((qu) => ({ q: qu.q, o: [...qu.o] }));
   const labView = { title: lesson.lab.title, task: lesson.lab.task, categories: lesson.lab.categories, items: lesson.lab.items.map((i) => i.t), reflection: lesson.lab.reflection };
 
+  // after the last lesson of a level the way on is its exam, not another lesson
+  const nextStep: { href: string; label: string; kind: "lesson" | "exam" } =
+    isLastInLevel || !next
+      ? { href: `/learn/levels/${level.n}/exam`, label: t("Level {n} exam", { n: level.n }), kind: "exam" }
+      : { href: `/learn/levels/${next.levelN}/${next.lesson.slug}`, label: `${next.lesson.n} ${next.lesson.title}`, kind: "lesson" };
+
   const breadcrumbNode = (
     <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[15px]">
       <Link href="/learn" className="font-medium text-brand hover:underline">
@@ -197,7 +203,7 @@ export default async function LessonPage({ params }: { params: Params }) {
               startAtQuiz={!!status && status.attempts > 0}
               alreadyPassed={passed}
               prev={prev ? { href: `/learn/levels/${prev.levelN}/${prev.lesson.slug}`, label: `${prev.lesson.n} ${prev.lesson.title}` } : null}
-              next={isLastInLevel || !next ? { href: `/learn/levels/${level.n}/exam`, label: t("Level {n} exam", { n: level.n }) } : { href: `/learn/levels/${next.levelN}/${next.lesson.slug}`, label: `${next.lesson.n} ${next.lesson.title}` }}
+              next={nextStep}
               sidebar={sidebar}
               video={<InlineYouTube variant="player" videoId={lesson.video.id} title={lesson.video.title} summary={lesson.video.summary} />}
               breadcrumb={breadcrumbNode}
@@ -261,7 +267,7 @@ export default async function LessonPage({ params }: { params: Params }) {
                   <Heading id="quiz">{t("Check yourself")}</Heading>
                   <p className="mt-2 text-[15px] text-muted">{t("Five questions. Answer all of them, submit, then see your score and why each answer is right. You can retry.")}</p>
                   <div className="mt-6">
-                    <LessonQuiz levelN={level.n} lessonSlug={lesson.slug} questions={questions} previousBest={status?.bestScore ?? null} />
+                    <LessonQuiz levelN={level.n} lessonSlug={lesson.slug} questions={questions} previousBest={status?.bestScore ?? null} next={{ href: nextStep.href, kind: nextStep.kind }} />
                   </div>
                 </section>
               }
