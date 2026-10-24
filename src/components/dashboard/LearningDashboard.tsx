@@ -8,6 +8,7 @@ import { advancedPriceEtb, isPaidLevel } from "@/lib/learn-access";
 import { buildCatalogLessons } from "@/lib/learn-catalog";
 import type { LearningStats } from "@/lib/learn-dashboard";
 import { LessonCard } from "@/components/learn/LessonCard";
+import { LessonCover } from "@/components/learn/LessonCover";
 import { TRACK } from "@/components/learn/tracks";
 
 const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -168,12 +169,10 @@ export async function LearningDashboard({
           ))}
           <li>
             <Link href={practice?.href ?? "/practice-lab"} className="flex h-full flex-col rounded-2xl border border-line bg-white p-2.5 transition-shadow hover:shadow-soft">
-              <span className="relative flex aspect-[16/10] items-center justify-center rounded-xl bg-[#f7f0dc]">
-                <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/80 px-1.5 py-0.5 text-[11px] font-medium text-ink-2">
+              <span className="relative block aspect-[16/10] overflow-hidden rounded-xl">
+                <LessonCover n="lab" track="Professional QA" className="absolute inset-0 h-full w-full" />
+                <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-medium text-ink-2 shadow-sm">
                   <Clock className="size-3" aria-hidden /> {t("Practice Lab")}
-                </span>
-                <span className="flex size-[68px] items-center justify-center rounded-[22px] bg-gradient-to-br from-[#ffd36a] to-[#f5a524] text-white shadow-[0_8px_18px_-6px_rgba(0,0,0,0.35)]">
-                  <FlaskConical className="size-7" aria-hidden />
                 </span>
               </span>
               <span className="mt-3 flex flex-wrap gap-1.5">

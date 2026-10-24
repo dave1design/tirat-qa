@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Clock, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
-import { TRACK } from "./tracks";
+import { LessonCover } from "./LessonCover";
 
 export interface CatalogLesson {
   key: string;
@@ -35,7 +35,6 @@ function Ring({ pct, done }: { pct: number; done: boolean }) {
 
 export function LessonCard({ l, list }: { l: CatalogLesson; list: boolean }) {
   const t = useT();
-  const tr = TRACK[l.track];
   const blocked = l.locked && !l.paid;
   const status =
     l.paid ? (
@@ -56,12 +55,10 @@ export function LessonCard({ l, list }: { l: CatalogLesson; list: boolean }) {
 
   const body = (
     <>
-      <div className={cn("relative flex items-center justify-center rounded-xl", tr.bg, list ? "h-24 w-36 shrink-0" : "aspect-[16/10]")}>
-        <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/80 px-1.5 py-0.5 text-[11px] font-medium text-ink-2">
+      <div className={cn("relative overflow-hidden rounded-xl", list ? "h-24 w-36 shrink-0" : "aspect-[16/10]")}>
+        <LessonCover n={l.n} track={l.track} className="absolute inset-0 h-full w-full" />
+        <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/85 px-1.5 py-0.5 text-[11px] font-medium text-ink-2 shadow-sm">
           <Clock className="size-3" aria-hidden /> {t("{n} min", { n: l.minutes })}
-        </span>
-        <span className={cn("flex size-[68px] items-center justify-center rounded-[22px] bg-gradient-to-br text-white shadow-[0_8px_18px_-6px_rgba(0,0,0,0.35)]", tr.tile, list && "size-14 rounded-2xl")}>
-          <tr.icon className="size-7" aria-hidden />
         </span>
       </div>
       <div className={cn("min-w-0", list ? "flex flex-1 flex-wrap items-center justify-between gap-x-6 gap-y-1" : "mt-3")}>

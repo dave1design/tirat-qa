@@ -1,12 +1,24 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, LayoutGrid, List, Search } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Search } from "lucide-react";
 import { LessonCard, type CatalogLesson } from "./LessonCard";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/client";
 
-const select = "max-w-[210px] truncate rounded-xl border border-line bg-white px-3 py-2 text-[13.5px] font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand";
+const select = "max-w-[210px] appearance-none truncate rounded-xl border border-line bg-white py-2 pl-3 pr-9 text-[13.5px] font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand";
+
+/** A dropdown with our own chevron, kept inside the box (the native arrow is hidden). */
+function Select({ children, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <span className="relative inline-flex">
+      <select {...props} className={select}>
+        {children}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden />
+    </span>
+  );
+}
 
 /** Every lesson as a card: search, filter by level or status, sort, grid or list view and paging. */
 export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: CatalogLesson[]; initialQuery?: string }) {
@@ -54,27 +66,27 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" aria-hidden />
             <input value={q} onChange={(e) => reset(setQ)(e.target.value)} placeholder={t("Search lessons")} className={cn(select, "w-44 pl-9 font-normal")} />
           </label>
-          <select aria-label={t("Level")} value={level} onChange={(e) => reset(setLevel)(e.target.value)} className={select}>
+          <Select aria-label={t("Level")} value={level} onChange={(e) => reset(setLevel)(e.target.value)}>
             <option value="all">{t("All levels")}</option>
             {levels.map(([n, title]) => (
               <option key={n} value={n}>
                 {t("Level")} {n}: {title}
               </option>
             ))}
-          </select>
-          <select aria-label={t("Status")} value={status} onChange={(e) => reset(setStatus)(e.target.value)} className={select}>
+          </Select>
+          <Select aria-label={t("Status")} value={status} onChange={(e) => reset(setStatus)(e.target.value)}>
             <option value="all">{t("All statuses")}</option>
             <option value="new">{t("Not started")}</option>
             <option value="going">{t("In progress")}</option>
             <option value="passed">{t("Passed")}</option>
             <option value="locked">{t("Locked")}</option>
-          </select>
-          <select aria-label={t("Sort by")} value={sort} onChange={(e) => reset(setSort)(e.target.value)} className={select}>
+          </Select>
+          <Select aria-label={t("Sort by")} value={sort} onChange={(e) => reset(setSort)(e.target.value)}>
             <option value="roadmap">{t("Roadmap order")}</option>
             <option value="title">{t("Title A to Z")}</option>
             <option value="progress">{t("Highest score")}</option>
             <option value="short">{t("Shortest first")}</option>
-          </select>
+          </Select>
           <div className="flex rounded-xl border border-line bg-white p-0.5" role="group" aria-label={t("View")}>
             {([false, true] as const).map((isList) => (
               <button
@@ -106,13 +118,13 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-sm">
         <div className="flex items-center gap-3">
-          <select aria-label={t("Per page")} value={size} onChange={(e) => reset(setSize)(Number(e.target.value))} className={select}>
+          <Select aria-label={t("Per page")} value={size} onChange={(e) => reset(setSize)(Number(e.target.value))}>
             {[8, 12, 24].map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
             ))}
-          </select>
+          </Select>
           <span className="text-muted">
             {t("Results")}: {shown.length === 0 ? 0 : (cur - 1) * size + 1} - {Math.min(cur * size, shown.length)} {t("of")} {shown.length}
           </span>
