@@ -8,7 +8,8 @@ import { isLessonPassed, isLevelUnlocked, loadProgress } from "@/lib/learn-progr
 import { hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
 import { loadLearningStats } from "@/lib/learn-dashboard";
 import { LearnApp } from "@/components/learn/LearnApp";
-import { LessonCatalog, type CatalogLesson } from "@/components/learn/LessonCatalog";
+import { LessonCatalog } from "@/components/learn/LessonCatalog";
+import { buildCatalogLessons } from "@/lib/learn-catalog";
 
 type LearnUser = { id: string; role: string };
 
@@ -22,25 +23,7 @@ export async function SignedInLearn({ user, view, query }: { user: LearnUser; vi
   const flat = levels.flatMap((lv) => lv.lessons.map((l) => ({ lv, l })));
   const passedCount = flat.filter(({ lv, l }) => isLessonPassed(progress.get(`${lv.n}/${l.slug}`))).length;
 
-  const lessons: CatalogLesson[] = flat.map(({ lv, l }, i) => {
-    const s = progress.get(`${lv.n}/${l.slug}`);
-    const before = i > 0 ? flat[i - 1] : null;
-    const paid = isPaidLevel(lv.n) && !advanced;
-    return {
-      key: `${lv.n}/${l.slug}`,
-      href: paid ? `/learn/levels/${lv.n}` : `/learn/levels/${lv.n}/${l.slug}`,
-      n: l.n,
-      title: l.title,
-      minutes: l.minutes,
-      track: lv.track,
-      level: lv.n,
-      levelTitle: lv.title,
-      pct: (s?.bestScore ?? 0) * 20,
-      state: isLessonPassed(s) ? "passed" : s && s.attempts > 0 ? "going" : "new",
-      locked: !!before && !isLessonPassed(progress.get(`${before.lv.n}/${before.l.slug}`)),
-      paid,
-    };
-  });
+  const lessons = buildCatalogLessons(levels, progress, advanced);
 
   return (
     <LearnApp active={view === "exams" ? "exams" : "lessons"} advanced={advanced} passed={passedCount} total={TOTAL_LESSONS}>
