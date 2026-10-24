@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowUpRight, BookOpen, Check, ChevronDown, ChevronRight, Clock, Lightbulb, ListChecks, Lock, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, BookOpen, Check, ChevronRight, Clock, Lightbulb, ListChecks, Lock, ShieldCheck } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { canOpenLevel, hasAdvancedAccess, isPaidLevel } from "@/lib/learn-access";
+import { canOpenLevel, hasAdvancedAccess } from "@/lib/learn-access";
 import { isLessonPassed, LEARN_LOGIN, loadProgress, passedExamLevels } from "@/lib/learn-progress";
-import { findLesson, levelsFor, neighbours, TOTAL_LESSONS } from "@/content/curriculum";
+import { findLesson, neighbours, TOTAL_LESSONS } from "@/content/curriculum";
 import { LESSON_GUIDES } from "@/content/curriculum/guides";
 import { db } from "@/lib/db";
-import { CourseSidebar, type SidebarLevel } from "@/components/learn/CourseSidebar";
+import { CourseSidebar } from "@/components/learn/CourseSidebar";
+import { Fold } from "@/components/learn/Fold";
+import { buildSidebarLevels } from "@/lib/learn-sidebar";
 import { PlayerTopBar } from "@/components/learn/PlayerTopBar";
 import { ANSWER_FIRST } from "@/lib/test-mode";
 import { LessonCover } from "@/components/learn/LessonCover";
@@ -34,19 +36,6 @@ function Heading({ id, children }: { id: string; children: React.ReactNode }) {
     <h2 id={id} className="scroll-mt-28 text-[1.6rem] font-semibold tracking-[-0.035em]">
       {children}
     </h2>
-  );
-}
-
-/** A question-style panel that opens and closes, like the FAQ rows of a course page. */
-function Fold({ title, open, children }: { title: string; open?: boolean; children: React.ReactNode }) {
-  return (
-    <details open={open} className="group rounded-2xl border border-line bg-white [&_summary::-webkit-details-marker]:hidden">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 text-[17px] font-semibold tracking-[-0.015em] hover:bg-card">
-        {title}
-        <ChevronDown className="size-5 shrink-0 text-muted transition-transform group-open:rotate-180" aria-hidden />
-      </summary>
-      <div className="border-t border-line px-5 py-5">{children}</div>
-    </details>
   );
 }
 
@@ -91,22 +80,7 @@ export default async function LessonPage({ params }: { params: Params }) {
   // a signed-in learner must pass the previous lesson's quiz before opening this lesson
   const prevPassed = !prev || !user || isLessonPassed(progress.get(`${prev.levelN}/${prev.lesson.slug}`));
 
-  // the sidebar: every level with a status mark per lesson (locked = the lesson before it is not passed yet)
-  let before: string | null = null;
-  let passedCount = 0;
-  const sidebarLevels: SidebarLevel[] = levelsFor(locale).map((lv) => ({
-    n: lv.n,
-    title: lv.title,
-    examPassed: examLevels.has(lv.n),
-    lessons: lv.lessons.map((l) => {
-      const key = `${lv.n}/${l.slug}`;
-      const p = isLessonPassed(progress.get(key));
-      if (p) passedCount++;
-      const locked = (isPaidLevel(lv.n) && !advanced) || (!!before && !isLessonPassed(progress.get(before)));
-      before = key;
-      return { slug: l.slug, n: l.n, title: l.title, minutes: l.minutes, passed: p, locked };
-    }),
-  }));
+  const { levels: sidebarLevels, passedCount } = buildSidebarLevels(locale, progress, advanced, examLevels);
   const sidebar = <CourseSidebar levels={sidebarLevels} currentLevel={levelN} currentSlug={slug} />;
 
   const guideSlugs = LESSON_GUIDES[`${levelN}/${slug}`] ?? [];

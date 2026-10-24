@@ -36,7 +36,7 @@ function Mark({ passed, locked, current, exam }: { passed: boolean; locked: bool
  * "Start the lesson" panel: a switch between the lessons of this level (each a card with its type, title and minutes)
  * and every level of the roadmap as collapsible sections.
  */
-export function CourseSidebar({ levels, currentLevel, currentSlug }: { levels: SidebarLevel[]; currentLevel: number; currentSlug: string }) {
+export function CourseSidebar({ levels, currentLevel, currentSlug, title }: { levels: SidebarLevel[]; currentLevel: number; currentSlug: string; title?: string }) {
   const t = useT();
   const [tab, setTab] = useState<"level" | "all">("level");
   const here = levels.find((l) => l.n === currentLevel) ?? levels[0];
@@ -83,7 +83,7 @@ export function CourseSidebar({ levels, currentLevel, currentSlug }: { levels: S
 
   return (
     <nav aria-label={t("Course content")} className="p-4">
-      <h2 className="px-1 pb-3 text-[1.15rem] font-semibold tracking-[-0.02em]">{t("Start the lesson")}</h2>
+      <h2 className="px-1 pb-3 text-[1.15rem] font-semibold tracking-[-0.02em]">{title ?? t("Start the lesson")}</h2>
       <div role="tablist" className="grid grid-cols-2 gap-1 rounded-xl bg-card p-1">
         {(["level", "all"] as const).map((id) => (
           <button
