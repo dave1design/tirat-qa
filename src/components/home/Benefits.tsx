@@ -122,21 +122,21 @@ function ResultSheet() {
   );
 }
 
-/** Chart card that bleeds off the right edge, bars growing in turn. */
+/** Chart card that stays inside the panel; its bars share the card width and grow in turn. */
 function ProgressChart() {
   const t = useT();
   const bars = [32, 40, 36, 52, 46, 62, 70, 78, 92];
   return (
-    <div className="mt-auto mb-12 -mr-10 rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)] transition-transform duration-500 group-hover/card:-translate-x-8">
+    <div className="mt-auto mb-12 rounded-2xl bg-white p-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.18)] transition-transform duration-500 group-hover/card:-translate-y-2">
       <p className="text-[12px] text-muted">
         {t("Practice progress")} <span aria-hidden>·</span> {t("Level 01")}
       </p>
       <p className="mt-1 text-[20px] font-medium tracking-[-0.03em]">{t("+3 completed")}</p>
-      <div className="mt-3 flex h-[70px] items-end gap-2">
+      <div className="mt-3 flex h-[70px] items-end gap-1.5">
         {bars.map((h, i) => (
           <span
             key={i}
-            className={cn("block w-7 shrink-0 origin-bottom animate-bar rounded-[4px]", i > 5 ? "bg-brand/30" : "bg-brand")}
+            className={cn("block min-w-0 flex-1 origin-bottom animate-bar rounded-[4px]", i > 5 ? "bg-brand/30" : "bg-brand")}
             style={{ height: `${h}%`, animationDelay: `${i * 0.15}s`, animationDuration: `${2.4 + (i % 3) * 0.4}s` }}
           />
         ))}
