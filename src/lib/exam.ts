@@ -1,5 +1,6 @@
 import "server-only";
 import { db } from "./db";
+import { ANSWER_FIRST } from "./test-mode";
 import { EXAM_BLUEPRINT_VERSION, EXAM_MINUTES, EXAM_PASS_POINTS, POINTS_PER_QUESTION, examQuestions } from "@/content/exam";
 
 export interface ExamOrder {
@@ -21,7 +22,7 @@ export function buildOrder(levelN: number): ExamOrder {
   const qs = examQuestions(levelN)!;
   const ids = [...shuffled(qs.filter((q) => q.part === "A")), ...shuffled(qs.filter((q) => q.part === "B"))].map((q) => q.id);
   const opts: Record<string, number[]> = {};
-  for (const q of qs) opts[q.id] = shuffled(q.o.map((_, i) => i));
+  for (const q of qs) opts[q.id] = ANSWER_FIRST ? q.o.map((_, i) => i) : shuffled(q.o.map((_, i) => i));
   return { qs: ids, opts };
 }
 

@@ -2,6 +2,7 @@ import type { ExamQuestion, LevelExam } from "./types";
 import type { Locale } from "@/lib/i18n";
 import { AM_EXAMS } from "./am";
 import { TRANSLATE_LESSON_CONTENT } from "../curriculum/localize";
+import { ANSWER_FIRST, answerFirst } from "@/lib/test-mode";
 import { exam1 } from "./level1";
 import { exam2 } from "./level2";
 import { exam3 } from "./level3";
@@ -27,5 +28,6 @@ export function examQuestions(levelN: number, locale: Locale = "en"): (ExamQuest
   const am = TRANSLATE_LESSON_CONTENT && locale === "am" ? AM_EXAMS[levelN] : undefined;
   // Amharic text is laid over the English question by position; the answer key always comes from the English entry.
   const merge = (q: ExamQuestion, tr: { q: string; o: string[]; e: string } | undefined, id: string) => ({ ...q, ...(tr ? { q: tr.q, o: tr.o, e: tr.e } : {}), id });
-  return [...e.partA.map((q, i) => merge(q, am?.partA[i], `A${i + 1}`)), ...e.partB.map((q, i) => merge(q, am?.partB[i], `B${i + 1}`))];
+  const all = [...e.partA.map((q, i) => merge(q, am?.partA[i], `A${i + 1}`)), ...e.partB.map((q, i) => merge(q, am?.partB[i], `B${i + 1}`))];
+  return ANSWER_FIRST ? all.map((q) => ({ ...q, ...answerFirst(q.o, q.a) })) : all; // test mode: correct options come first
 }

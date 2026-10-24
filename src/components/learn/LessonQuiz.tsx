@@ -32,6 +32,7 @@ export function LessonQuiz({
   questions,
   previousBest,
   next,
+  keepOrder = false,
 }: {
   levelN: number;
   lessonSlug: string;
@@ -39,6 +40,8 @@ export function LessonQuiz({
   previousBest: number | null;
   /** Where to go after passing: the next lesson, or the level exam when this was the last lesson of the level. */
   next?: { href: string; kind: "lesson" | "exam" } | null;
+  /** Show the options in their given order (test mode). */
+  keepOrder?: boolean;
 }) {
   const t = useT();
   const onPassed = useLessonPassed();
@@ -50,7 +53,7 @@ export function LessonQuiz({
 
   // display order of each question's options (original indices), reshuffled on a retry
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const order = useMemo(() => questions.map((q) => shuffle(q.o.length)), [round, questions]);
+  const order = useMemo(() => questions.map((q) => (keepOrder ? q.o.map((_, i) => i) : shuffle(q.o.length))), [round, questions, keepOrder]);
   const answered = picked.filter((p) => p !== null).length;
 
   const submit = () => {

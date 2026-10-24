@@ -10,6 +10,7 @@ import { LESSON_GUIDES } from "@/content/curriculum/guides";
 import { db } from "@/lib/db";
 import { CourseSidebar, type SidebarLevel } from "@/components/learn/CourseSidebar";
 import { PlayerTopBar } from "@/components/learn/PlayerTopBar";
+import { ANSWER_FIRST } from "@/lib/test-mode";
 import { LessonCover } from "@/components/learn/LessonCover";
 import { LessonFlow } from "@/components/learn/LessonFlow";
 import { InlineYouTube } from "@/components/learn/InlineYouTube";
@@ -267,7 +268,7 @@ export default async function LessonPage({ params }: { params: Params }) {
                   <Heading id="quiz">{t("Check yourself")}</Heading>
                   <p className="mt-2 text-[15px] text-muted">{t("Five questions. Answer all of them, submit, then see your score and why each answer is right. You can retry.")}</p>
                   <div className="mt-6">
-                    <LessonQuiz levelN={level.n} lessonSlug={lesson.slug} questions={questions} previousBest={status?.bestScore ?? null} next={{ href: nextStep.href, kind: nextStep.kind }} />
+                    <LessonQuiz levelN={level.n} lessonSlug={lesson.slug} questions={questions} previousBest={status?.bestScore ?? null} next={{ href: nextStep.href, kind: nextStep.kind }} keepOrder={ANSWER_FIRST} />
                   </div>
                 </section>
               }
