@@ -105,7 +105,7 @@ export function WebsiteGrid({ cards }: { cards: LabCard[] }) {
             role="tab"
             aria-selected={cat === c}
             onClick={() => setCat(c)}
-            className={cn("rounded-full px-5 py-3 text-[15px] font-medium transition-colors", cat === c ? "bg-ink text-white" : "bg-chip text-ink hover:bg-[#e4e4e4]")}
+            className={cn("rounded-full px-5 py-3 text-[15px] font-medium transition-colors", cat === c ? "bg-brand text-white" : "bg-chip text-ink hover:bg-[#e4e4e4]")}
           >
             {t(c)}
           </button>

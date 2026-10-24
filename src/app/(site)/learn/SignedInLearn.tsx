@@ -48,7 +48,7 @@ export async function SignedInLearn({ user, view, query }: { user: LearnUser; vi
       {view !== "exams" && (
         <div className="mt-5 inline-flex rounded-full border border-line bg-white p-1" role="tablist" aria-label={t("View")}>
           {([["levels", "/learn", "By level"], ["all", "/learn?view=all", "All lessons"]] as const).map(([id, href, label]) => (
-            <Link key={id} href={href} role="tab" aria-selected={view === id} className={cn("rounded-full px-4 py-2 text-[14px] font-medium transition-colors", view === id ? "bg-ink text-white" : "text-muted hover:text-ink")}>
+            <Link key={id} href={href} role="tab" aria-selected={view === id} className={cn("rounded-full px-4 py-2 text-[14px] font-medium transition-colors", view === id ? "bg-brand text-white" : "text-muted hover:text-ink")}>
               {t(label)}
             </Link>
           ))}

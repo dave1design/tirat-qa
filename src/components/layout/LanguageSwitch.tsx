@@ -29,7 +29,7 @@ export function LanguageSwitch({ className }: { className?: string }) {
       onClick={() => pick(code)}
       className={cn(
         "rounded-full px-3 py-1.5 text-[13px] font-medium leading-none transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand",
-        locale === code ? "bg-ink text-white" : "text-muted hover:text-ink",
+        locale === code ? "bg-brand text-white" : "text-muted hover:text-ink",
       )}
     >
       {label}

@@ -95,7 +95,7 @@ export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: Catalog
                 aria-pressed={list === isList}
                 aria-label={isList ? t("List view") : t("Grid view")}
                 onClick={() => setList(isList)}
-                className={cn("rounded-full p-2", list === isList ? "bg-ink text-white" : "text-muted hover:text-ink")}
+                className={cn("rounded-full p-2", list === isList ? "bg-brand text-white" : "text-muted hover:text-ink")}
               >
                 {isList ? <List className="size-4" aria-hidden /> : <LayoutGrid className="size-4" aria-hidden />}
               </button>
