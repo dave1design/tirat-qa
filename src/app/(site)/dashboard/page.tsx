@@ -54,7 +54,14 @@ export default async function DashboardPage() {
           stats={stats}
           advanced={advanced}
           pendingPayment={payments.some((p) => p.product === ADVANCED_PRODUCT)}
-          activeAttempt={active ? { label: t(active.website.name), href: `/practice-lab/${active.website.level.slug}/${active.website.slug}` } : null}
+          subtitle={user.experienceLevel ? `${user.experienceLevel} · ${t("Learner")}` : t("Learner")}
+          practice={
+            active
+              ? { title: t(active.website.name), href: `/practice-lab/${active.website.level.slug}/${active.website.slug}`, cta: "Continue Testing", done: sites.filter((s) => s.status === "COMPLETED").length, total: sites.length }
+              : next
+                ? { title: t(next.name), href: `/practice-lab/${next.levelSlug}/${next.slug}`, cta: "Start Testing", done: sites.filter((s) => s.status === "COMPLETED").length, total: sites.length }
+                : null
+          }
         />
 
         <h2 className="mt-20 text-[1.9rem] font-semibold tracking-[-0.04em]">{t("Practice Lab")}</h2>

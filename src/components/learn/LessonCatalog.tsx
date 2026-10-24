@@ -107,9 +107,9 @@ function Card({ l, list }: { l: CatalogLesson; list: boolean }) {
 const select = "max-w-[210px] truncate rounded-xl border border-line bg-white px-3 py-2 text-[13.5px] font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand";
 
 /** Every lesson as a card: search, filter by level or status, sort, grid or list view and paging. */
-export function LessonCatalog({ lessons }: { lessons: CatalogLesson[] }) {
+export function LessonCatalog({ lessons, initialQuery = "" }: { lessons: CatalogLesson[]; initialQuery?: string }) {
   const t = useT();
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(initialQuery);
   const [level, setLevel] = useState("all");
   const [status, setStatus] = useState("all");
   const [sort, setSort] = useState("roadmap");

@@ -20,9 +20,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 /** Signed in, /learn is the learning app (sidebar + lesson cards); guests keep the public roadmap. */
-export default async function LearnPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+export default async function LearnPage({ searchParams }: { searchParams: Promise<{ view?: string; q?: string }> }) {
   const user = await getCurrentUser();
-  if (user) return <SignedInLearn user={user} view={(await searchParams).view === "exams" ? "exams" : "lessons"} />;
+  if (user) {
+    const sp = await searchParams;
+    return <SignedInLearn user={user} view={sp.view === "exams" ? "exams" : "lessons"} query={sp.q ?? ""} />;
+  }
   return <RoadmapPage />;
 }
 

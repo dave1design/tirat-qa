@@ -8,7 +8,7 @@ import { advancedPriceEtb } from "@/lib/learn-access";
 export type LearnSection = "dashboard" | "lessons" | "exams" | "practice";
 
 const NAV: { id: LearnSection; href: string; label: string; icon: LucideIcon }[] = [
-  { id: "dashboard", href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "dashboard", href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { id: "lessons", href: "/learn", label: "Lessons", icon: BookOpen },
   { id: "exams", href: "/learn?view=exams", label: "Level exams", icon: FileCheck2 },
   { id: "practice", href: "/practice-lab", label: "Practice Lab", icon: FlaskConical },

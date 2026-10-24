@@ -13,7 +13,7 @@ import { LessonCatalog, type CatalogLesson } from "@/components/learn/LessonCata
 type LearnUser = { id: string; role: string };
 
 /** What /learn shows once you are logged in: the sidebar app with every lesson as a card, or the level exams. */
-export async function SignedInLearn({ user, view }: { user: LearnUser; view: "lessons" | "exams" }) {
+export async function SignedInLearn({ user, view, query }: { user: LearnUser; view: "lessons" | "exams"; query: string }) {
   const t = await getT();
   const levels = levelsFor(await getLocale());
   const progress = await loadProgress(user.id);
@@ -48,7 +48,7 @@ export async function SignedInLearn({ user, view }: { user: LearnUser; view: "le
       <p className="mt-1 text-[15.5px] text-muted">
         {view === "exams" ? t("Each exam has 50 questions in 60 minutes. Pass every lesson quiz of a level to unlock its exam.") : t("Eight levels, {n} lessons. Pass each quiz (4 of 5) to open the next lesson.", { n: TOTAL_LESSONS })}
       </p>
-      <div className="mt-7">{view === "exams" ? await Exams({ user, progress }) : <LessonCatalog lessons={lessons} />}</div>
+      <div className="mt-7">{view === "exams" ? await Exams({ user, progress }) : <LessonCatalog lessons={lessons} initialQuery={query} />}</div>
     </LearnApp>
   );
 }
