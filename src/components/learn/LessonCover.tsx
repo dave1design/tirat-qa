@@ -2,12 +2,13 @@ import type { ReactNode } from "react";
 
 type Track = "Foundations" | "Manual QA" | "Professional QA" | "Automation QA";
 
-/** Soft background, strong accent, lighter accent and a deep tone for each learning track. */
+/** Every cover uses the primary blue: soft background, strong accent, lighter accent and a deep tone. */
+const BRAND_PALETTE = { bg: "#e6efff", a: "#0066ff", soft: "#b5d0ff", deep: "#0a3d99" };
 const PAL: Record<Track, { bg: string; a: string; soft: string; deep: string }> = {
-  Foundations: { bg: "#eef5d3", a: "#78c800", soft: "#cdeb7f", deep: "#35520a" },
-  "Manual QA": { bg: "#e9e4fb", a: "#7c5cff", soft: "#c8bbff", deep: "#3a2a8f" },
-  "Professional QA": { bg: "#f8eed2", a: "#f0a020", soft: "#ffd98a", deep: "#7a4b05" },
-  "Automation QA": { bg: "#dcf1e7", a: "#1fb487", soft: "#a4e3cc", deep: "#0d5a43" },
+  Foundations: BRAND_PALETTE,
+  "Manual QA": BRAND_PALETTE,
+  "Professional QA": BRAND_PALETTE,
+  "Automation QA": BRAND_PALETTE,
 };
 
 const INK = "#1b1b1f";
@@ -154,8 +155,8 @@ const SCENES: Record<string, (p: C) => ReactNode> = {
       <rect x="40" y="30" width="96" height="22" rx="12" fill={p.soft} />
       <Mono x={52} y={45} t="BRD" c={p.deep} />
       <Lines x={52} y={64} ws={[70, 58, 66, 44, 62, 52]} gap={13} />
-      <rect x="160" y="40" width="50" height="40" rx="6" fill="#ffe27a" transform="rotate(-5 185 60)" />
-      <Lines x={168} y={52} ws={[32, 24, 28]} gap={9} c="#c9a21f" />
+      <rect x="160" y="40" width="50" height="40" rx="6" fill="#cfe0ff" transform="rotate(-5 185 60)" />
+      <Lines x={168} y={52} ws={[32, 24, 28]} gap={9} c="#7aa6f0" />
       <rect x="164" y="104" width="54" height="40" rx="6" fill={p.a} transform="rotate(4 191 124)" opacity=".9" />
       <Lines x={172} y={116} ws={[34, 26]} gap={9} c="#ffffffcc" />
       <Card x={238} y={64} w={52} h={70} r={10} />
@@ -263,7 +264,7 @@ const SCENES: Record<string, (p: C) => ReactNode> = {
       <Mono x={58} y={48} t="BUG-142" c={p.deep} s={10} />
       <Lines x={58} y={60} ws={[130, 100]} gap={9} />
       <Chip x={58} y={90} w={54} c={RED} t="CRITICAL" />
-      <Chip x={118} y={90} w={42} c="#ffa94d" t="HIGH" />
+      <Chip x={118} y={90} w={42} c="#3d85ff" t="HIGH" />
       <rect x="58" y="114" width="140" height="42" rx="8" fill="#f6f6f9" />
       <Lines x={66} y={122} ws={[104, 88, 70]} gap={10} h={3.5} />
       <Bug x={256} y={96} s={1.5} c={RED} />
@@ -284,7 +285,7 @@ const SCENES: Record<string, (p: C) => ReactNode> = {
       <Card x={208} y={46} w={88} h={108} />
       {[0, 1, 2].map((r) =>
         [0, 1, 2].map((c2) => (
-          <rect key={`${r}${c2}`} x={218 + c2 * 25} y={58 + r * 25} width="22" height="22" rx="5" fill={[p.soft, "#ffd98a", "#ffb4a2"][(r + c2 > 2 ? 2 : r + c2) % 3]} />
+          <rect key={`${r}${c2}`} x={218 + c2 * 25} y={58 + r * 25} width="22" height="22" rx="5" fill={[p.soft, "#9ec2ff", "#8bb4f7"][(r + c2 > 2 ? 2 : r + c2) % 3]} />
         )),
       )}
       <circle cx="268" cy="64" r="6" fill={RED} />
@@ -350,7 +351,7 @@ const SCENES: Record<string, (p: C) => ReactNode> = {
         return (
           <g key={i}>
             <Card x={x} y={y} w={80} h={66} r={12} />
-            <rect x={x + 8} y={y + 8} width="64" height="18" rx="6" fill={[p.soft, p.a, "#ffd98a", p.soft, "#b7d4ff", p.a][i]} />
+            <rect x={x + 8} y={y + 8} width="64" height="18" rx="6" fill={[p.soft, p.a, "#9ec2ff", p.soft, "#cfe0ff", p.a][i]} />
             {[0, 1, 2, 3, 4].map((b) => (
               <rect key={b} x={x + 10 + b * 13} y={y + 58 - [14, 22, 12, 28, 18][(b + i) % 5]} width="9" height={[14, 22, 12, 28, 18][(b + i) % 5]} rx="2.5" fill={INK} opacity={0.15 + ((b + i) % 3) * 0.12} />
             ))}
@@ -423,7 +424,7 @@ const SCENES: Record<string, (p: C) => ReactNode> = {
       <path d="M232 62 V138" stroke={INK} strokeWidth="2.6" />
       <path d="M232 98 C250 98 250 80 266 80" fill="none" stroke={INK} strokeWidth="2.6" />
       {[[232, 62], [232, 98], [232, 138], [266, 80]].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r="7" fill={[p.a, p.deep, p.soft, "#ffd98a"][i]} stroke={INK} strokeWidth="2" />
+        <circle key={i} cx={x} cy={y} r="7" fill={[p.a, p.deep, p.soft, "#9ec2ff"][i]} stroke={INK} strokeWidth="2" />
       ))}
       <Mono x={244} y={146} t="main" s={8.5} />
     </>
@@ -485,14 +486,14 @@ const SCENES: Record<string, (p: C) => ReactNode> = {
       <Card x={26} y={30} w={268} h={72} />
       {[0, 1, 2, 3, 4, 5].map((i) => (
         <g key={i}>
-          <rect x={36 + i * 42} y="42" width="36" height="28" rx="5" fill={i === 3 ? "#ffd2d2" : p.soft} stroke={i === 3 ? RED : "none"} strokeWidth="2" />
+          <rect x={36 + i * 42} y="42" width="36" height="28" rx="5" fill={i === 3 ? "#ffd9dc" : p.soft} stroke={i === 3 ? RED : "none"} strokeWidth="2" />
           <circle cx={54 + i * 42} cy="86" r="4.5" fill={i === 3 ? RED : GREEN} />
         </g>
       ))}
       <path d="M36 86 H270" stroke={LINE} strokeWidth="1.5" />
       <Magnifier x={86} y={146} s={0.9} c={p.a} />
       <Bug x={196} y={146} s={0.9} c={p.a} />
-      <Chip x={226} y={128} w={58} c={"#ffa94d"} t="FLAKY" />
+      <Chip x={226} y={128} w={58} c={"#3d85ff"} t="FLAKY" />
       <Chip x={226} y={148} w={58} c={GREEN} t="STABLE" />
     </>
   ),
